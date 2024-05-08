@@ -18,9 +18,7 @@ class ZoomAnimatedButton : UIButton {
         self.addTarget(self, action: #selector(recoverButton ( _ : )), for: .touchDragExit)
         self.addTarget(self, action: #selector(recoverButton ( _ : )), for: .touchDragOutside)
     }
-    
-    
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         scaleTargets?.append(self)

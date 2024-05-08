@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		231341982BEB496C0015DFA6 /* InputIngredientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341972BEB496C0015DFA6 /* InputIngredientViewController.swift */; };
+		2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341992BEB4A1E0015DFA6 /* Ingredient.swift */; };
+		2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */; };
+		2313419E2BEB4C120015DFA6 /* InputIngredientCameraCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2313419D2BEB4C120015DFA6 /* InputIngredientCameraCollectionCell.swift */; };
+		231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341A02BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift */; };
+		231341A32BEB671D0015DFA6 /* StepCollectionViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341A22BEB671D0015DFA6 /* StepCollectionViewTableCell.swift */; };
+		231341A52BEB67B70015DFA6 /* IngredientImageTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341A42BEB67B70015DFA6 /* IngredientImageTableCell.swift */; };
+		231341A72BEB69950015DFA6 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341A62BEB69950015DFA6 /* CameraController.swift */; };
+		231341AB2BEBB21F0015DFA6 /* IndicatorTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AA2BEBB21F0015DFA6 /* IndicatorTableCell.swift */; };
+		231341AD2BEBB2900015DFA6 /* IndicatorLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */; };
+		231341AF2BEBBAB90015DFA6 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AE2BEBBAB90015DFA6 /* LineView.swift */; };
+		231341B12BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* DishTableViewController.swift */; };
@@ -21,10 +33,10 @@
 		234BF5462BDEAA1A0012CF6A /* DishTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5452BDEAA1A0012CF6A /* DishTableCell.swift */; };
 		234BF54A2BDEAD170012CF6A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5492BDEAD170012CF6A /* Color.swift */; };
 		234BF54C2BDEADC70012CF6A /* MainNavgationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF54B2BDEADC70012CF6A /* MainNavgationController.swift */; };
-		234BF54E2BDEAE530012CF6A /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF54D2BDEAE530012CF6A /* MainTabBarController.swift */; };
 		234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF54F2BDEAF250012CF6A /* UIFont.swift */; };
 		234BF5572BDEB8E80012CF6A /* CellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5562BDEB8E80012CF6A /* CellProtocol.swift */; };
 		234BF55A2BDEB9B00012CF6A /* ZoomAnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5592BDEB9B00012CF6A /* ZoomAnimatedButton.swift */; };
+		234BF55C2BDEC65E0012CF6A /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +57,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		231341972BEB496C0015DFA6 /* InputIngredientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InputIngredientViewController.swift; path = ../../../../Downloads/InputIngredientViewController.swift; sourceTree = "<group>"; };
+		231341992BEB4A1E0015DFA6 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
+		2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTableCell.swift; sourceTree = "<group>"; };
+		2313419D2BEB4C120015DFA6 /* InputIngredientCameraCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputIngredientCameraCollectionCell.swift; sourceTree = "<group>"; };
+		231341A02BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepIndicatorCollectionCell.swift; sourceTree = "<group>"; };
+		231341A22BEB671D0015DFA6 /* StepCollectionViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCollectionViewTableCell.swift; sourceTree = "<group>"; };
+		231341A42BEB67B70015DFA6 /* IngredientImageTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientImageTableCell.swift; sourceTree = "<group>"; };
+		231341A62BEB69950015DFA6 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		231341AA2BEBB21F0015DFA6 /* IndicatorTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorTableCell.swift; sourceTree = "<group>"; };
+		231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorLabelView.swift; sourceTree = "<group>"; };
+		231341AE2BEBBAB90015DFA6 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
+		231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonCollectionCell.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,10 +87,10 @@
 		234BF5452BDEAA1A0012CF6A /* DishTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishTableCell.swift; sourceTree = "<group>"; };
 		234BF5492BDEAD170012CF6A /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		234BF54B2BDEADC70012CF6A /* MainNavgationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavgationController.swift; sourceTree = "<group>"; };
-		234BF54D2BDEAE530012CF6A /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		234BF54F2BDEAF250012CF6A /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		234BF5562BDEB8E80012CF6A /* CellProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellProtocol.swift; sourceTree = "<group>"; };
 		234BF5592BDEB9B00012CF6A /* ZoomAnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimatedButton.swift; sourceTree = "<group>"; };
+		234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +118,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2313419F2BEB4EE10015DFA6 /* StepIndicatorCell */ = {
+			isa = PBXGroup;
+			children = (
+				231341A22BEB671D0015DFA6 /* StepCollectionViewTableCell.swift */,
+				231341A02BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift */,
+			);
+			path = StepIndicatorCell;
+			sourceTree = "<group>";
+		};
 		234BF5032BDEA4120012CF6A = {
 			isa = PBXGroup;
 			children = (
@@ -117,16 +150,13 @@
 		234BF50E2BDEA4120012CF6A /* DishGenerate */ = {
 			isa = PBXGroup;
 			children = (
-				234BF5582BDEB9A60012CF6A /* View */,
 				234BF5542BDEB8680012CF6A /* Util */,
 				234BF5512BDEB82A0012CF6A /* VIewController */,
 				234BF5422BDEA7BD0012CF6A /* Model */,
-				234BF5472BDEAA1E0012CF6A /* Cell */,
-				234BF5522BDEB8340012CF6A /* Delegate */,
-				234BF5532BDEB8440012CF6A /* StoryBoard */,
 				234BF51B2BDEA4140012CF6A /* Assets.xcassets */,
 				234BF5202BDEA4140012CF6A /* Info.plist */,
 				234BF5182BDEA4120012CF6A /* DishGenerate.xcdatamodeld */,
+				234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */,
 			);
 			path = DishGenerate;
 			sourceTree = "<group>";
@@ -152,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				234BF5432BDEA7C60012CF6A /* Dish.swift */,
+				231341992BEB4A1E0015DFA6 /* Ingredient.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -159,7 +190,13 @@
 		234BF5472BDEAA1E0012CF6A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				2313419F2BEB4EE10015DFA6 /* StepIndicatorCell */,
 				234BF5452BDEAA1A0012CF6A /* DishTableCell.swift */,
+				2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */,
+				2313419D2BEB4C120015DFA6 /* InputIngredientCameraCollectionCell.swift */,
+				231341A42BEB67B70015DFA6 /* IngredientImageTableCell.swift */,
+				231341AA2BEBB21F0015DFA6 /* IndicatorTableCell.swift */,
+				231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -176,9 +213,9 @@
 		234BF5512BDEB82A0012CF6A /* VIewController */ = {
 			isa = PBXGroup;
 			children = (
-				234BF54D2BDEAE530012CF6A /* MainTabBarController.swift */,
 				234BF5132BDEA4120012CF6A /* DishTableViewController.swift */,
 				234BF54B2BDEADC70012CF6A /* MainNavgationController.swift */,
+				231341972BEB496C0015DFA6 /* InputIngredientViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -204,8 +241,13 @@
 		234BF5542BDEB8680012CF6A /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				234BF5532BDEB8440012CF6A /* StoryBoard */,
+				234BF5522BDEB8340012CF6A /* Delegate */,
+				234BF5472BDEAA1E0012CF6A /* Cell */,
+				234BF5582BDEB9A60012CF6A /* View */,
 				234BF5552BDEB8D60012CF6A /* Protocol */,
 				234BF5482BDEACEC0012CF6A /* Extension */,
+				231341A62BEB69950015DFA6 /* CameraController.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -222,6 +264,8 @@
 			isa = PBXGroup;
 			children = (
 				234BF5592BDEB9B00012CF6A /* ZoomAnimatedButton.swift */,
+				231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */,
+				231341AE2BEBBAB90015DFA6 /* LineView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -357,18 +401,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				231341AF2BEBBAB90015DFA6 /* LineView.swift in Sources */,
 				234BF54C2BDEADC70012CF6A /* MainNavgationController.swift in Sources */,
 				234BF51A2BDEA4120012CF6A /* DishGenerate.xcdatamodeld in Sources */,
-				234BF54E2BDEAE530012CF6A /* MainTabBarController.swift in Sources */,
+				2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */,
 				234BF55A2BDEB9B00012CF6A /* ZoomAnimatedButton.swift in Sources */,
 				234BF5442BDEA7C60012CF6A /* Dish.swift in Sources */,
+				231341A32BEB671D0015DFA6 /* StepCollectionViewTableCell.swift in Sources */,
 				234BF54A2BDEAD170012CF6A /* Color.swift in Sources */,
+				231341A52BEB67B70015DFA6 /* IngredientImageTableCell.swift in Sources */,
 				234BF5462BDEAA1A0012CF6A /* DishTableCell.swift in Sources */,
 				234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
 				234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */,
 				234BF5572BDEB8E80012CF6A /* CellProtocol.swift in Sources */,
+				2313419E2BEB4C120015DFA6 /* InputIngredientCameraCollectionCell.swift in Sources */,
+				231341A72BEB69950015DFA6 /* CameraController.swift in Sources */,
+				231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */,
 				234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */,
+				231341AB2BEBB21F0015DFA6 /* IndicatorTableCell.swift in Sources */,
+				231341B12BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift in Sources */,
+				234BF55C2BDEC65E0012CF6A /* MainTabBarViewController.swift in Sources */,
+				231341AD2BEBB2900015DFA6 /* IndicatorLabelView.swift in Sources */,
+				2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */,
+				231341982BEB496C0015DFA6 /* InputIngredientViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,9 +1,13 @@
 import UIKit
 
-class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dishes.count
+class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        let controller = InputIngredientViewController()
+        self.show(controller, sender: nil)
+        return false
     }
+
     
     
     var dishes : [Dish] = Dish.examples
@@ -41,9 +45,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func tabBarSetup() {
         let font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         let config = UIImage.SymbolConfiguration(font: font)
-        self.tabBarController?.tabBar.standardAppearance.configureWithTransparentBackground()
-        self.tabBarController?.tabBar.scrollEdgeAppearance?.configureWithTransparentBackground()
-        
+
         self.tabBarItem = UITabBarItem(title: nil, image:UIImage(systemName: "house")?.withConfiguration(config), selectedImage: UIImage(systemName: "house")?.withConfiguration(config).withTintColor(.accent, renderingMode: .alwaysOriginal))
     }
     
@@ -82,13 +84,14 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.bottomBarFrame.height),
             
         ])
     }
     
     func searchBarSetup() {
-
+        searchBar.searchBarStyle = .minimal
+        searchBar.delegate = self
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -123,6 +126,10 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.configure(dish: dish)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dishes.count
     }
 
 

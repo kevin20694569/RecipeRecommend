@@ -36,4 +36,6 @@ extension UIColor {
             return .systemGray3
         }
     }
+    
+    static let themeColor = UIColor(red: 0.921, green: 0.739, blue: 0.469, alpha: 1)
 }

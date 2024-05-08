@@ -21,13 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func initEntryControllers(windowScene : UIWindowScene) {
-        let viewController = DishTableViewController()
+        let controller = MainTabBarViewController.shared
         let window = UIWindow(windowScene: windowScene)
-        let tabBarController = MainTabBarController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        tabBarController.viewControllers = [navigationController]
-    
-        window.rootViewController = tabBarController
+        window.rootViewController = controller
         self.window = window
         window.makeKeyAndVisible()
     }

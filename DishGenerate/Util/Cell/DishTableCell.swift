@@ -39,6 +39,7 @@ class DishSnapshotCell : UITableViewCell, DishTableCell {
     func buttonSetup() {
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
+        config.background.backgroundColor = .clear
         self.heartButton.configuration = config
         heartButton.addTarget(self, action: #selector(heartButtonToggle), for: .touchUpInside)
     }
