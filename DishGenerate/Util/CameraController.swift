@@ -128,8 +128,11 @@ class CameraController: NSObject {
 }
 extension CameraController {
     func displayPreview(on view: UIView) throws {
-        previewLayer?.removeFromSuperlayer()    
-        view.layer.insertSublayer(self.previewLayer!, at: 0)
+        guard let previewLayer = previewLayer else {
+            return
+        }
+        previewLayer.removeFromSuperlayer()
+        view.layer.insertSublayer(previewLayer, at: 0)
         self.previewLayer!.frame = view.bounds
         nowPlayingView = view
     }
@@ -151,6 +154,18 @@ extension CameraController {
             view.layer.insertSublayer(self.previewLayer!, at: 0)
         }
         nowPlayingView = view
+    }
+    
+    func toggleFlash() -> Bool {
+       
+        flashMode = flashMode == .on ? .off : .on
+        return flashMode == .on
+        
+    }
+    
+    func snapshotView() -> UIImage? {
+        previewLayer
+        return self.previewLayer?.snapshot()
     }
 }
 

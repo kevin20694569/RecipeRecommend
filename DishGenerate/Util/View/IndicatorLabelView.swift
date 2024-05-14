@@ -28,11 +28,6 @@ class IndicatorLabelView : UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         initLayout()
-        /*lineViewSetup()
-        indicatorCicleViewSetup()
-        labelSetup()
-        stackViewSetup()
-        initLayout()*/
     }
     
     init() {
@@ -128,7 +123,8 @@ class IndicatorLabelView : UIView {
     
     func labelSetup() {
         self.orderLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
-        textLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
+        textLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote , weight: .medium)
+        textLabel.adjustsFontSizeToFitWidth = true
     }
     
 }

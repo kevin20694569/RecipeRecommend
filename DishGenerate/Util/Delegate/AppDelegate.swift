@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        navBarAppearanceSetup()
         return true
     }
 
@@ -24,6 +25,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+    
+    func navBarAppearanceSetup() {
+        let navBarAppearance = UINavigationBarAppearance()
+        let pointSize = UIFont.preferredFont(forTextStyle: .title3).pointSize
+        navBarAppearance.titleTextAttributes = [
+            .font : UIFont.systemFont(ofSize: pointSize, weight: .bold)
+         ]
+
+        var backButtonImage = UIImage(systemName: "chevron.backward", withConfiguration:  UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .bold)))
+        backButtonImage = backButtonImage?.withAlignmentRectInsets(UIEdgeInsets(top: 0 , left: -8, bottom: 0, right: 0)).withTintColor(.label, renderingMode: .alwaysOriginal)
+        
+        navBarAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
+       
+        navBarAppearance.configureWithTransparentBackground()
+        
+        navBarAppearance.backButtonAppearance = UIBarButtonItemAppearance(style: .plain)
+        
+        UINavigationBar.appearance().standardAppearance = navBarAppearance
+        UINavigationBar.appearance().compactAppearance = navBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {

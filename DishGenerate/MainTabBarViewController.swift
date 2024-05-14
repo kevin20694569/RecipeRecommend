@@ -42,7 +42,6 @@ class MainTabBarViewController : UIViewController {
     func tabBarLayout() {
         self.view.addSubview(bottomBarView)
         self.view.addSubview(tabBar)
-        
         bottomBarView.backgroundColor = .tintColor
         self.view.subviews.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -89,11 +88,17 @@ class MainTabBarViewController : UIViewController {
     
     func tabBarSetup() {
         tabBar.isTranslucent = false
-        tabBar.standardAppearance.configureWithTransparentBackground()
-        tabBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+        tabBar.standardAppearance.configureWithOpaqueBackground()
+        tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+       // tabBar
+    
+
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
+        
+        tabBar.backgroundColor = .tintColor
         tabBar.barTintColor = .tintColor
+        //tabBar.barTintColor = .tintColor
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let mainDishTableViewItem = UITabBarItem(title: nil, image: UIImage(systemName: "house")!.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: UIImage(systemName: "house")!.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))
@@ -126,4 +131,7 @@ class MainTabBarViewController : UIViewController {
         self.tabBar.selectedItem = tabBar.items?[index]
         
     }
+    
+    
+
 }

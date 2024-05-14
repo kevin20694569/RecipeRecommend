@@ -6,12 +6,13 @@ class IndicatorTableCell : UITableViewCell {
     
     var stackView : UIStackView! = UIStackView()
     
-    let navTitleArray : [String]! = ["輸入食材", "詳細需求", "生產食譜"]
+    let navTitleArray : [String]! = ["照片輸入食材", "確認食材", "詳細需求", "生產食譜"]
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         stackViewSetup()
         initLayout()
+        configureIndicatorViews()
     }
     
     required init?(coder: NSCoder) {
@@ -22,7 +23,22 @@ class IndicatorTableCell : UITableViewCell {
         
     }
     
-    func configure() {
+    func configure(highlightIndex : Int) {
+        stackView.arrangedSubviews.enumerated().forEach() { (index ,view) in
+            if let indicatorView = view as? IndicatorLabelView {
+                switch index {
+                case highlightIndex :
+                    indicatorView.highlight()
+                    return
+                default:
+                    break
+                }
+            }
+        }
+
+    }
+    
+    func configureIndicatorViews() {
         let count = navTitleArray.count - 1
         for i in 0...count {
             let index = CGFloat(i)
@@ -34,15 +50,11 @@ class IndicatorTableCell : UITableViewCell {
             switch i {
             case 0 :
                 indicatorView.drawLine(direction: .right)
-                indicatorView.highlight()
-            case count :
+            case navTitleArray.count - 1 :
                 indicatorView.drawLine(direction: .left)
             default:
                 break
             }
-            
-  
-
         }
     }
     

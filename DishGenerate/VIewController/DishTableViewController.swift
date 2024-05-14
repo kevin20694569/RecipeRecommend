@@ -3,7 +3,7 @@ import UIKit
 class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        let controller = InputIngredientViewController()
+        let controller = InputPhotoIngredientViewController()
         self.show(controller, sender: nil)
         return false
     }
@@ -33,6 +33,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tabBarSetup()
         registerCells()
         searchBarSetup()
+        navSetup()
         layoutSetup()
         tableViewSetup()
     }
@@ -65,6 +66,13 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     func registerCells() {
         tableView.register(DishSnapshotCell.self, forCellReuseIdentifier: "DishSnapshotCell")
+    }
+    
+    func navSetup() {
+        self.navigationItem.backBarButtonItem?.title = ""
+        self.navigationItem.backButtonTitle = ""
+        let barButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = barButtonItem
     }
     
     func layoutSetup() {

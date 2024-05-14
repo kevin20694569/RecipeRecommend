@@ -59,6 +59,9 @@ class CollectionViewTableCell : UITableViewCell, UICollectionViewDelegate, UICol
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+        NSLayoutConstraint.activate([
+            collectionView.heightAnchor.constraint(equalToConstant: collectionViewHeightConstant)
+        ])
     }
     
     func separatorSetup() {

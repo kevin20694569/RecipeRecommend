@@ -1,9 +1,9 @@
 import UIKit
-protocol IngredientAddCollectionCellDelegate : UICollectionViewDelegate {
-    func addNewCameraCollectionCell()
-}
+
 
 class AddButtonCollectionCell : UICollectionViewCell {
+    
+    
     var addButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     
@@ -12,8 +12,9 @@ class AddButtonCollectionCell : UICollectionViewCell {
         addButtonSetup()
         initLayout()
     }
-    
-    weak var ingredientAddCollectionCellDelegate : IngredientAddCollectionCellDelegate?
+
+
+    weak var ingredientAddCollectionCellDelegate : InputPhotoCollectionCellDelegate?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -26,18 +27,41 @@ class AddButtonCollectionCell : UICollectionViewCell {
         }
         NSLayoutConstraint.activate([
             addButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            addButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -bounds.height * 0.12 + 24),
             addButton.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.13),
             addButton.widthAnchor.constraint(equalTo: addButton.heightAnchor)
         ])
+        
+    }
+    
+    func configure(buttonEnable : Bool) {
+        self.addButton.isEnabled = buttonEnable
     }
     
     func addButtonSetup() {
         var config = UIButton.Configuration.filled()
-        config.background.image = UIImage(systemName: "plus.circle.fill")
+        config.background.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.tintColor, renderingMode: .alwaysOriginal)
         config.background.imageContentMode = .scaleAspectFit
         config.background.backgroundColor = .clear
         addButton.configuration  = config
+        addButton.isEnabled = false
+        addButton.configurationUpdateHandler = { sender in
+            switch sender.state {
+            case .normal:
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.addButton.configuration?.background.image = config.background.image?.withTintColor(.tintColor, renderingMode: .alwaysOriginal)
+                    sender.alpha = 1
+                })
+                
+            case .disabled :
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.addButton.configuration?.background.image = config.background.image?.withTintColor(.secondaryBackgroundColor, renderingMode: .alwaysOriginal)
+                    sender.alpha = 0.6
+                })
+            default:
+                break
+            }
+        }
         addButton.addTarget(self, action: #selector(addButtonTapped ( _ : )), for: .touchUpInside)
     }
     
