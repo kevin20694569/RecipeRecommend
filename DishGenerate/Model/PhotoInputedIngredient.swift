@@ -18,6 +18,8 @@ class PhotoInputedIngredient : Equatable {
     
     var buttonSide : Side?
     
+    var outputedIngredient : Ingredient?
+    
     init(image : UIImage) {
         self.image = image
     }

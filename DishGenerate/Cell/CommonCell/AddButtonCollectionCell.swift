@@ -68,4 +68,35 @@ class AddButtonCollectionCell : UICollectionViewCell {
     @objc func addButtonTapped( _ button : UIButton) {
         self.ingredientAddCollectionCellDelegate?.addNewCameraCollectionCell()
     }
+     
+}
+
+
+
+
+class AddTextIngredientCollectionCell : AddButtonCollectionCell {
+    
+    
+    weak var addTextIngrdientCollectionCellDelegate : AddTextIngrdientCollectionCellDelegate?
+    
+    override func addButtonTapped(_ button: UIButton) {
+        addTextIngrdientCollectionCellDelegate?.insertNewIngredient(ingredient: Ingredient(), section: .Text)
+    }
+    
+    override func initLayout() {
+        self.contentView.addSubview(addButton)
+        contentView.subviews.forEach() {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        NSLayoutConstraint.activate([
+            addButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            addButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            addButton.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9),
+            addButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8)
+        ])
+
+        
+    }
+    
+    
 }

@@ -2,7 +2,7 @@
 
 import UIKit
 
-struct Ingredient {
+struct Ingredient : Equatable {
     
     var name : String!
     
@@ -10,7 +10,7 @@ struct Ingredient {
     
     var probalyName : [String]?
     
-    static let emptyHolder = Ingredient()
+    static let emptyHolder = Ingredient(name: "高麗菜")
     
     static var examples : [Ingredient] = Array.init(repeating: emptyHolder, count: 8)
 }

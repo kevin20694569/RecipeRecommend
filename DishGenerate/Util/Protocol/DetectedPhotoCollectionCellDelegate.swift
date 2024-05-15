@@ -1,7 +1,23 @@
 import UIKit
+enum InputIngredientSection {
+    case Photo
+    case Text
+}
+protocol IngredientCellDelegate : NSObject {
+    func insertNewIngredient(ingredient : Ingredient, section : InputIngredientSection)
+    func deleteIngredient(ingredient : Ingredient, section : InputIngredientSection)
+}
 
-protocol DetectedPhotoCollectionCellDelegate : NSObject {
-    func insertNewIngredient()
-    func deleteIngredient()
+
+
+
+protocol AddTextIngrdientCollectionCellDelegate : IngredientCellDelegate {
+    
+    
+
+}
+
+protocol DetectedPhotoCollectionCellDelegate : IngredientCellDelegate {
+
     
 }

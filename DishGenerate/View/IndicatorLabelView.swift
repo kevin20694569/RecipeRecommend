@@ -121,6 +121,8 @@ class IndicatorLabelView : UIView {
         }
     }
     
+    
+    
     func labelSetup() {
         self.orderLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
         textLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote , weight: .medium)

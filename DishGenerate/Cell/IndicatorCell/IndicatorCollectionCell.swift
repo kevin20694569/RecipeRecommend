@@ -1,15 +1,11 @@
 
-
 import UIKit
 
-class IndicatorTableCell : UITableViewCell {
+class IndicatorCollectionCell : UICollectionViewCell, IndicatorCell {
     
-    var stackView : UIStackView! = UIStackView()
     
-    let navTitleArray : [String]! = ["照片輸入食材", "確認食材", "詳細需求", "生產食譜"]
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         stackViewSetup()
         initLayout()
         configureIndicatorViews()
@@ -19,6 +15,10 @@ class IndicatorTableCell : UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var stackView : UIStackView! = UIStackView()
+    
+    let navTitleArray : [String]! = ["照片輸入食材", "確認食材", "詳細需求", "生產食譜"]
+
     func indicatorViewSetup() {
         
     }
@@ -35,7 +35,6 @@ class IndicatorTableCell : UITableViewCell {
                 }
             }
         }
-
     }
     
     func configureIndicatorViews() {
@@ -82,7 +81,5 @@ class IndicatorTableCell : UITableViewCell {
         stackView.alignment = .fill
     }
     
+    
 }
-                                
-
-
