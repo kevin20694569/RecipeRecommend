@@ -45,14 +45,13 @@ class InputPhotoIngredientCollectionCell : UICollectionViewCell {
             previewLayer.frame = imageView.bounds
             imageView.layer.insertSublayer(previewLayer, at: 0)
         }
+        
     }
     
     func configure(image : UIImage?, flashIsON : Bool) {
         currentImage = image
         self.imageView.image = image
-        if currentImage != nil {
-            self.previewCameraLayer?.removeFromSuperlayer()
-        }
+        
         changeFlashImage(flashIsOn: flashIsON)
         changeClickButtonImage(beCaptureTarget: image == nil)
         

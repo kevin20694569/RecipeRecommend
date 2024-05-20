@@ -107,7 +107,7 @@ class IndicatorLabelView : UIView {
     }
     
     func indicatorCicleViewSetup() {
-        indicatorCircleView.backgroundColor = .secondaryBackgroundColor
+        indicatorCircleView.backgroundColor = .secondaryBackground
         indicatorCircleView.clipsToBounds = true
     }
     

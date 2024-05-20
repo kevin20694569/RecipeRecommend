@@ -192,19 +192,17 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             
             return cell
         }
+
         let image = images[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "InputPhotoIngredientCollectionCell", for: indexPath) as! InputPhotoIngredientCollectionCell
         cell.ingredientAddCollectionCellDelegate = self
         cell.configure(image: image, flashIsON: cameraController.flashMode == .on)
-
         if row == images.count - 1 {
             if image == nil {
                 cell.configurePreviewLayer(previewLayer: cameraController.previewLayer)
-                try? cameraControllerDisplayOn(view: cell.imageView)
             }
             cell.toolButtonRefresh(enable : true, animated : false)
         } else {
-            cell.configurePreviewLayer(previewLayer: nil)
             cell.toolButtonRefresh(enable : false, animated : false)
         }
         if row == 0 && image == nil  {
@@ -216,11 +214,9 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
 
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row != images.count - 1 {
-
-            
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == images.count - 1 {
+            cameraController.previewLayer?.removeFromSuperlayer()
         }
     }
     

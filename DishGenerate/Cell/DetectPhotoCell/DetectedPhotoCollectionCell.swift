@@ -43,13 +43,13 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         self.buttonSide = inputedIngredient.buttonSide
         if inputedIngredient.buttonSide == .left {
             leftButton.configuration?.baseBackgroundColor = .orangeTheme
-            rightButton.configuration?.baseBackgroundColor = .grayTheme
+            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
         } else if inputedIngredient.buttonSide == .right {
             rightButton.configuration?.baseBackgroundColor = .orangeTheme
-            leftButton.configuration?.baseBackgroundColor = .grayTheme
+            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
         } else {
-            rightButton.configuration?.baseBackgroundColor = .grayTheme
-            leftButton.configuration?.baseBackgroundColor = .grayTheme
+            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
+            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
         }
 
     }
@@ -99,7 +99,7 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         let leftAttString = AttributedString("LEFT", attributes: attributes)
         leftConfig.attributedTitle = leftAttString
         leftConfig.contentInsets = insets
-        leftConfig.baseBackgroundColor = .grayTheme
+        leftConfig.baseBackgroundColor = .secondaryBackground
         
         leftButton.configuration = leftConfig
         leftButton.addTarget(self, action: #selector(selectButtonTapped ( _ :)), for: .touchUpInside)
@@ -108,7 +108,7 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         let rigthAttString = AttributedString("RIGHT", attributes: attributes)
         rightConfig.contentInsets = insets
         rightConfig.attributedTitle = rigthAttString
-        rightConfig.baseBackgroundColor = .grayTheme
+        rightConfig.baseBackgroundColor = .secondaryBackground
         rightButton.configuration = rightConfig
         
         
@@ -143,7 +143,7 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         }
         if side == .left && self.buttonSide != .left {
             leftButton.configuration?.baseBackgroundColor = .orangeTheme
-            rightButton.configuration?.baseBackgroundColor = .grayTheme
+            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
             photoInputedIngredient.buttonSide = side
            
             if let title = leftButton.configuration?.title {
@@ -154,7 +154,7 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
             
         } else if side == .right && self.buttonSide != .right {
             rightButton.configuration?.baseBackgroundColor = .orangeTheme
-            leftButton.configuration?.baseBackgroundColor = .grayTheme
+            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
             photoInputedIngredient.buttonSide = side
             if let title = rightButton.configuration?.title {
                 let outputedIngredient = Ingredient(name: title)
@@ -162,8 +162,8 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
                 delegate?.insertNewIngredient(ingredient: outputedIngredient, section: .Photo)
             }
         } else {
-            rightButton.configuration?.baseBackgroundColor = .grayTheme
-            leftButton.configuration?.baseBackgroundColor = .grayTheme
+            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
+            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
 
             if let currentOutputedIngredient = currentOutputedIngredient {
                 delegate?.deleteIngredient(ingredient: currentOutputedIngredient, section: .Photo)

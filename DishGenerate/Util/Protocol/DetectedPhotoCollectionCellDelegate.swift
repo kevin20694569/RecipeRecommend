@@ -11,7 +11,7 @@ protocol IngredientCellDelegate : NSObject {
 
 
 
-protocol AddTextIngrdientCollectionCellDelegate : IngredientCellDelegate {
+protocol AddTextIngrdientCellDelegate : IngredientCellDelegate {
     
     
 

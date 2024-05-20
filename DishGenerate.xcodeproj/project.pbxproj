@@ -55,6 +55,15 @@
 		23BA50C02BF382D600E3B85A /* PhotoInputedIngredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BA50BF2BF382D600E3B85A /* PhotoInputedIngredient.swift */; };
 		23BA50C22BF391B000E3B85A /* DetectedPhotoCollectionCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BA50C12BF391B000E3B85A /* DetectedPhotoCollectionCellDelegate.swift */; };
 		23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BA50C32BF391C200E3B85A /* DetectedPhotoCollectionCell.swift */; };
+		23C2100F2BF88CEE008F74D0 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C2100E2BF88CEE008F74D0 /* TextField.swift */; };
+		23C210122BF8934B008F74D0 /* QuantityCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C210112BF8934B008F74D0 /* QuantityCollectionCell.swift */; };
+		23C210142BF89E9E008F74D0 /* TitleLabelSideCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C210132BF89E9E008F74D0 /* TitleLabelSideCollectionCell.swift */; };
+		23C210162BF8AF77008F74D0 /* SliderCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C210152BF8AF77008F74D0 /* SliderCollectionCell.swift */; };
+		23C210182BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C210172BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift */; };
+		23C2101C2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C2101B2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift */; };
+		23C2101E2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C2101D2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift */; };
+		23C210202BFB28E6008F74D0 /* Equipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C2101F2BFB28E6008F74D0 /* Equipment.swift */; };
+		23C210222BFB2A96008F74D0 /* Cuisine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C210212BFB2A96008F74D0 /* Cuisine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +136,15 @@
 		23BA50BF2BF382D600E3B85A /* PhotoInputedIngredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoInputedIngredient.swift; sourceTree = "<group>"; };
 		23BA50C12BF391B000E3B85A /* DetectedPhotoCollectionCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectedPhotoCollectionCellDelegate.swift; sourceTree = "<group>"; };
 		23BA50C32BF391C200E3B85A /* DetectedPhotoCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectedPhotoCollectionCell.swift; sourceTree = "<group>"; };
+		23C2100E2BF88CEE008F74D0 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
+		23C210112BF8934B008F74D0 /* QuantityCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityCollectionCell.swift; sourceTree = "<group>"; };
+		23C210132BF89E9E008F74D0 /* TitleLabelSideCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleLabelSideCollectionCell.swift; sourceTree = "<group>"; };
+		23C210152BF8AF77008F74D0 /* SliderCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCollectionCell.swift; sourceTree = "<group>"; };
+		23C210172BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceHistoryCollectionCell.swift; sourceTree = "<group>"; };
+		23C2101B2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ButtonSideCollectionCell.swift; path = ../../../../../Downloads/ButtonSideCollectionCell.swift; sourceTree = "<group>"; };
+		23C2101D2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldSideCollectionCell.swift; sourceTree = "<group>"; };
+		23C2101F2BFB28E6008F74D0 /* Equipment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Equipment.swift; sourceTree = "<group>"; };
+		23C210212BFB2A96008F74D0 /* Cuisine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cuisine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +242,8 @@
 				234BF5432BDEA7C60012CF6A /* Dish.swift */,
 				231341992BEB4A1E0015DFA6 /* Ingredient.swift */,
 				23BA50BF2BF382D600E3B85A /* PhotoInputedIngredient.swift */,
+				23C2101F2BFB28E6008F74D0 /* Equipment.swift */,
+				23C210212BFB2A96008F74D0 /* Cuisine.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -231,6 +251,8 @@
 		234BF5472BDEAA1E0012CF6A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				23C210192BF9E9A5008F74D0 /* IngredientTextCell */,
+				23C210102BF892EF008F74D0 /* DishGeneratOptionCell */,
 				234BF5452BDEAA1A0012CF6A /* DishTableCell.swift */,
 				23B5011E2BF49BFC00EAB2D7 /* CommonCell */,
 				23BA50B72BF36A7D00E3B85A /* InputPhotoIngredientCell */,
@@ -249,6 +271,7 @@
 				234BF54F2BDEAF250012CF6A /* UIFont.swift */,
 				23BA50B12BF3160500E3B85A /* View.swift */,
 				23BA50B32BF3186200E3B85A /* Layer.swift */,
+				23C2100E2BF88CEE008F74D0 /* TextField.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -333,6 +356,8 @@
 				2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */,
 				231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */,
 				23B501152BF4873900EAB2D7 /* CollectionViewCollectionCell.swift */,
+				23C2101B2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift */,
+				23C2101D2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift */,
 			);
 			path = CommonCell;
 			sourceTree = "<group>";
@@ -362,6 +387,24 @@
 				23BA50C32BF391C200E3B85A /* DetectedPhotoCollectionCell.swift */,
 			);
 			path = DetectPhotoCell;
+			sourceTree = "<group>";
+		};
+		23C210102BF892EF008F74D0 /* DishGeneratOptionCell */ = {
+			isa = PBXGroup;
+			children = (
+				23C210112BF8934B008F74D0 /* QuantityCollectionCell.swift */,
+				23C210132BF89E9E008F74D0 /* TitleLabelSideCollectionCell.swift */,
+				23C210152BF8AF77008F74D0 /* SliderCollectionCell.swift */,
+				23C210172BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift */,
+			);
+			path = DishGeneratOptionCell;
+			sourceTree = "<group>";
+		};
+		23C210192BF9E9A5008F74D0 /* IngredientTextCell */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = IngredientTextCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -501,6 +544,7 @@
 				234BF51A2BDEA4120012CF6A /* DishGenerate.xcdatamodeld in Sources */,
 				2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */,
 				23B501242BF4E5AA00EAB2D7 /* TapGestureHelper.swift in Sources */,
+				23C2101C2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift in Sources */,
 				234BF55A2BDEB9B00012CF6A /* ZoomAnimatedButton.swift in Sources */,
 				23BA50BE2BF36C0900E3B85A /* DetectedPhotoTableCell.swift in Sources */,
 				234BF5442BDEA7C60012CF6A /* Dish.swift in Sources */,
@@ -510,8 +554,11 @@
 				23BA50B62BF3660B00E3B85A /* CorrectIngredientViewController.swift in Sources */,
 				234BF54A2BDEAD170012CF6A /* Color.swift in Sources */,
 				231341A52BEB67B70015DFA6 /* InputPhotoIngredientTableCell.swift in Sources */,
+				23C210142BF89E9E008F74D0 /* TitleLabelSideCollectionCell.swift in Sources */,
+				23C2100F2BF88CEE008F74D0 /* TextField.swift in Sources */,
 				234BF5462BDEAA1A0012CF6A /* DishTableCell.swift in Sources */,
 				234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */,
+				23C210122BF8934B008F74D0 /* QuantityCollectionCell.swift in Sources */,
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				23B501282BF4F62E00EAB2D7 /* DishGenerateOptionViewController.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
@@ -520,11 +567,14 @@
 				234BF5572BDEB8E80012CF6A /* CellProtocol.swift in Sources */,
 				23B501222BF4A29D00EAB2D7 /* CollectionViewAlignFlowLayout.swift in Sources */,
 				2313419E2BEB4C120015DFA6 /* InputPhotoIngredientCollectionCell.swift in Sources */,
+				23C210162BF8AF77008F74D0 /* SliderCollectionCell.swift in Sources */,
 				231341A72BEB69950015DFA6 /* CameraController.swift in Sources */,
 				23B5011D2BF497AE00EAB2D7 /* LabelHeaderView.swift in Sources */,
 				23BA50BA2BF36AD300E3B85A /* CameraControllerDelegate.swift in Sources */,
 				231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */,
+				23C210202BFB28E6008F74D0 /* Equipment.swift in Sources */,
 				234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */,
+				23C210222BFB2A96008F74D0 /* Cuisine.swift in Sources */,
 				23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */,
 				23B501182BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift in Sources */,
 				23BA50C22BF391B000E3B85A /* DetectedPhotoCollectionCellDelegate.swift in Sources */,
@@ -533,6 +583,8 @@
 				234BF55C2BDEC65E0012CF6A /* MainTabBarViewController.swift in Sources */,
 				231341AD2BEBB2900015DFA6 /* IndicatorLabelView.swift in Sources */,
 				23B501262BF4E72400EAB2D7 /* KeyBoardController.swift in Sources */,
+				23C210182BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift in Sources */,
+				23C2101E2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift in Sources */,
 				23BA50B22BF3160500E3B85A /* View.swift in Sources */,
 				23BA50B42BF3186200E3B85A /* Layer.swift in Sources */,
 				2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */,

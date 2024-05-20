@@ -47,7 +47,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         let config = UIImage.SymbolConfiguration(font: font)
 
-        self.tabBarItem = UITabBarItem(title: nil, image:UIImage(systemName: "house")?.withConfiguration(config), selectedImage: UIImage(systemName: "house")?.withConfiguration(config).withTintColor(.accent, renderingMode: .alwaysOriginal))
+        self.tabBarItem = UITabBarItem(title: nil, image:UIImage(systemName: "house")?.withConfiguration(config), selectedImage: UIImage(systemName: "house")?.withConfiguration(config).withTintColor(.themeColor, renderingMode: .alwaysOriginal))
     }
     
     

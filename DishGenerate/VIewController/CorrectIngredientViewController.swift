@@ -2,6 +2,9 @@ import UIKit
 
 class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout {
     
+
+    
+    
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     lazy var keyboardController : KeyBoardController! = KeyBoardController(mainView: self.view)
@@ -25,7 +28,15 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     }
     
     func showDishGeneratedOptionViewController() {
-        
+        var ingredients : [Ingredient] = self.photoOutputedIngredients.filter { ingredient in
+            return ingredient.name != nil
+        }
+        let textOuputed = self.textInputIngredients.filter { ingredient in
+            return ingredient.name != nil
+        }
+        ingredients += textOuputed
+        let controller = DishGeneratedOptionViewController(ingredients: ingredients)
+        show(controller, sender: nil)
     }
     
     init(photoInputedIngredients : [PhotoInputedIngredient]) {
@@ -70,17 +81,30 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationItem.backBarButtonItem?.title = ""
+        self.navigationItem.backButtonTitle = ""
+        let barButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = barButtonItem
+    
         navigationItem.setRightBarButton(self.rightButtonItem, animated: false)
+    }
+    
+    func navItemSetup() {
+        self.navigationItem.backButtonTitle = ""
     }
     
     
     func collectionViewSetup() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.delaysContentTouches = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 32, right: 0)
+
         let flow = UICollectionViewFlowLayout()
         collectionView.collectionViewLayout = flow
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
+    
+        
     }
     
     func registerCell() {
@@ -95,6 +119,8 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     }
     func registerCollectionHeaderView() {
         collectionView.register(LabelHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "LabelHeaderView")
+        
+        collectionView.register(AddButtonHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AddButtonHeaderView")
     }
     
 
@@ -102,15 +128,10 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 
-
-    
-
-    
 }
 
-extension CorrectIngredientViewController : DetectedPhotoCollectionCellDelegate, AddTextIngrdientCollectionCellDelegate {
+extension CorrectIngredientViewController : DetectedPhotoCollectionCellDelegate, AddTextIngrdientCellDelegate, AddButtonHeaderViewDelegate {
     func insertNewIngredient(ingredient: Ingredient, section: InputIngredientSection) {
         if section == .Photo {
             photoOutputedIngredients.append(ingredient)
@@ -146,13 +167,25 @@ extension CorrectIngredientViewController : DetectedPhotoCollectionCellDelegate,
 extension CorrectIngredientViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section <= 1 {
+        if section == 0 {
             return 1
         }
-        if section == 2 {
-            return photoOutputedIngredients.count
+        
+        if section == 1 {
+            if photoInputedIngredients.count > 0 {
+                return 1
+            } else {
+                return 0
+            }
         }
-        return self.textInputIngredients.count + 1
+        if section == 2 {
+            if photoInputedIngredients.count > 0 {
+                return photoOutputedIngredients.count
+            } else {
+                return 0
+            }
+        }
+        return self.textInputIngredients.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -177,10 +210,20 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         }
         
         if section == 2 {
-            let ingredient = self.photoOutputedIngredients[indexPath.row]
+            let row = indexPath.row
+            let ingredient = self.photoOutputedIngredients[row]
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "IngredientTitleLabelCollectionCell", for: indexPath) as! IngredientTitleLabelCollectionCell
+            switch row % 3 {
+            case 0 :
+                cell.configure(ingredient: ingredient, backgroundAnchorSide : .trailing)
+                
+            case 1 :
+                cell.configure(ingredient: ingredient, backgroundAnchorSide : .center)
+            default :
+                cell.configure(ingredient: ingredient, backgroundAnchorSide : .leading)
+                
+            }
             
-            cell.configure(ingredient: ingredient)
             return cell
         }
         
@@ -190,7 +233,17 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 let ingredient = self.textInputIngredients[row]
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "IngredientTextFieldCollectionCell", for: indexPath) as! IngredientTextFieldCollectionCell
                 cell.textfieldDelegate = self
-                cell.configure(ingredient: ingredient)
+                switch row % 3 {
+                case 0 :
+                    cell.configure(ingredient: ingredient, backgroundAnchorSide : .trailing)
+                    
+                case 1 :
+                    cell.configure(ingredient: ingredient, backgroundAnchorSide : .center)
+                default :
+                    cell.configure(ingredient: ingredient, backgroundAnchorSide : .leading)
+                    
+                }
+
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddTextIngredientCollectionCell", for: indexPath) as! AddTextIngredientCollectionCell
@@ -203,21 +256,23 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        if section >= 2 {
-            return ingredientCellSpacing
-        }
         return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section >= 2 {
-            return ingredientCellSpacing
-        }
-        return 0
+        return self.ingredientCellSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if section >= 2 {
+        
+        if section == 2 {
+            if photoInputedIngredients.count > 0 {
+                return CGSize(width: view.bounds.width, height: view.bounds.height * 0.08)
+            }
+            
+        }
+        if section == 3 {
+            
             return CGSize(width: view.bounds.width, height: view.bounds.height * 0.08)
         }
         return CGSize(width: 0, height: 0)
@@ -233,18 +288,58 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
             return CGSize(width: view.bounds.width, height: screenBounds.height * 0.38)
         }
         let size = UIFont.preferredFont(forTextStyle: .title3)
-        return CGSize(width: (view.bounds.width - 3 * self.ingredientCellSpacing) / 3, height: size.lineHeight + 16)
+        let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
+        let verInset : CGFloat = 8
+        return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        if indexPath.section == 2 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
-            headerView.configure(title: "照片輸入食材")
+        if photoInputedIngredients.count > 0 {
+            if indexPath.section == 2 {
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
+                headerView.configure(title: "照片輸入食材")
+    
+                return headerView
+            }
+        }
+        if indexPath.section == 3 {
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AddButtonHeaderView", for: indexPath) as! AddButtonHeaderView
+            headerView.addTextIngrdientCellDelegate = self
+            headerView.configure(title: "手動輸入食材", subTitle: nil, type: .ingredient)
             return headerView
         }
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
-        headerView.configure(title: "手動輸入食材")
-        return headerView
+        
+        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
+
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if section == 2 {
+            if photoInputedIngredients.count < 1 {
+
+                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
+        }
+        
+        if section == 3 {
+            if photoOutputedIngredients.count < 1 {
+ 
+                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
+        }
+        
+        
+        if photoInputedIngredients.count < 1 && photoOutputedIngredients.count < 1 {
+            if section == 0 {
+                return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+            }
+            if section == 3 {
+                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
+        }
+        
+        
+        return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }
 }
 

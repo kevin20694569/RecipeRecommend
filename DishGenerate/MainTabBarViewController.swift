@@ -135,3 +135,8 @@ class MainTabBarViewController : UIViewController {
     
 
 }
+
+#Preview {
+    let vc = MainTabBarViewController()
+    return vc
+}
