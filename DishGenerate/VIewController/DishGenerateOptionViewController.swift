@@ -101,7 +101,11 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     }
     
     func showCheckViewController() {
-        self.navigationController?.popToRootViewController(animated:    true)
+        if let nav = navigationController?.viewControllers.first as? DishTableViewController {
+            nav.startGeneratingDishes()
+        }
+        self.navigationController?.popToRootViewController(animated: true)
+
     }
     
     func registerCell() {

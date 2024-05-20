@@ -42,12 +42,13 @@ class MainTabBarViewController : UIViewController {
     func tabBarLayout() {
         self.view.addSubview(bottomBarView)
         self.view.addSubview(tabBar)
-        bottomBarView.backgroundColor = .tintColor
+        //bottomBarView.backgroundColor = .tintColor
         self.view.subviews.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
       
         NSLayoutConstraint.activate([
+            
             bottomBarView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             bottomBarView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             bottomBarView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
@@ -55,14 +56,16 @@ class MainTabBarViewController : UIViewController {
         ])
         self.view.layoutIfNeeded()
         NSLayoutConstraint.activate([
-            bottomBarView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -tabBar.bounds.height),
+
             tabBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tabBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-            tabBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 40)
+            tabBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+            
+            bottomBarView.topAnchor.constraint(equalTo: tabBar.topAnchor)
         ])
         self.view.layoutIfNeeded()
         MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
-
+        bottomBarView.backgroundColor = .themeColor
         
     
     }
@@ -70,6 +73,7 @@ class MainTabBarViewController : UIViewController {
     func layoutSetup() {
         self.view.addSubview(mainNavViewController.view)
         self.view.addSubview(bottomBarView)
+        
         self.view.addSubview(tabBar)
         
   
@@ -92,13 +96,12 @@ class MainTabBarViewController : UIViewController {
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
        // tabBar
     
-
+       // tabBar.
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
+
+        tabBar.barTintColor = .themeColor
         
-        tabBar.backgroundColor = .tintColor
-        tabBar.barTintColor = .tintColor
-        //tabBar.barTintColor = .tintColor
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let mainDishTableViewItem = UITabBarItem(title: nil, image: UIImage(systemName: "house")!.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: UIImage(systemName: "house")!.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))

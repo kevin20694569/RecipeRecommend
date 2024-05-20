@@ -3,16 +3,26 @@ import UIKit
 class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        return true
+    }
+    
+    func showInputPhotoIngredientViewController() {
         let controller = InputPhotoIngredientViewController()
         self.show(controller, sender: nil)
-        return false
+        navigationController?.isNavigationBarHidden = false
     }
-
     
+    func showGeneratedDishesDisplayController() {
+        let controller = GeneratedDishesDisplayController()
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
     
     var dishes : [Dish] = Dish.examples
     
     var searchBar : UISearchBar! = UISearchBar()
+    
+    var generateButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var previousOffsetY : CGFloat! = 0
 
@@ -30,6 +40,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        generateButtonSetup()
         tabBarSetup()
         registerCells()
         searchBarSetup()
@@ -54,6 +65,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+        navigationController?.isNavigationBarHidden = true
     }
     
     func tableViewSetup() {
@@ -78,24 +90,73 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func layoutSetup() {
         self.view.backgroundColor = .systemBackground
         self.view.addSubview(searchBar)
+        self.view.addSubview(generateButton)
         self.view.addSubview(tableView)
-
         self.view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         searchBarAnchorConstaint = searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
         NSLayoutConstraint.activate([
+            
+           
+            
             searchBarAnchorConstaint,
-            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            
+            generateButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor),
+            generateButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12),
+            generateButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
             
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.bottomBarFrame.height),
-            
+           
+
         ])
+
     }
+    
+    func generateButtonSetup() {
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "menucard")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
+        generateButton.configuration = config
+        generateButton.clipsToBounds = true
+        generateButton.layer.cornerRadius = 8
+        generateButton.addTarget(self, action: #selector(generateButtonTapped ( _ : )), for: .touchUpInside)
+    }
+    
+    func startGeneratingDishes() {
+        generateButton.configuration?.image = UIImage(systemName: "arrow.down.circle.dotted")
+        generateButton.configuration?.baseBackgroundColor = .orangeTheme
+        let imageView = generateButton.imageView
+        imageView?.translatesAutoresizingMaskIntoConstraints = true
+        let rotation = CABasicAnimation(keyPath: "transform.rotation")
+        rotation.fromValue = 0
+        rotation.toValue = CGFloat.pi * 2
+        rotation.duration = 1
+        rotation.repeatCount = Float.infinity
+        
+        imageView?.layer.add(rotation, forKey: "rotate")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+            imageView?.layer.removeAllAnimations()
+            self.generateButton.configuration?.image = UIImage(systemName: "menucard")
+            self.generateButton.configuration?.baseBackgroundColor = .themeColor
+        })
+
+        
+    }
+    
+    @objc func generateButtonTapped( _ sender : UIButton) {
+        showGeneratedDishesDisplayController()
+      //  showInputPhotoIngredientViewController()
+        
+    }
+    
+
     
     func searchBarSetup() {
         searchBar.searchBarStyle = .minimal
@@ -114,15 +175,27 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
        
         if scrollView.contentOffset.y <= 0 {
             UIView.animate(withDuration: 0.1, animations: {
-                self.searchBarAnchorConstaint.constant = 0
+          //      self.searchBarAnchorConstaint.constant = 0
             })
             
             return
         }
+        var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
+        
+        if let navigationController = navigationController,
+            let navBarFrame = navigationController.navigationBar.superview?.convert(navigationController.navigationBar.frame, to: self.view) {
+            frame = navBarFrame
+        }
+    
         if diffY < 0 {
             newConstant = min( 0  ,newConstant)
         } else if diffY > 0 {
-            newConstant = max( -self.searchBar.bounds.height + 20 ,newConstant)
+            newConstant = max( -frame.maxY ,newConstant)
+        }
+        let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
+
+        [searchBar, generateButton].forEach( ) {
+            $0.layer.opacity = persent
         }
         searchBarAnchorConstaint.constant = newConstant
         previousOffsetY = scrollView.contentOffset.y

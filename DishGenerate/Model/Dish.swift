@@ -13,7 +13,7 @@ class Dish {
     var costTime : String!
     var complexity : String!
     var image_ID : String!
-    var isGenerateddetail : Bool! = false
+    var isGeneratedDetail : Bool! = false
     var image_URL : URL?
     var image : UIImage?
     
@@ -31,15 +31,15 @@ class Dish {
         self.costTime = costTime
         self.complexity = complexity
         self.image_ID = image_ID
-        self.isGenerateddetail = isGenerateddetail
+        self.isGeneratedDetail = isGenerateddetail
         self.image = image
     }
     
     
     static var examples : [Dish] = {
         return (1...10).compactMap { index in
-            let indexString = String(index)
-            let dish = Dish(id: indexString, name: "番茄義大利麵", cuisine: indexString, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: indexString, costTime: "20分鐘", complexity: indexString, image_ID: indexString, isGenerateddetail: false, image: UIImage(systemName: "birthday.cake.fill")!)
+            let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
+            let dish = Dish(id: indexString, name: "番茄義大利麵", cuisine: indexString, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: indexString, costTime: "20分鐘", complexity: "困難", image_ID: indexString, isGenerateddetail: false, image: UIImage(systemName: "birthday.cake.fill")!)
             return dish
         }
     }()
