@@ -2,10 +2,23 @@ import UIKit
 
 
 class TitleLabelSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAnchorSideCell {
+    func editModeToggleTo(enable: Bool) {
+        if enable {
+            UIView.animate(withDuration: 0.2) {
+                self.background.backgroundColor = .systemRed
+            }
+        } else {
+            UIView.animate(withDuration: 0.2) {
+                self.background.backgroundColor = .themeColor
+            }
+        }
+    }
+    
     
     var background : UIView! = UIView()
     
     var titleLabel : UILabel! = UILabel()
+    
     
     var anchorSide : HorizontalAnchorSide! = .center
     

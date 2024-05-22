@@ -13,7 +13,7 @@ class AddButtonCollectionCell : UICollectionViewCell {
     }
 
 
-    weak var ingredientAddCollectionCellDelegate : InputPhotoCollectionCellDelegate?
+    weak var inputPhotoCollectionCellDelegate : InputPhotoCollectionCellDelegate?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -65,7 +65,7 @@ class AddButtonCollectionCell : UICollectionViewCell {
     }
     
     @objc func addButtonTapped( _ button : UIButton) {
-        self.ingredientAddCollectionCellDelegate?.addNewCameraCollectionCell()
+        self.inputPhotoCollectionCellDelegate?.addNewCameraCollectionCell()
     }
      
 }
@@ -73,10 +73,10 @@ class AddButtonCollectionCell : UICollectionViewCell {
 class AddTextIngredientCollectionCell : AddButtonCollectionCell {
     
     
-    weak var addTextIngrdientCollectionCellDelegate : AddTextIngrdientCellDelegate?
+    weak var ingredientCellDelegate : IngredientCellDelegate?
     
     override func addButtonTapped(_ button: UIButton) {
-        addTextIngrdientCollectionCellDelegate?.insertNewIngredient(ingredient: Ingredient(), section: .Text)
+        ingredientCellDelegate?.insertNewIngredient(ingredient: Ingredient(), section: .Text)
     }
     
     override func initLayout() {

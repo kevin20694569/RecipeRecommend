@@ -73,20 +73,14 @@ extension InputPhotoIngredientCollectionCell {
         
         contentView.addSubview(cameraToggleStackView)
         contentView.addSubview(imageView)
-       // contentView.addSubview(toolButtonsStackView)
         contentView.addSubview(clickButton)
         contentView.addSubview(toggleFlashButton)
         contentView.addSubview(deleteSelfButton)
-        //contentView.addSubview(clickButton)
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
         NSLayoutConstraint.activate([
-            /*cameraToggleStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            cameraToggleStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            cameraToggleStackView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor, multiplier: 0.1),*/
-            
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: mainViewHorConstant),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -mainViewHorConstant),
@@ -94,12 +88,8 @@ extension InputPhotoIngredientCollectionCell {
             
             deleteSelfButton.centerXAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -6),
             deleteSelfButton.centerYAnchor.constraint(equalTo: imageView.topAnchor, constant: 6),
-            deleteSelfButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.13),
+            deleteSelfButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.15),
             deleteSelfButton.heightAnchor.constraint(equalTo: deleteSelfButton.widthAnchor),
-          /* toolButtonsStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12),
-            toolButtonsStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor , constant: -12),
-            toolButtonsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            toolButtonsStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),*/
 
             
             clickButton.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12),
@@ -160,8 +150,8 @@ extension InputPhotoIngredientCollectionCell {
         var deleteConfig = UIButton.Configuration.filled()
         deleteConfig.baseBackgroundColor = .systemRed
         deleteConfig.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8)
-        deleteConfig.image = UIImage(systemName: "xmark")?.withTintColor( .label, renderingMode: .alwaysOriginal)
-        deleteConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium))
+        deleteConfig.image = UIImage(systemName: "xmark")?.withTintColor( .white, renderingMode: .alwaysOriginal)
+        deleteConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .bold))
         deleteSelfButton.configuration = deleteConfig
         deleteSelfButton.addTarget(self, action: #selector(deleteButtonTapped ( _  : )), for: .touchUpInside)
         deleteSelfButton.clipsToBounds = true

@@ -11,6 +11,16 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
     var leftButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     var rightButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
+    var deSelectAttributed = AttributeContainer([
+        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular),
+        .foregroundColor : UIColor.black
+    ])
+    
+    var selectAttributed = AttributeContainer([
+        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium),
+        .foregroundColor : UIColor.white
+    ])
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         labelSetup()
@@ -58,10 +68,10 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
     
     func buttonSetup() {
         var leftConfig = UIButton.Configuration.filled()
-        leftConfig.title = "否"
+        leftConfig.attributedTitle = AttributedString("否", attributes: selectAttributed)
         leftButton.configuration = leftConfig
         var rightConfig = UIButton.Configuration.filled()
-        rightConfig.title = "是"
+        rightConfig.attributedTitle = AttributedString("是", attributes: deSelectAttributed   )
         rightButton.configuration = rightConfig
         
         
@@ -74,13 +84,14 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
         let highlightButton = enable ? rightButton : leftButton
         let denyButton = highlightButton == rightButton ? leftButton : rightButton
         
-        highlightButton?.configuration?.attributedTitle?.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium )
-        highlightButton?.configuration?.background.backgroundColor = .themeColor
-        highlightButton?.configuration?.baseForegroundColor = .backgroundPrimary
-
-        denyButton?.configuration?.background.backgroundColor = .thirdaryBackground
-        denyButton?.configuration?.baseForegroundColor = .primaryLabel
-        denyButton?.configuration?.attributedTitle?.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular )
+        if let title = highlightButton?.configuration?.title {
+            highlightButton?.configuration?.attributedTitle =  AttributedString(title, attributes: selectAttributed )
+            highlightButton?.configuration?.baseBackgroundColor = .themeColor
+        }
+        if let title = denyButton?.configuration?.title {
+            denyButton?.configuration?.attributedTitle =  AttributedString(title, attributes: deSelectAttributed )
+            denyButton?.configuration?.baseBackgroundColor = .thirdaryBackground
+        }
     }
     
     @objc func leftButtonTapped(_ button : UIButton) {

@@ -81,9 +81,7 @@ class SubLabelTitleLabelHeaderView : LabelHeaderView {
 
 
 
-protocol AddButtonHeaderViewDelegate : AddTextIngrdientCellDelegate {
 
-}
 
 enum AddButtonHeaderViewType {
     case ingredient, equipment, cuisine
@@ -94,11 +92,13 @@ enum AddButtonHeaderViewType {
 class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     var addButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
-    weak var addTextIngrdientCellDelegate : AddTextIngrdientCellDelegate?
+    weak var ingredientAddButtonHeaderViewDelegate : IngredientAddButtonHeaderViewDelegate?
     
-    weak var generateOptionCellDelegate : GenerateOptionCellDelegate?
+    weak var optionGeneratedAddButtonHeaderViewDelegate : OptionGeneratedAddButtonHeaderViewDelegate?
     
     var type : AddButtonHeaderViewType! = .equipment
+    
+    var editButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     override func initLayout() {
         super.initLayout()
@@ -112,11 +112,15 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     
     func addButtonLayout() {
         addSubview(addButton)
+        addSubview(editButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        
+        editButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             addButton.leadingAnchor.constraint(equalTo: subTextLabel.trailingAnchor),
             addButton.centerYAnchor.constraint(equalTo: subTextLabel.centerYAnchor),
+            
+            editButton.centerYAnchor.constraint(equalTo: addButton.centerYAnchor),
+            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
         ])
     }
     
@@ -134,8 +138,7 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
         config.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.tintColor, renderingMode: .alwaysOriginal)
         config.baseForegroundColor = .themeColor
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
-        config.background.imageContentMode = .scaleAspectFit
-        config.background.backgroundColor = .clear
+        config.baseBackgroundColor = .clear
         addButton.configuration  = config
         addButton.isEnabled = true
         addButton.configurationUpdateHandler = { sender in
@@ -155,23 +158,36 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
                 break
             }
         }
-        addButton.addTarget(self, action: #selector(buttonTapped ( _ : )), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(addButtonTapped ( _ : )), for: .touchUpInside)
+        
+        
+        var editConfig = UIButton.Configuration.filled()
+        editConfig.image = UIImage(systemName: "square.and.pencil")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
+        editConfig.baseBackgroundColor = .clear
+        editConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
+        editButton.configuration  = editConfig
+        editButton.addTarget(self, action: #selector(editButtonTapped ( _ : )), for: .touchUpInside)
         
     }
     
-    @objc func buttonTapped( _ button : UIButton) {
+    @objc func addButtonTapped( _ button : UIButton) {
         switch type {
         case .ingredient :
-            addTextIngrdientCellDelegate?.insertNewIngredient(ingredient: Ingredient(),section: .Text)
+            ingredientAddButtonHeaderViewDelegate?.insertNewIngredient(ingredient: Ingredient(),section: .Text)
         case .equipment :
-            generateOptionCellDelegate?.addEquipmentCell(equipment: Equipment())
+            optionGeneratedAddButtonHeaderViewDelegate?.addEquipmentCell(equipment: Equipment())
         case .cuisine :
-            generateOptionCellDelegate?.addCuisineCell(cuisine: Cuisine())
+            optionGeneratedAddButtonHeaderViewDelegate?.addCuisineCell(cuisine: Cuisine())
 
         case .none:
             break
         }
         
         
+    }
+    
+    @objc func editButtonTapped( _ button : UIButton) {
+        ingredientAddButtonHeaderViewDelegate?.editModeToggleTo(type: self.type)
+        optionGeneratedAddButtonHeaderViewDelegate?.editModeToggleTo(type: self.type)
     }
 }

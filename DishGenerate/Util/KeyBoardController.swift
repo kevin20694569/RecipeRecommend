@@ -2,13 +2,17 @@
 import UIKit
 
 class KeyBoardController : NSObject {
+    
+   
     var view : UIView!
     
-    init(mainView : UIView) {
-        self.view = mainView
+    init(view : UIView) {
+        self.view = view
     }
-    @objc func keyboardShown(notification : Notification, activeTextField : UITextField?, activeTextView : UITextView? ) {
-        
+    
+
+    @objc func keyboardShown(notification : Notification, activeTextField : UITextField?, activeTextView : UITextView?) {
+
         let info: NSDictionary = notification.userInfo! as NSDictionary
         //取得鍵盤尺寸
         let keyboardSize = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue

@@ -16,6 +16,10 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     
     weak var delegate : DetectedPhotoCollectionCellDelegate?
     
+    var attributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title1,
+                                                                                                  weight: .medium),
+                                                              .foregroundColor : UIColor.white])
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         buttonSetup()
@@ -41,16 +45,34 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         self.currentOutputedIngredient = outputedIngredient
         imageView.image = inputedIngredient.image
         self.buttonSide = inputedIngredient.buttonSide
-        if inputedIngredient.buttonSide == .left {
+        configureButtonTitle(leftTitle: inputedIngredient.leftPropablyTitle, rightTitle: inputedIngredient.rightPropablyTitle, selectSide: inputedIngredient.buttonSide)
+    }
+    
+    func configureButtonTitle(leftTitle : String?, rightTitle : String?, selectSide : Side?) {
+        
+        if let leftTitle = leftTitle {
+            leftButton.configuration?.showsActivityIndicator = false
+            let leftAttString = AttributedString(leftTitle, attributes: attributes)
+            leftButton.configuration?.attributedTitle = leftAttString
+            
+        }
+        if let rightTitle = rightTitle {
+            rightButton.configuration?.showsActivityIndicator = false
+            let rightAttString = AttributedString(rightTitle, attributes: attributes)
+            rightButton.configuration?.attributedTitle = rightAttString
+        }
+
+        if selectSide == .left {
             leftButton.configuration?.baseBackgroundColor = .orangeTheme
             rightButton.configuration?.baseBackgroundColor = .secondaryBackground
-        } else if inputedIngredient.buttonSide == .right {
+        } else if selectSide == .right {
             rightButton.configuration?.baseBackgroundColor = .orangeTheme
             leftButton.configuration?.baseBackgroundColor = .secondaryBackground
         } else {
             rightButton.configuration?.baseBackgroundColor = .secondaryBackground
             leftButton.configuration?.baseBackgroundColor = .secondaryBackground
         }
+
 
     }
     
@@ -66,18 +88,17 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-        
         ])
     }
     
     func stackViewLayout() {
+        let font = UIFont.preferredFont(forTextStyle: .title1)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-        
-            
+            stackView.heightAnchor.constraint(equalToConstant: font.lineHeight  + 8 )
         ])
         
     }
@@ -85,6 +106,8 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     func stackViewSetup() {
         stackView.axis = .horizontal
         stackView.spacing = 4
+        stackView.distribution = .fillEqually
+
         [leftButton, rightButton].forEach() {
             stackView.addArrangedSubview($0)
         }
@@ -92,21 +115,24 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     }
     
     func buttonSetup() {
-        let attributes = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium)])
+        
         let insetFloat : CGFloat = 4
         let insets = NSDirectionalEdgeInsets(top: insetFloat, leading: insetFloat * 2, bottom: insetFloat , trailing: insetFloat * 2)
         var leftConfig = UIButton.Configuration.filled()
-        let leftAttString = AttributedString("LEFT", attributes: attributes)
+        let leftAttString = AttributedString("", attributes: attributes)
         leftConfig.attributedTitle = leftAttString
         leftConfig.contentInsets = insets
+        
+        leftConfig.showsActivityIndicator = true
         leftConfig.baseBackgroundColor = .secondaryBackground
         
         leftButton.configuration = leftConfig
         leftButton.addTarget(self, action: #selector(selectButtonTapped ( _ :)), for: .touchUpInside)
         
         var rightConfig = UIButton.Configuration.filled()
-        let rigthAttString = AttributedString("RIGHT", attributes: attributes)
+        let rigthAttString = AttributedString("", attributes: attributes)
         rightConfig.contentInsets = insets
+        rightConfig.showsActivityIndicator = true
         rightConfig.attributedTitle = rigthAttString
         rightConfig.baseBackgroundColor = .secondaryBackground
         rightButton.configuration = rightConfig
@@ -141,30 +167,28 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
             delegate?.deleteIngredient(ingredient: currentOutputedIngredient, section: .Photo)
             self.currentOutputedIngredient = nil
         }
+        guard let leftPropablyTitle = photoInputedIngredient.leftPropablyTitle,
+              let rightPropablyTitle = photoInputedIngredient.rightPropablyTitle else {
+            return
+        }
         if side == .left && self.buttonSide != .left {
-            leftButton.configuration?.baseBackgroundColor = .orangeTheme
-            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
-            photoInputedIngredient.buttonSide = side
-           
-            if let title = leftButton.configuration?.title {
-                let outputedIngredient = Ingredient(name: title)
-                self.currentOutputedIngredient = outputedIngredient
-                delegate?.insertNewIngredient(ingredient: outputedIngredient, section: .Photo)
-            }
+            
+            configureButtonTitle(leftTitle: leftPropablyTitle, rightTitle: rightPropablyTitle, selectSide: .left)
+            
+            let outputedIngredient = Ingredient(name: leftPropablyTitle)
+            self.currentOutputedIngredient = outputedIngredient
+            delegate?.insertNewIngredient(ingredient: outputedIngredient, section: .Photo)
+            
             
         } else if side == .right && self.buttonSide != .right {
-            rightButton.configuration?.baseBackgroundColor = .orangeTheme
-            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
-            photoInputedIngredient.buttonSide = side
-            if let title = rightButton.configuration?.title {
-                let outputedIngredient = Ingredient(name: title)
-                self.currentOutputedIngredient = outputedIngredient
-                delegate?.insertNewIngredient(ingredient: outputedIngredient, section: .Photo)
-            }
+            
+            configureButtonTitle(leftTitle: leftPropablyTitle, rightTitle: rightPropablyTitle, selectSide: .right)
+            let outputedIngredient = Ingredient(name: rightPropablyTitle)
+            self.currentOutputedIngredient = outputedIngredient
+            delegate?.insertNewIngredient(ingredient: outputedIngredient, section: .Photo)
+            
         } else {
-            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
-            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
-
+            configureButtonTitle(leftTitle: leftPropablyTitle, rightTitle: rightPropablyTitle, selectSide: nil)
             if let currentOutputedIngredient = currentOutputedIngredient {
                 delegate?.deleteIngredient(ingredient: currentOutputedIngredient, section: .Photo)
             }

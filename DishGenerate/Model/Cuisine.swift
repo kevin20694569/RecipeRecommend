@@ -2,7 +2,12 @@
 import UIKit
 
 class Cuisine : SelectedModel  {
-
+    static func == (lhs: Cuisine, rhs: Cuisine) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    
+    var id : UUID = UUID()
     
     var name : String!
     var isSelected : Bool = false

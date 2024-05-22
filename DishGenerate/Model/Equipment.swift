@@ -1,12 +1,16 @@
 import UIKit
 
-protocol SelectedModel : AnyObject {
+protocol SelectedModel : AnyObject, Equatable {
     var name : String! { get set }
     var isSelected : Bool { get set }
 }
 
 class Equipment : SelectedModel  {
-
+    static func == (lhs: Equipment, rhs: Equipment) -> Bool {
+        lhs.id == rhs.id    
+    }
+    
+    var id : UUID = UUID()
     
     var name : String!
     var isSelected : Bool = false

@@ -151,8 +151,8 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc func generateButtonTapped( _ sender : UIButton) {
-        showGeneratedDishesDisplayController()
-      //  showInputPhotoIngredientViewController()
+       // showGeneratedDishesDisplayController()
+        showInputPhotoIngredientViewController()
         
     }
     

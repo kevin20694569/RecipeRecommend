@@ -1,18 +1,34 @@
 import UIKit
 
 class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAnchorSideCell {
+    var anchorSide: HorizontalAnchorSide! = .center
     
+    weak var textfieldDelegate : UITextFieldDelegate?
     
-    var model  : SelectedModel!
+
+    var model  : (any Equatable)?
     var textField : UITextField! = UITextField()
     var background : UIView! = UIView()
     
+    lazy var deleteSelfGesture : UITapGestureRecognizer! =  {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(deleteSelfGesureTrigger ( _ :)))
+        gesture.isEnabled = false
+        gesture.cancelsTouchesInView = false
+        return gesture
+    }()
     
-    var anchorSide : HorizontalAnchorSide! = .center
+    @objc func deleteSelfGesureTrigger( _ gesture : UITapGestureRecognizer) {
+        
+    }
+    func gestureSetup() {
+        self.background.addGestureRecognizer(deleteSelfGesture)
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundSetup()
+        gestureSetup()
         textFieldSetup()
         initLayout()
     }
@@ -36,10 +52,28 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
             textField.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -constant),
             textField.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: constant),
             textField.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -constant),
+            
+            
         ])
     }
     
-    func configure(title : String, model : SelectedModel) {
+    func editModeToggleTo(enable: Bool) {
+        self.deleteSelfGesture.isEnabled = enable
+        self.textField.isEnabled = !enable
+        if enable {
+            
+            UIView.animate(withDuration: 0.2) {
+                self.background.backgroundColor = .systemRed
+            }
+            
+        } else {
+            UIView.animate(withDuration: 0.2) {
+                self.background.backgroundColor = .themeColor
+            }
+        }
+    }
+    
+    func configure(title : String, model : any Equatable) {
         self.model = model
         textField.text = title
     }
@@ -50,11 +84,13 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
         background.layer.cornerRadius = 12
     }
     
+  
+    
 
     
     func textFieldSetup() {
         textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        textField.textColor = .backgroundPrimary
+        textField.textColor = .white
         textField.textAlignment = .center
         textField.adjustsFontSizeToFitWidth = true
         
@@ -92,4 +128,6 @@ class TextFieldTrailngCollectionCell : TextFieldSideCollectionCell {
     }
     
 }
+
+
 

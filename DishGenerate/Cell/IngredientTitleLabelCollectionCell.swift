@@ -15,10 +15,9 @@ class IngredientTitleLabelCollectionCell : TitleLabelSideCollectionCell {
         initLayout()
     }
     
-    func configure(ingredient : Ingredient, backgroundAnchorSide : HorizontalAnchorSide) {
+    func configure(ingredient : Ingredient) {
         self.ingredient = ingredient
         titleLabel.text = ingredient.name
-        self.configureSide(cellSide: backgroundAnchorSide)
     }
     
     required init?(coder: NSCoder) {
@@ -27,25 +26,34 @@ class IngredientTitleLabelCollectionCell : TitleLabelSideCollectionCell {
 }
 
 
-class IngredientTextFieldCollectionCell : TextFieldSideCollectionCell {
-    
-    var ingredient : Ingredient!
-    
-    weak var textfieldDelegate : UITextFieldDelegate?
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+
+class IngredientTitleLabelCenterCollectionCell : IngredientTitleLabelCollectionCell {
+    override func initLayout() {
+        super.initLayout()
+        backgroundCenterAnchor.isActive = true
+
     }
-    
-    func configure(ingredient : Ingredient, backgroundAnchorSide : HorizontalAnchorSide) {
-        self.ingredient = ingredient
-        textField.text = ingredient.name
-        textField.delegate = textfieldDelegate
-        configureSide(cellSide: backgroundAnchorSide)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
 }
+
+class IngredientTitleLabelLeadingCollectionCell : IngredientTitleLabelCollectionCell {
+    override func initLayout() {
+        super.initLayout()
+        
+        backgroundLeadingAnchor.isActive = true
+    }
+
+}
+
+
+class IngredientTitleLabelTrailingCollectionCell : IngredientTitleLabelCollectionCell {
+    override func initLayout() {
+        super.initLayout()
+        
+        backgroundTrailingAnchor.isActive = true
+    }
+
+}
+
+
+

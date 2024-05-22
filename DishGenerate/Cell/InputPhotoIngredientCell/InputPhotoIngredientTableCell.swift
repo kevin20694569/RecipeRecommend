@@ -133,9 +133,9 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         
         
     }
+   // var images : [UIImage?] = [nil]
     
-    
-    var images : [UIImage?] = [nil]
+    var images : [UIImage?] = UIImage.ingredientImages
     
     func addButtonEnable(enable : Bool) {
         addButtonEnable = enable
@@ -187,7 +187,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         let row = indexPath.row
         if section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddButtonCollectionCell", for: indexPath) as! AddButtonCollectionCell
-            cell.ingredientAddCollectionCellDelegate = self
+            cell.inputPhotoCollectionCellDelegate = self    
             cell.configure(buttonEnable: addButtonEnable)
             
             return cell
@@ -229,6 +229,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         }
         return CGSize(width: collectionViewHeightConstant / 1.8, height: collectionViewHeightConstant)
     }
+
     
     override func collectionViewSetup() {
         super.collectionViewSetup()

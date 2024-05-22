@@ -11,16 +11,25 @@ class PhotoInputedIngredient : Equatable {
         lhs.title == rhs.title
     }
     
-    
     var image : UIImage!
     
     var title : String?
     
     var buttonSide : Side?
     
+    var leftPropablyTitle : String?
+    
+    var rightPropablyTitle : String?
+    
     var outputedIngredient : Ingredient?
     
     init(image : UIImage) {
         self.image = image
+    }
+    
+    init(image : UIImage, leftTitle : String, rightTitle : String) {
+        self.image = image
+        self.leftPropablyTitle = leftTitle
+        self.rightPropablyTitle = rightTitle
     }
 }
