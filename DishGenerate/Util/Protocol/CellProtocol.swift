@@ -158,3 +158,15 @@ extension GenerateOptionCellDelegate {
         
     }
 }
+
+protocol SummaryDishTableCellDelegate : UIViewController {
+    func showDishDetailViewController(dish : Dish)
+}
+
+extension SummaryDishTableCellDelegate {
+    func showDishDetailViewController(dish : Dish) {
+        
+        let controller = DishDetailViewController(dish: dish)
+        self.show(controller, sender: nil)
+    }
+}

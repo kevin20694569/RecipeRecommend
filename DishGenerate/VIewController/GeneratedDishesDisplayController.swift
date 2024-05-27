@@ -1,8 +1,8 @@
 import UIKit
 
 class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
-    var dishes : [Dish] = Dish.examples
+
+    var dishes : [Dish]! = []
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -12,26 +12,39 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dish = dishes[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryDishTableCell", for: indexPath) as! SummaryDishTableCell
+        cell.summaryDishTableCellDelegate = self
         cell.configure(dish: dish)
         return cell
     }
     
+    var navBarRightButton : UIButton! = UIButton()
+    
+    @objc func navBarightButtonTapped(_ button : UIButton) {
+        showInputPhotoIngredientViewController()
+    }
+    
+    func showInputPhotoIngredientViewController() {
+        let controller = InputPhotoIngredientViewController()
+        self.show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
     
     var tableView : UITableView! = UITableView()
     
     
-    init() {
+    init(dishes : [Dish]) {
         super.init(nibName: nil, bundle: nil)
+        self.dishes = dishes
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
+        buttonSetup()
         tableViewSetup()
         initLayout()
     }
@@ -45,6 +58,8 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", image: nil, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navBarRightButton)
     }
 
     
@@ -57,7 +72,16 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
-        
+    }
+    
+    func buttonSetup() {
+
+        var config = UIButton.Configuration.filled()
+        config.image = UIImage(systemName: "menucard")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
+        navBarRightButton.configuration = config
+
+        self.navBarRightButton.addTarget(self, action: #selector(navBarightButtonTapped ( _ :)), for: .touchUpInside)
     }
     
     func tableViewSetup() {
@@ -78,6 +102,9 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
         return UITableView.automaticDimension
     }
     
+}
+
+extension GeneratedDishesDisplayController : SummaryDishTableCellDelegate {
 }
 
 

@@ -61,7 +61,8 @@ class TitleLabelSideCollectionCell : UICollectionViewCell, HorizontalBackgroundA
     }
     
     func labelSetup() {
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+        titleLabel.textColor = .white 
+        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         titleLabel.adjustsFontSizeToFitWidth = true
     }
 }

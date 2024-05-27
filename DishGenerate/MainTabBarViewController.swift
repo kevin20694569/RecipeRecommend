@@ -36,7 +36,9 @@ class MainTabBarViewController : UIViewController {
     
     func childViewControllersSetup() {
         let mainTableViewController = DishTableViewController()
+
         self.mainNavViewController = MainNavgationController(rootViewController: mainTableViewController)
+        mainNavViewController.mainDishViewController = mainTableViewController
     }
     
     func tabBarLayout() {

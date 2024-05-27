@@ -1,6 +1,6 @@
 import UIKit
 
-class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate {
+class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
     func editModeToggleTo(type: AddButtonHeaderViewType) {
         switch type {
         case .equipment :
@@ -38,7 +38,7 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     var activeTextField : UITextField?
     var activeTextView : UITextView?
     
-    lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view)
+    lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
     
     
     func deleteEquipment(equipment: Equipment) {
@@ -185,11 +185,13 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     }
     
     func showCheckViewController() {
-        if let nav = navigationController?.viewControllers.first as? DishTableViewController {
-            nav.startGeneratingDishes()
+        if let nav = navigationController as? MainNavgationController,
+           let mainTableController = nav.mainDishViewController {
+            mainTableController.startGeneratingDishes()
+            
         }
-        self.navigationController?.popToRootViewController(animated: true)
-
+        navigationController?.popToRootViewController(animated: true)
+        
     }
     
     func registerCell() {
@@ -410,6 +412,8 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
         
         if section == 8 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddtionalTextCollectionCell", for: indexPath) as! AddtionalTextCollectionCell
+            cell.textViewDelegate = self
+            cell.configure()
             return cell
         }
         return UICollectionViewCell()
@@ -500,6 +504,10 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.activeTextField = textField
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        self.activeTextView = textView
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

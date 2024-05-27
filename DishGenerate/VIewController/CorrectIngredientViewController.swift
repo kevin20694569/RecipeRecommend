@@ -1,13 +1,13 @@
 import UIKit
 
-class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout, IngredientAddButtonHeaderViewDelegate {
+class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout, IngredientAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
     
     
     
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
-    lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view)
+    lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
     
     var photoInputedIngredients : [PhotoInputedIngredient] = []
     

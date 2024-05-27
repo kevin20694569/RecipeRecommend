@@ -13,7 +13,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func showGeneratedDishesDisplayController() {
-        let controller = GeneratedDishesDisplayController()
+        let controller = GeneratedDishesDisplayController(dishes: Dish.examples)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
@@ -47,6 +47,11 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navSetup()
         layoutSetup()
         tableViewSetup()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -151,8 +156,8 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc func generateButtonTapped( _ sender : UIButton) {
-       // showGeneratedDishesDisplayController()
-        showInputPhotoIngredientViewController()
+        showGeneratedDishesDisplayController()
+       // showInputPhotoIngredientViewController()
         
     }
     

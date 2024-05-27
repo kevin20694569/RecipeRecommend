@@ -1,14 +1,23 @@
 
 import UIKit
 
+protocol KeyBoardControllerDelegate : UIViewController {
+    var activeTextField : UITextField? { get set }
+    var activeTextView : UITextView? { get set }
+    
+}
+
 class KeyBoardController : NSObject {
     
    
     var view : UIView!
     
-    init(view : UIView) {
+    init(view : UIView, delegate : KeyBoardControllerDelegate) {
         self.view = view
+        self.delegate = delegate
     }
+    
+    weak var delegate : KeyBoardControllerDelegate?
     
 
     @objc func keyboardShown(notification : Notification, activeTextField : UITextField?, activeTextView : UITextView?) {
@@ -50,7 +59,15 @@ class KeyBoardController : NSObject {
     @objc func keyboardHidden(notification : Notification, activeTextField : UITextField?, activeTextView : UITextView? ) {
         UIView.animate(withDuration: 0.25, animations: {
             self.view.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-        })
+        }) { [weak self] bool in
+            guard let self = self else {
+                return
+            }
+            let delegate = self.delegate
+            delegate?.activeTextView = nil
+            delegate?.activeTextField = nil
+        }
+        
     }
     
 }

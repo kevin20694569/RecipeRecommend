@@ -25,3 +25,4 @@ protocol DetectedPhotoCollectionCellDelegate : IngredientCellDelegate {
   //  func reloadSection(sectionIndex : Int)
     
 }
+

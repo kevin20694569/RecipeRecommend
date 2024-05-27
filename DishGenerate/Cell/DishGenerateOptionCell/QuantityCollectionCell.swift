@@ -61,8 +61,8 @@ class QuantityCollectionCell : UICollectionViewCell, UITextFieldDelegate {
     func textFieldSetup() {
         textField.text = String(Int(stepper.value))
         textField.textAlignment = .center
-        textField.textColor = .label
-        textField.backgroundColor = .secondaryBackgroundColor
+        textField.textColor = .white
+        textField.backgroundColor = .themeColor
         textField.clipsToBounds = true
         textField.layer.cornerRadius = 6
         textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)

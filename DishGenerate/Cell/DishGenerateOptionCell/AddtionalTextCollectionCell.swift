@@ -3,6 +3,8 @@ import UIKit
 class AddtionalTextCollectionCell : UICollectionViewCell {
     var textView : UITextView! = UITextView()
     
+    weak var textViewDelegate : UITextViewDelegate?
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -12,6 +14,10 @@ class AddtionalTextCollectionCell : UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure() {
+        textView.delegate = self.textViewDelegate
     }
     
     func initLayout() {

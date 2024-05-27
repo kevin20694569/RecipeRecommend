@@ -1,5 +1,7 @@
-
 import UIKit
+
+
+
 
 class SummaryDishTableCell : UITableViewCell {
     
@@ -23,6 +25,8 @@ class SummaryDishTableCell : UITableViewCell {
     var timeLabel : UILabel! = UILabel()
     
     var bottomButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    
+    weak var summaryDishTableCellDelegate : SummaryDishTableCellDelegate?
     
     var generatedStringAttributes : AttributeContainer! = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)])
     
@@ -51,7 +55,7 @@ class SummaryDishTableCell : UITableViewCell {
         timeLabel.text = dish.costTime
         difficultLabel.text = dish.complexity
         updateHeartButtonStatus()
-        updateBottomButtonStatus()
+        updateBottomButtonStatus(animated: false)
     }
     
     func initLayout() {
@@ -84,6 +88,7 @@ class SummaryDishTableCell : UITableViewCell {
             bottomButton.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             bottomButton.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             bottomButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            bottomButton.heightAnchor.constraint(greaterThanOrEqualTo: heartButton.heightAnchor, multiplier: 0.9),
             
             difficultStackView.centerYAnchor.constraint(equalTo: timeLabel.centerYAnchor),
             difficultStackView.leadingAnchor.constraint(equalTo: summaryLabel.leadingAnchor),
@@ -115,7 +120,6 @@ class SummaryDishTableCell : UITableViewCell {
     
     func summaryLabelSetup() {
         summaryLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .regular)
-
         summaryLabel.numberOfLines = 4
     }
     func titleLabelSetup() {
@@ -148,33 +152,70 @@ class SummaryDishTableCell : UITableViewCell {
         heartButton.addTarget(self, action: #selector(heartButtonTapped( _ :)), for: .touchUpInside)
         
         var generatedDetailConfig = UIButton.Configuration.filled()
-        generatedDetailConfig.baseBackgroundColor = .themeColor
+        generatedDetailConfig.baseBackgroundColor = .clear
+    
         generatedDetailConfig.baseForegroundColor = .white
         generatedDetailConfig.attributedTitle = AttributedString("生成詳細食譜", attributes: generatedStringAttributes)
-
+        generatedDetailConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
         bottomButton.configuration = generatedDetailConfig
         bottomButton.addTarget(self, action: #selector(bottomButtonTapped ( _ : )), for: .touchUpInside)
+        bottomButton.clipsToBounds = true
+        bottomButton.layer.cornerRadius = 8
+        bottomButton.backgroundColor = .themeColor
     }
     
     @objc func bottomButtonTapped(_ button : UIButton) {
-        if let steps = self.dish.steps {
-            
-        } else {
-            
+        let status = dish.status
+        
+        if status == .already  {
+            summaryDishTableCellDelegate?.showDishDetailViewController(dish: self.dish)
+        } else if status == .none {
+            Task {
+                await generateDishDetail()
+            }
         }
         
     }
     
-    func updateBottomButtonStatus() {
-        if self.dish.steps != nil {
-            bottomButton.configuration?.baseBackgroundColor = .orangeTheme
+    func generateDishDetail() async  {
+        
+        guard self.dish.status != .isGenerating else {
+            return
+        }
+        self.dish.status = .isGenerating
+        bottomButton.configuration?.attributedTitle = nil
+        self.bottomButton.configuration?.showsActivityIndicator = true
 
+        Task {
+            defer {
+                self.updateBottomButtonStatus(animated: true)
+                self.bottomButton.configuration?.showsActivityIndicator = false
+            }
+            try? await Task.sleep(nanoseconds: 500000000)
+            self.dish.status = .already
+        }
+
+    }
+    
+    func updateBottomButtonStatus(animated : Bool) {
+        if dish.status == .already {
             bottomButton.configuration?.attributedTitle = AttributedString("查看食譜", attributes: generatedStringAttributes)
+            if animated {
+                UIView.animate(withDuration: 0.4) {
+                    self.bottomButton.backgroundColor = .orangeTheme
+                }
+            } else {
+                bottomButton.backgroundColor = .orangeTheme
+            }
         } else {
-            bottomButton.configuration?.baseBackgroundColor = .themeColor
-
             bottomButton.configuration?.attributedTitle = AttributedString("生成詳細食譜", attributes: generatedStringAttributes)
-
+            if animated {
+                UIView.animate(withDuration: 0.4) {
+                    self.bottomButton.backgroundColor = .themeColor
+                }
+            } else {
+                bottomButton.backgroundColor = .themeColor
+            }
         }
     }
     
