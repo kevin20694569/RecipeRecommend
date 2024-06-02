@@ -19,8 +19,14 @@ class DishDetailViewController : UIViewController{
         super.viewDidLoad()
         registerCell()
         buttonSetup()
+        viewSetup()
         tableViewSetup()
         initLayout()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navBarStyleSetup()
     }
     
     func tableViewSetup() {
@@ -31,9 +37,11 @@ class DishDetailViewController : UIViewController{
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
         tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
-
     }
     
+    func viewSetup() {
+        self.view.backgroundColor = .primaryBackground
+    }
 
     
     func initLayout() {
@@ -57,6 +65,12 @@ class DishDetailViewController : UIViewController{
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
         rightBarButton.configuration = config
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.rightBarButton)
+    }
+    
+    
+    func navBarStyleSetup() {
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
     }
     
     func buttonStatusUpdate(transformIntoStep : Bool) {

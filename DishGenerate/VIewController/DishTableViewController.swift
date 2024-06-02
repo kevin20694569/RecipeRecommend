@@ -1,4 +1,5 @@
 import UIKit
+ 
 
 class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
@@ -12,17 +13,28 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.isNavigationBarHidden = false
     }
     
-    func showGeneratedDishesDisplayController() {
-        let controller = GeneratedDishesDisplayController(dishes: Dish.examples)
+    func showDishDetailViewController(dish : Dish) {
+        let controller = DishDetailViewController(dish: dish)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
+    
+    func showGeneratedDishesDisplayController(newDishes : [Dish]) {
+
+        let controller = GeneratedDishesDisplayController(dishes: newDishes)
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
+    var buttonStatus : DishGenerateStatus! = DishGenerateStatus.none
+    
+    var generatedDishes : [Dish]?
     
     var dishes : [Dish] = Dish.examples
     
     var searchBar : UISearchBar! = UISearchBar()
     
-    var generateButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    var searchBarRightButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var previousOffsetY : CGFloat! = 0
 
@@ -74,7 +86,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableViewSetup() {
-        self.tableView.allowsSelection  = false
+       
         self.tableView.delegate = self
         self.tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -95,7 +107,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     func layoutSetup() {
         self.view.backgroundColor = .systemBackground
         self.view.addSubview(searchBar)
-        self.view.addSubview(generateButton)
+        self.view.addSubview(searchBarRightButton)
         self.view.addSubview(tableView)
         self.view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -109,9 +121,9 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
             
             searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 12),
             
-            generateButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor),
-            generateButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12),
-            generateButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
+            searchBarRightButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor),
+            searchBarRightButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12),
+            searchBarRightButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
             
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -127,37 +139,53 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         var config = UIButton.Configuration.filled()
         config.image = UIImage(systemName: "menucard")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
-        generateButton.configuration = config
-        generateButton.clipsToBounds = true
-        generateButton.layer.cornerRadius = 8
-        generateButton.addTarget(self, action: #selector(generateButtonTapped ( _ : )), for: .touchUpInside)
+        searchBarRightButton.configuration = config
+        searchBarRightButton.clipsToBounds = true
+        searchBarRightButton.layer.cornerRadius = 8
+        searchBarRightButton.addTarget(self, action: #selector(searchBarRightButtonTapped ( _ : )), for: .touchUpInside)
     }
     
-    func startGeneratingDishes() {
-        generateButton.configuration?.image = UIImage(systemName: "arrow.down.circle.dotted")
-        generateButton.configuration?.baseBackgroundColor = .orangeTheme
-        let imageView = generateButton.imageView
-        imageView?.translatesAutoresizingMaskIntoConstraints = true
-        let rotation = CABasicAnimation(keyPath: "transform.rotation")
-        rotation.fromValue = 0
-        rotation.toValue = CGFloat.pi * 2
-        rotation.duration = 1
-        rotation.repeatCount = Float.infinity
+    
+    func changeButtonStatus(status : DishGenerateStatus) {
+        buttonStatus = status
         
-        imageView?.layer.add(rotation, forKey: "rotate")
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-            imageView?.layer.removeAllAnimations()
-            self.generateButton.configuration?.image = UIImage(systemName: "menucard")
-            self.generateButton.configuration?.baseBackgroundColor = .themeColor
-        })
-
+        switch status {
+        case .none :
+            var config = UIButton.Configuration.filled()
+            config.image = UIImage(systemName: "menucard")
+            config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
+            searchBarRightButton.configuration = config
+        case .isGenerating :
+            searchBarRightButton.configuration?.image = UIImage(systemName: "arrow.down.circle.dotted")
+            searchBarRightButton.configuration?.baseBackgroundColor = .orangeTheme
+            let imageView = searchBarRightButton.imageView
+            imageView?.translatesAutoresizingMaskIntoConstraints = true
+            let rotation = CABasicAnimation(keyPath: "transform.rotation")
+            rotation.fromValue = 0
+            rotation.toValue = CGFloat.pi * 2
+            rotation.duration = 1
+            rotation.repeatCount = Float.infinity
+            imageView?.layer.add(rotation, forKey: "rotate")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.changeButtonStatus(status: .already)
+            }
+        case .already :
+            searchBarRightButton.imageView?.layer.removeAllAnimations()
+            searchBarRightButton.configuration?.baseBackgroundColor = .systemGreen
+            searchBarRightButton.configuration?.image = UIImage(systemName: "checkmark")
+        }
         
     }
     
-    @objc func generateButtonTapped( _ sender : UIButton) {
-        showGeneratedDishesDisplayController()
-       // showInputPhotoIngredientViewController()
+    @objc func searchBarRightButtonTapped( _ sender : UIButton) {
+        guard buttonStatus != .isGenerating else {
+            return
+        }
+        if let dishes = generatedDishes  {
+            showGeneratedDishesDisplayController(newDishes: dishes)
+        } else {
+            showInputPhotoIngredientViewController()
+        }
         
     }
     
@@ -199,7 +227,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
 
-        [searchBar, generateButton].forEach( ) {
+        [searchBar, searchBarRightButton].forEach( ) {
             $0.layer.opacity = persent
         }
         searchBarAnchorConstaint.constant = newConstant
@@ -216,6 +244,14 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dishes.count
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.visibleCells.forEach() {
+            $0.isSelected = false
+        }
+        let dish = dishes[indexPath.row]
+        showDishDetailViewController(dish: dish)
     }
 
 

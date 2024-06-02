@@ -24,6 +24,7 @@ class DishSnapshotCell : UITableViewCell, DishTableCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style:style, reuseIdentifier: reuseIdentifier)
         viewLayout()
+        cellSetup()
         buttonSetup()
         labelSetup()
         imageViewSetup()
@@ -34,6 +35,10 @@ class DishSnapshotCell : UITableViewCell, DishTableCell {
         dishImageView.layer.cornerRadius = 12
         dishImageView.clipsToBounds = true
         dishImageView.backgroundColor = .secondaryBackgroundColor
+    }
+    
+    func cellSetup() {
+        self.selectionStyle = .default
     }
     
     func buttonSetup() {

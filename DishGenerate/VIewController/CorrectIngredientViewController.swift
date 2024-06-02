@@ -2,9 +2,6 @@ import UIKit
 
 class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout, IngredientAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
     
-    
-    
-    
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
@@ -20,6 +17,8 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     var activeTextView : UITextView?
     
     var ingredientCellSpacing : CGFloat! = 12
+    
+    var editModeEnable : Bool = false
     
     lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "下一步", image: nil, target: self, action: #selector(rightButtonItemTapped ( _ : )))
     
@@ -147,7 +146,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         fatalError("init(coder:) has not been implemented")
     }
     
-    var editModeEnable : Bool = false
+
     
 }
 
@@ -162,11 +161,14 @@ extension CorrectIngredientViewController : DetectedPhotoCollectionCellDelegate,
             editModeEnable.toggle()
             
             self.collectionView.visibleCells.forEach() {
+                guard let indexPath = self.collectionView.indexPath(for: $0),
+                      indexPath.section == 3 else {
+                    return
+                }
                 if let cell = $0 as? HorizontalBackgroundAnchorSideCell {
-                    cell.editModeToggleTo(enable: self.editModeEnable)
+                    cell.editModeToggleTo(enable: editModeEnable)
                 }
             }
-            break
         default :
             break
         }
@@ -366,6 +368,7 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
             
             return CGSize(width: view.bounds.width, height: view.bounds.height * 0.08)
         }
+        
         return CGSize(width: 0, height: 0)
     }
     
@@ -410,6 +413,7 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+
         if section == 2 {
             if photoInputedIngredients.count < 1 {
                 
@@ -423,6 +427,8 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         }
+        
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         
         if photoInputedIngredients.count < 1 && photoOutputedIngredients.count < 1 {

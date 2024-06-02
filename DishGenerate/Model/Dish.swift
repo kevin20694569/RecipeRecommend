@@ -1,6 +1,6 @@
 
 import UIKit
-enum DishDetailStatus {
+enum DishGenerateStatus {
     case already, isGenerating, none
 }
 
@@ -22,14 +22,16 @@ class Dish {
     
     var liked : Bool = false
     
-    var status : DishDetailStatus = .none
+    var status : DishGenerateStatus = .none
+    
+    
     
     var steps : [Step] = []
     
     var ingredients : [Ingredient] = []
     
     
-    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: String!, image_ID: String!, isGenerateddetail: Bool, image : UIImage, steps : [Step], ingredients : [Ingredient], status : DishDetailStatus) {
+    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: String!, image_ID: String!, isGenerateddetail: Bool, image : UIImage, steps : [Step], ingredients : [Ingredient], status : DishGenerateStatus) {
         self.id = id
         self.name = name
         self.cuisine = cuisine
@@ -63,7 +65,7 @@ class Dish {
             let cuisine = cuisines[index]
             let complexity = complexities[index]
             let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
-            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishDetailStatus.already)
+            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
             return dish
         }
     }()

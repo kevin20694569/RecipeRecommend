@@ -187,7 +187,8 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     func showCheckViewController() {
         if let nav = navigationController as? MainNavgationController,
            let mainTableController = nav.mainDishViewController {
-            mainTableController.startGeneratingDishes()
+            mainTableController.generatedDishes = Dish.examples
+            mainTableController.changeButtonStatus(status: .isGenerating)
             
         }
         navigationController?.popToRootViewController(animated: true)

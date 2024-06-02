@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navBarAppearanceSetup()
         return true
     }
+    
+    
 
     // MARK: UISceneSession Lifecycle
 

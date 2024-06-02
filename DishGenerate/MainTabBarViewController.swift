@@ -1,10 +1,12 @@
 import UIKit
 
-class MainTabBarViewController : UIViewController {
+class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     static let shared : MainTabBarViewController! = MainTabBarViewController()
     
     var mainNavViewController : MainNavgationController!
+    
+    var userProfileNavViewController : UINavigationController!
     
     static var bottomBarFrame : CGRect! = .zero
     
@@ -14,7 +16,7 @@ class MainTabBarViewController : UIViewController {
     
     var bottomBarView : UIView! = UIView()
     
-    var viewControllers : [UINavigationController]! = []
+    lazy var viewControllers : [UINavigationController]! = [mainNavViewController, userProfileNavViewController]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -34,21 +36,25 @@ class MainTabBarViewController : UIViewController {
         layoutSetup()
     }
     
+    lazy var bottomBarViews : [UIView] = [bottomBarView, tabBar]
+    
     func childViewControllersSetup() {
         let mainTableViewController = DishTableViewController()
 
         self.mainNavViewController = MainNavgationController(rootViewController: mainTableViewController)
         mainNavViewController.mainDishViewController = mainTableViewController
+        
+        let userProfileViewController = UserProfileViewController()
+        let userProfileNavViewController = UINavigationController(rootViewController: userProfileViewController)
+        self.userProfileNavViewController = userProfileNavViewController
     }
     
     func tabBarLayout() {
         self.view.addSubview(bottomBarView)
         self.view.addSubview(tabBar)
-        //bottomBarView.backgroundColor = .tintColor
         self.view.subviews.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-      
         NSLayoutConstraint.activate([
             
             bottomBarView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
@@ -75,20 +81,8 @@ class MainTabBarViewController : UIViewController {
     func layoutSetup() {
         self.view.addSubview(mainNavViewController.view)
         self.view.addSubview(bottomBarView)
-        
+
         self.view.addSubview(tabBar)
-        
-  
-        self.view.subviews.forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        NSLayoutConstraint.activate([
-            mainNavViewController.view.topAnchor.constraint(equalTo: self.view.topAnchor),
-            mainNavViewController.view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            mainNavViewController.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            mainNavViewController.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-        
-        ])
 
     }
     
@@ -97,26 +91,26 @@ class MainTabBarViewController : UIViewController {
         tabBar.standardAppearance.configureWithOpaqueBackground()
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
        // tabBar
-    
-       // tabBar.
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
+        
 
         tabBar.barTintColor = .themeColor
-        
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
-        let mainDishTableViewItem = UITabBarItem(title: nil, image: UIImage(systemName: "house")!.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: UIImage(systemName: "house")!.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))
         
-        tabBar.setItems([mainDishTableViewItem], animated: false)
-        tabBar.selectedItem = mainDishTableViewItem
-    }
-    
-    @objc func tabBarButtonTapped(_ sender: UIButton) {
-        // 在按鈕點擊時切換到相應的視圖
-        if let index = tabBar.subviews.firstIndex(of: sender) {
-            showViewController(at: index)
+        let itemImages : [UIImage] = [ UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
+        
+        let items = viewControllers.enumerated().compactMap { (index, nav) in
+            let image = itemImages[index]
+            let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))
+            item.tag = index
+            return item
+            
         }
+        tabBar.setItems(items, animated: false)
+        tabBar.selectedItem = tabBar.items?.first
+        tabBar.delegate = self
     }
     
     func showViewController(at index: Int) {
@@ -132,13 +126,19 @@ class MainTabBarViewController : UIViewController {
             }
             
         }
-        
+        bottomBarViews.forEach() {
+            view.addSubview($0)
+        }
         self.tabBar.selectedItem = tabBar.items?[index]
         
     }
-    
-    
 
+}
+
+extension MainTabBarViewController  {
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        showViewController(at: item.tag)
+    }
 }
 
 #Preview {

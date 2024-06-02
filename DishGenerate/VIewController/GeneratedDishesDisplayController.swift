@@ -45,6 +45,7 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
         super.viewDidLoad()
         registerCell()
         buttonSetup()
+        viewSetup()
         tableViewSetup()
         initLayout()
     }
@@ -52,6 +53,10 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navBarSetup()
+    }
+    
+    func viewSetup() {
+        self.view.backgroundColor = .primaryBackground
     }
     
     

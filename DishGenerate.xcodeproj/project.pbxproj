@@ -39,6 +39,10 @@
 		234BF55C2BDEC65E0012CF6A /* MainTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */; };
 		236784322C02EB57006C18A3 /* DishDetailStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784312C02EB57006C18A3 /* DishDetailStepCell.swift */; };
 		236784342C02F2DD006C18A3 /* StepIngredientCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784332C02F2DD006C18A3 /* StepIngredientCell.swift */; };
+		236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784352C05CC74006C18A3 /* UserProfileViewController.swift */; };
+		236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */; };
+		2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */; };
+		2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */; };
 		23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B501152BF4873900EAB2D7 /* CollectionViewCollectionCell.swift */; };
 		23B501182BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B501172BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift */; };
 		23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B5011A2BF4893500EAB2D7 /* IndicatorCollectionCell.swift */; };
@@ -129,6 +133,10 @@
 		234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarViewController.swift; sourceTree = "<group>"; };
 		236784312C02EB57006C18A3 /* DishDetailStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishDetailStepCell.swift; sourceTree = "<group>"; };
 		236784332C02F2DD006C18A3 /* StepIngredientCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepIngredientCell.swift; sourceTree = "<group>"; };
+		236784352C05CC74006C18A3 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailCollectionCell.swift; sourceTree = "<group>"; };
+		2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadingLogoHeaderView.swift; sourceTree = "<group>"; };
+		2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDishCell.swift; sourceTree = "<group>"; };
 		23B501152BF4873900EAB2D7 /* CollectionViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCollectionCell.swift; sourceTree = "<group>"; };
 		23B501172BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectedPhotoCollectionViewCollectionCell.swift; sourceTree = "<group>"; };
 		23B5011A2BF4893500EAB2D7 /* IndicatorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorCollectionCell.swift; sourceTree = "<group>"; };
@@ -269,6 +277,7 @@
 		234BF5472BDEAA1E0012CF6A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				236784372C05D88E006C18A3 /* UserProfileCell */,
 				236784302C02EB4B006C18A3 /* StepDetailCell */,
 				23C210192BF9E9A5008F74D0 /* IngredientTextCell */,
 				23C210102BF892EF008F74D0 /* DishGenerateOptionCell */,
@@ -306,6 +315,7 @@
 				23B501272BF4F62E00EAB2D7 /* DishGenerateOptionViewController.swift */,
 				23C210232BFB8F06008F74D0 /* GeneratedDishesDisplayController.swift */,
 				23C210292BFCFE1B008F74D0 /* DishDetailViewController.swift */,
+				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -359,6 +369,7 @@
 				231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */,
 				231341AE2BEBBAB90015DFA6 /* LineView.swift */,
 				23B5011C2BF497AE00EAB2D7 /* LabelHeaderView.swift */,
+				2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -370,6 +381,15 @@
 				236784332C02F2DD006C18A3 /* StepIngredientCell.swift */,
 			);
 			name = StepDetailCell;
+			sourceTree = "<group>";
+		};
+		236784372C05D88E006C18A3 /* UserProfileCell */ = {
+			isa = PBXGroup;
+			children = (
+				236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */,
+				2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */,
+			);
+			path = UserProfileCell;
 			sourceTree = "<group>";
 		};
 		23B501192BF4892700EAB2D7 /* IndicatorCell */ = {
@@ -584,6 +604,7 @@
 				234BF51A2BDEA4120012CF6A /* DishGenerate.xcdatamodeld in Sources */,
 				2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */,
 				23B501242BF4E5AA00EAB2D7 /* TapGestureHelper.swift in Sources */,
+				236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */,
 				23C2101C2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift in Sources */,
 				234BF55A2BDEB9B00012CF6A /* ZoomAnimatedButton.swift in Sources */,
 				23BA50BE2BF36C0900E3B85A /* DetectedPhotoTableCell.swift in Sources */,
@@ -601,6 +622,7 @@
 				23C2102A2BFCFE1B008F74D0 /* DishDetailViewController.swift in Sources */,
 				23C210122BF8934B008F74D0 /* QuantityCollectionCell.swift in Sources */,
 				23C2102E2BFE14E4008F74D0 /* IngredientTextFieldCollectionCell.swift in Sources */,
+				2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */,
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				23B501282BF4F62E00EAB2D7 /* DishGenerateOptionViewController.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
@@ -613,7 +635,9 @@
 				231341A72BEB69950015DFA6 /* CameraController.swift in Sources */,
 				23B5011D2BF497AE00EAB2D7 /* LabelHeaderView.swift in Sources */,
 				23BA50BA2BF36AD300E3B85A /* CameraControllerDelegate.swift in Sources */,
+				236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */,
 				231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */,
+				2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */,
 				23C210282BFCEE37008F74D0 /* Step.swift in Sources */,
 				23C210202BFB28E6008F74D0 /* Equipment.swift in Sources */,
 				234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */,
