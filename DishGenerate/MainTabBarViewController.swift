@@ -90,7 +90,6 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.isTranslucent = false
         tabBar.standardAppearance.configureWithOpaqueBackground()
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
-       // tabBar
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
         

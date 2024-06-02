@@ -1,6 +1,10 @@
 
 import UIKit
 
+protocol UserProfileCellDelegate : UIViewController {
+    func showEditUserProfileViewController()
+}
+
 class UserDetailCollectionCell : UICollectionViewCell  {
     
     var imageView : UIImageView! = UIImageView()
@@ -11,6 +15,8 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     var editButtonTitleAttributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)])
     
+    weak var userProfileCellDelegate : UserProfileCellDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         imageViewSetup()
@@ -19,6 +25,8 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         initLayout()
 
     }
+    
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -67,6 +75,11 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         editConfig.attributedTitle = title
         
         editButton.configuration = editConfig
+        editButton.addTarget(self, action: #selector(editButtonTapped ( _ : )), for: .touchUpInside)
+    }
+    
+    @objc func editButtonTapped(_ button : UIButton) {
+        userProfileCellDelegate?.showEditUserProfileViewController()
     }
     
 }

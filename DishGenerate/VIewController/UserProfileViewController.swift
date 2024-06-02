@@ -6,6 +6,8 @@ class UserProfileViewController : UIViewController {
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     var historyDishes : [Dish] = Dish.examples
+    
+    var user : User = User.example
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -91,10 +93,12 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         let row = indexPath.row
         if section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserDetailCollectionCell", for: indexPath) as!  UserDetailCollectionCell
+            cell.userProfileCellDelegate = self
             return cell
         }
         let dish = historyDishes[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserProfileDishCell", for: indexPath) as!  UserProfileDishCell
+    
         cell.configure(dish: dish)
         return cell
     }
@@ -165,7 +169,7 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
 
 }
 
-extension UserProfileViewController {
+extension UserProfileViewController : UserProfileCellDelegate {
     func showDishDetailViewController(dish : Dish) {
         let controller = DishDetailViewController(dish: dish)
         show(controller, sender: nil)
@@ -173,8 +177,13 @@ extension UserProfileViewController {
     }
     
     func showGeneratedDishesDisplayController(newDishes : [Dish]) {
-
         let controller = GeneratedDishesDisplayController(dishes: newDishes)
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
+    func showEditUserProfileViewController() {
+        let controller = EditUserProfileViewController(user : self.user)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
@@ -259,6 +268,7 @@ class UserProfileDishDateCell : UICollectionViewCell {
         
     }
 }
+
 
 
 

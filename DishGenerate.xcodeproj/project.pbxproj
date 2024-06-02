@@ -43,6 +43,13 @@
 		236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */; };
 		2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */; };
 		2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */; };
+		236B9EE92C0C9CA70004E15A /* EditUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */; };
+		236B9EEB2C0CB8760004E15A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EEA2C0CB8760004E15A /* User.swift */; };
+		236B9EED2C0CBEFC0004E15A /* ImageViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EEC2C0CBEFC0004E15A /* ImageViewTableCell.swift */; };
+		236B9EF02C0CBF1B0004E15A /* EditUserProfileUserImageViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EEF2C0CBF1B0004E15A /* EditUserProfileUserImageViewTableCell.swift */; };
+		236B9EF22C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EF12C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift */; };
+		236B9EF42C0CDE280004E15A /* Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EF32C0CDE280004E15A /* Gesture.swift */; };
+		236B9EF62C0CDFA70004E15A /* EditUserProfileOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EF52C0CDFA70004E15A /* EditUserProfileOptionCell.swift */; };
 		23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B501152BF4873900EAB2D7 /* CollectionViewCollectionCell.swift */; };
 		23B501182BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B501172BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift */; };
 		23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B5011A2BF4893500EAB2D7 /* IndicatorCollectionCell.swift */; };
@@ -137,6 +144,13 @@
 		236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailCollectionCell.swift; sourceTree = "<group>"; };
 		2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadingLogoHeaderView.swift; sourceTree = "<group>"; };
 		2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDishCell.swift; sourceTree = "<group>"; };
+		236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileViewController.swift; sourceTree = "<group>"; };
+		236B9EEA2C0CB8760004E15A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		236B9EEC2C0CBEFC0004E15A /* ImageViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewTableCell.swift; sourceTree = "<group>"; };
+		236B9EEF2C0CBF1B0004E15A /* EditUserProfileUserImageViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileUserImageViewTableCell.swift; sourceTree = "<group>"; };
+		236B9EF12C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCornerBackgroundTableCell.swift; sourceTree = "<group>"; };
+		236B9EF32C0CDE280004E15A /* Gesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gesture.swift; sourceTree = "<group>"; };
+		236B9EF52C0CDFA70004E15A /* EditUserProfileOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileOptionCell.swift; sourceTree = "<group>"; };
 		23B501152BF4873900EAB2D7 /* CollectionViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCollectionCell.swift; sourceTree = "<group>"; };
 		23B501172BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectedPhotoCollectionViewCollectionCell.swift; sourceTree = "<group>"; };
 		23B5011A2BF4893500EAB2D7 /* IndicatorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorCollectionCell.swift; sourceTree = "<group>"; };
@@ -240,6 +254,7 @@
 				234BF51B2BDEA4140012CF6A /* Assets.xcassets */,
 				234BF5202BDEA4140012CF6A /* Info.plist */,
 				234BF5182BDEA4120012CF6A /* DishGenerate.xcdatamodeld */,
+				236B9EF32C0CDE280004E15A /* Gesture.swift */,
 			);
 			path = DishGenerate;
 			sourceTree = "<group>";
@@ -270,6 +285,7 @@
 				23C2101F2BFB28E6008F74D0 /* Equipment.swift */,
 				23C210212BFB2A96008F74D0 /* Cuisine.swift */,
 				23C210272BFCEE37008F74D0 /* Step.swift */,
+				236B9EEA2C0CB8760004E15A /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -277,6 +293,7 @@
 		234BF5472BDEAA1E0012CF6A /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				236B9EEE2C0CBF0F0004E15A /* EditUserProfileCell */,
 				236784372C05D88E006C18A3 /* UserProfileCell */,
 				236784302C02EB4B006C18A3 /* StepDetailCell */,
 				23C210192BF9E9A5008F74D0 /* IngredientTextCell */,
@@ -316,6 +333,7 @@
 				23C210232BFB8F06008F74D0 /* GeneratedDishesDisplayController.swift */,
 				23C210292BFCFE1B008F74D0 /* DishDetailViewController.swift */,
 				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
+				236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -392,6 +410,15 @@
 			path = UserProfileCell;
 			sourceTree = "<group>";
 		};
+		236B9EEE2C0CBF0F0004E15A /* EditUserProfileCell */ = {
+			isa = PBXGroup;
+			children = (
+				236B9EEF2C0CBF1B0004E15A /* EditUserProfileUserImageViewTableCell.swift */,
+				236B9EF52C0CDFA70004E15A /* EditUserProfileOptionCell.swift */,
+			);
+			path = EditUserProfileCell;
+			sourceTree = "<group>";
+		};
 		23B501192BF4892700EAB2D7 /* IndicatorCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -412,6 +439,8 @@
 				23C210252BFBA22A008F74D0 /* SummaryDishTableCell.swift */,
 				23C2102D2BFE14E4008F74D0 /* IngredientTextFieldCollectionCell.swift */,
 				23C2102F2BFE1510008F74D0 /* CuisineTextFieldCollectionCell.swift */,
+				236B9EEC2C0CBEFC0004E15A /* ImageViewTableCell.swift */,
+				236B9EF12C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift */,
 			);
 			path = CommonCell;
 			sourceTree = "<group>";
@@ -600,12 +629,14 @@
 				23B501202BF49C2C00EAB2D7 /* IngredientTitleLabelCollectionCell.swift in Sources */,
 				23C210322BFE26FD008F74D0 /* AddtionalTextCollectionCell.swift in Sources */,
 				234BF54C2BDEADC70012CF6A /* MainNavgationController.swift in Sources */,
+				236B9EF42C0CDE280004E15A /* Gesture.swift in Sources */,
 				23C210262BFBA22A008F74D0 /* SummaryDishTableCell.swift in Sources */,
 				234BF51A2BDEA4120012CF6A /* DishGenerate.xcdatamodeld in Sources */,
 				2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */,
 				23B501242BF4E5AA00EAB2D7 /* TapGestureHelper.swift in Sources */,
 				236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */,
 				23C2101C2BFB27B8008F74D0 /* ButtonSideCollectionCell.swift in Sources */,
+				236B9EF02C0CBF1B0004E15A /* EditUserProfileUserImageViewTableCell.swift in Sources */,
 				234BF55A2BDEB9B00012CF6A /* ZoomAnimatedButton.swift in Sources */,
 				23BA50BE2BF36C0900E3B85A /* DetectedPhotoTableCell.swift in Sources */,
 				234BF5442BDEA7C60012CF6A /* Dish.swift in Sources */,
@@ -625,6 +656,7 @@
 				2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */,
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				23B501282BF4F62E00EAB2D7 /* DishGenerateOptionViewController.swift in Sources */,
+				236B9EEB2C0CB8760004E15A /* User.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
 				23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */,
 				234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */,
@@ -638,11 +670,13 @@
 				236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */,
 				231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */,
 				2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */,
+				236B9EED2C0CBEFC0004E15A /* ImageViewTableCell.swift in Sources */,
 				23C210282BFCEE37008F74D0 /* Step.swift in Sources */,
 				23C210202BFB28E6008F74D0 /* Equipment.swift in Sources */,
 				234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */,
 				23C210222BFB2A96008F74D0 /* Cuisine.swift in Sources */,
 				23C210302BFE1510008F74D0 /* CuisineTextFieldCollectionCell.swift in Sources */,
+				236B9EE92C0C9CA70004E15A /* EditUserProfileViewController.swift in Sources */,
 				23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */,
 				23B501182BF487DB00EAB2D7 /* DetectedPhotoCollectionViewCollectionCell.swift in Sources */,
 				23BA50C22BF391B000E3B85A /* DetectedPhotoCollectionCellDelegate.swift in Sources */,
@@ -656,6 +690,8 @@
 				23BA50B22BF3160500E3B85A /* View.swift in Sources */,
 				23BA50B42BF3186200E3B85A /* Layer.swift in Sources */,
 				2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */,
+				236B9EF22C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift in Sources */,
+				236B9EF62C0CDFA70004E15A /* EditUserProfileOptionCell.swift in Sources */,
 				231341982BEB496C0015DFA6 /* InputPhotoIngredientViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

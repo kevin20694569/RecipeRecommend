@@ -170,3 +170,21 @@ extension SummaryDishTableCellDelegate {
         self.show(controller, sender: nil)
     }
 }
+
+protocol EditUserProfileCellDelegate : UIViewController {
+    func showUserImageSelectedPhotoViewController()
+    func showEditNameViewController()
+    func showEditDislikeIngredientViewController()
+}
+
+extension EditUserProfileCellDelegate {
+    func showUserImageSelectedPhotoViewController() {
+        
+    }
+    func showEditNameViewController() {
+        
+    }
+    func showEditDislikeIngredientViewController() {
+        
+    }
+}
