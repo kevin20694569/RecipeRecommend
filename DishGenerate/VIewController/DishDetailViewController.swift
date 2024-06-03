@@ -59,22 +59,45 @@ class DishDetailViewController : UIViewController{
     }
 
     func buttonSetup() {
-        var config = UIButton.Configuration.filled()
+        /*var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .themeColor
         config.image = UIImage(systemName: "waterbottle")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
+        rightBarButton.configuration = config*/
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .clear
+        config.baseForegroundColor = .primaryLabel
+        config.image = UIImage(systemName: "star")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
         rightBarButton.configuration = config
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.rightBarButton)
+        rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
     }
     
+    @objc func rightBarButtonTapped(_ button : UIButton) {
+        collectDish(!dish.collected)
+    }
+    
+    
+    func configureButtonStyle(collected : Bool) {
+        if collected {
+            rightBarButton.configuration?.baseForegroundColor = .yelloTheme
+            rightBarButton.configuration?.image = UIImage(systemName: "star.fill")
+        } else {
+            rightBarButton.configuration?.baseForegroundColor = .primaryLabel
+            rightBarButton.configuration?.image = UIImage(systemName: "star")
+        }
+
+    }
     
     func navBarStyleSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
     }
     
-    func buttonStatusUpdate(transformIntoStep : Bool) {
-        //UIImage(systemName: "paperplane.fill")
+    func collectDish(_ bool : Bool) {
+        dish.collected = bool
+        configureButtonStyle(collected: dish.collected)
     }
 
     func registerCell() {

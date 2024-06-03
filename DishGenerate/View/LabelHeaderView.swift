@@ -98,6 +98,8 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     
     weak var editEquipmentCellDelegate : EditEquipmentCellDelegate?
     
+    weak var editCuisineCellDelegate : EditCuisineCellDelegate?
+    
     var type : AddButtonHeaderViewType! = .equipment
     
     var editButton : ZoomAnimatedButton! = ZoomAnimatedButton()
@@ -191,6 +193,10 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
                 return 
             }
 
+            if let delegate = editCuisineCellDelegate {
+                delegate.addCuisineCell(cuisine: Cuisine())
+                return
+            }
         case .none:
             break
         }

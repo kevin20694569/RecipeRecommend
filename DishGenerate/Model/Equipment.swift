@@ -1,8 +1,10 @@
 import UIKit
 
 protocol SelectedModel : AnyObject, Equatable {
+    var id : UUID { get set }
     var name : String! { get set }
     var isSelected : Bool { get set }
+
 }
 
 class Equipment : SelectedModel, NSCopying  {
@@ -12,7 +14,7 @@ class Equipment : SelectedModel, NSCopying  {
     
     
     static func == (lhs: Equipment, rhs: Equipment) -> Bool {
-        lhs.id == rhs.id || lhs.isSelected == rhs.isSelected
+        (lhs.id == rhs.id || lhs.name == rhs.name) && lhs.isSelected == rhs.isSelected
     }
     
     var id : UUID = UUID()

@@ -1,6 +1,10 @@
+
+
 import UIKit
 
-class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, EditEquipmentCellDelegate {
+class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDelegate, EditCuisineCellDelegate {
+
+    
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -24,22 +28,22 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     
     lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
     
-    var equipments : [Equipment] = []
+    var cuisines : [Cuisine] = []
     
-    var equipmentEditModeEnable : Bool! = false
+    var cuisineEditModeEnable : Bool! = false
     
-    var equipmentsChanged : Bool! = false { didSet {
-        rightButtonItem.isEnabled = equipmentsChanged
+    var cuisinesChanged : Bool! = false { didSet {
+        rightButtonItem.isEnabled = cuisinesChanged
     }}
     
-    var initEquipments : [Equipment] = []
+    var initCuisines : [Cuisine] = []
     
-    init(equipments : [Equipment]) {
+    init(cuisines : [Cuisine]) {
         super.init(nibName: nil, bundle: nil)
-        initEquipments = equipments.compactMap() { equipment in
-            return equipment.copy() as? Equipment
+        initCuisines = cuisines.compactMap() { cuisine in
+            return cuisine.copy() as? Cuisine
         }
-        self.equipments = equipments
+        self.cuisines = cuisines
         
 
     }
@@ -85,42 +89,40 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
         collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
-    func deleteEquipment(equipment: Equipment) {
-        guard let index = equipments.firstIndex(of: equipment) else {
-            self.equipmentEditModeEnable = false
+    func detectEquipmentsChanged() {
+        let validEquipments = self.cuisines.filter { equipment in
+            return equipment.name != nil && equipment.name != ""
+        }
+        
+        cuisinesChanged = !(validEquipments == initCuisines)
+
+    }
+
+    
+    func addCuisineCell(cuisine: Cuisine) {
+        self.cuisines.append(cuisine)
+        let indexPath = IndexPath(row: cuisines.count - 1, section: 0)
+        collectionView.insertItems(at: [indexPath])
+        detectEquipmentsChanged()
+    }
+    
+    func deleteCuisine(cuisine: Cuisine) {
+        guard let index = cuisines.firstIndex(of: cuisine) else {
+            self.cuisineEditModeEnable = false
             return
         }
         
         
-        let needReloadIndexPaths = (index...equipments.count ).compactMap { index in
+        let needReloadIndexPaths = (index...cuisines.count ).compactMap { index in
             return IndexPath(row: index, section: 0)
         }
-
-        equipments.remove(at: index)
+        cuisines.remove(at: index)
         let deletedIndexPath = IndexPath(row: index, section: 0)
         collectionView.deleteItems(at: [deletedIndexPath])
         collectionView.reloadItems(at: needReloadIndexPaths)
-        if equipments.count <= Equipment.examples.count {
-            self.equipmentEditModeEnable = false
+        if cuisines.count <= Cuisine.examples.count {
+            self.cuisineEditModeEnable = false
         }
-        detectEquipmentsChanged()
-        
-        
-    }
-    
-    func detectEquipmentsChanged() {
-        let validEquipments = self.equipments.filter { equipment in
-            return equipment.name != nil && equipment.name != ""
-        }
-        
-        equipmentsChanged = !(validEquipments == initEquipments)
-
-    }
-    
-    func addEquipmentCell(equipment: Equipment) {
-        self.equipments.append(equipment)
-        let indexPath = IndexPath(row: equipments.count - 1, section: 0)
-        collectionView.insertItems(at: [indexPath])
         detectEquipmentsChanged()
     }
     
@@ -143,11 +145,11 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
         
         collectionView.register(ButtonTrailngCollectionCell.self, forCellWithReuseIdentifier: "ButtonTrailngCollectionCell")
         
-        collectionView.register(EquipmentTextFieldCenterCollectionCell.self, forCellWithReuseIdentifier: "EquipmentTextFieldCenterCollectionCell")
+        collectionView.register(CuisineTextFieldCenterCollectionCell.self, forCellWithReuseIdentifier: "CuisineTextFieldCenterCollectionCell")
         
-        collectionView.register(EquipmentTextFieldLeadingCollectionCell.self, forCellWithReuseIdentifier: "EquipmentTextFieldLeadingCollectionCell")
+        collectionView.register(CuisineTextFieldLeadingCollectionCell.self, forCellWithReuseIdentifier: "CuisineTextFieldLeadingCollectionCell")
         
-        collectionView.register(EquipmentTextFieldTrailingCollectionCell.self, forCellWithReuseIdentifier: "EquipmentTextFieldTrailingCollectionCell")
+        collectionView.register(CuisineTextFieldTrailingCollectionCell.self, forCellWithReuseIdentifier: "CuisineTextFieldTrailingCollectionCell")
         
     }
     
@@ -158,29 +160,29 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     }
 }
 
-extension EditDislikeViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+extension EditFavoriteCuisineViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return equipments.count
+        return cuisines.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let row = indexPath.row
         let section = indexPath.section
-        let equipment = equipments[row]
-        var isDefaultModel = row <= Equipment.examples.count - 1
+        let cuisine = cuisines[row]
+        var isDefaultModel = row <= Cuisine.examples.count - 1
         switch row  % 3 {
         case 0 :
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonTrailngCollectionCell", for: indexPath) as! ButtonTrailngCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldTrailingCollectionCell", for: indexPath) as! EquipmentTextFieldTrailingCollectionCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldTrailingCollectionCell", for: indexPath) as! CuisineTextFieldTrailingCollectionCell
                 cell.textfieldDelegate = self
-                cell.editEquipmentCellDelegate = self
+                cell.editCuisineCellDelegate = self
                 cell.textField.tag = Int(String(section) + String(row))!
-                cell.configure(equipment: equipment)
+                cell.configure(cuisine: cuisine)
                 
                 return cell
             }
@@ -189,14 +191,14 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonCenterCollectionCell", for: indexPath) as! ButtonCenterCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             }  else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldCenterCollectionCell", for: indexPath) as! EquipmentTextFieldCenterCollectionCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldCenterCollectionCell", for: indexPath) as! CuisineTextFieldCenterCollectionCell
                 cell.textfieldDelegate = self
-                cell.editEquipmentCellDelegate = self
+                cell.editCuisineCellDelegate = self
                 cell.textField.tag = Int(String(section) + String(row))!
-                cell.configure(equipment: equipment)
+                cell.configure(cuisine: cuisine)
                 return cell
             }
             
@@ -204,14 +206,14 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonLeadingCollectionCell", for: indexPath) as! ButtonLeadingCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldLeadingCollectionCell", for: indexPath) as! EquipmentTextFieldLeadingCollectionCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldLeadingCollectionCell", for: indexPath) as! CuisineTextFieldLeadingCollectionCell
                 cell.textfieldDelegate = self
-                cell.editEquipmentCellDelegate = self
+                cell.editCuisineCellDelegate = self
                 cell.textField.tag = Int(String(section) + String(row))!
-                cell.configure(equipment: equipment)
+                cell.configure(cuisine: cuisine)
                 return cell
             }
         }
@@ -222,8 +224,8 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AddButtonHeaderView", for: indexPath) as! AddButtonHeaderView
-        view.editEquipmentCellDelegate = self
-        view.configure(title: "擁有的設備", subTitle: "(可多選)", type: .equipment)
+        view.editCuisineCellDelegate = self
+        view.configure(title: "指定菜式", subTitle: "(可多選)", type: .cuisine)
         return view
     }
     
@@ -247,7 +249,7 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? EquipmentTextFieldCollectionCell {
-            cell.editModeToggleTo(enable: self.equipmentEditModeEnable )
+            cell.editModeToggleTo(enable: self.cuisineEditModeEnable )
         }
     }
     
@@ -257,23 +259,23 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
     
 }
 
-extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout, ButtonSideCollectionCellDelegate {
+extension EditFavoriteCuisineViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout, ButtonSideCollectionCellDelegate {
     func highlight(cell : UICollectionViewCell) {
         detectEquipmentsChanged()
     }
     
     func editModeToggleTo(type: AddButtonHeaderViewType) {
-        guard type == .equipment else {
+        guard type == .cuisine else {
             return
         }
-        guard self.equipments.count > Equipment.examples.count else {
+        guard self.cuisines.count > Equipment.examples.count else {
             return
         }
-        self.equipmentEditModeEnable.toggle()
+        self.cuisineEditModeEnable.toggle()
 
         self.collectionView.visibleCells.forEach() {
             if let cell = $0 as? EquipmentTextFieldCollectionCell {
-                cell.editModeToggleTo(enable: self.equipmentEditModeEnable)
+                cell.editModeToggleTo(enable: self.cuisineEditModeEnable)
             }
         }
     }
@@ -289,9 +291,9 @@ extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDe
 
             let updatedText = text.replacingCharacters(in: range, with: string)
             for cell in collectionView.visibleCells {
-                if let cell = cell as? EquipmentTextFieldCollectionCell {
+                if let cell = cell as? CuisineTextFieldCollectionCell {
                     if cell.textField.tag == textField.tag {
-                        cell.equipment.name = updatedText
+                        cell.cuisine.name = updatedText
                         detectEquipmentsChanged()
                         break
                     }
@@ -302,3 +304,4 @@ extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDe
         return true
     }
 }
+

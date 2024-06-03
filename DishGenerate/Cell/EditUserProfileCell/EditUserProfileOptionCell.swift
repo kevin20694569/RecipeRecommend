@@ -5,6 +5,7 @@ enum EditUserProfileOptionCellType : Int {
 }
 
 
+
 class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
     
     var titleLabel : UILabel! = UILabel()
@@ -26,6 +27,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
         titleLabelLayout()
         valueLabelLayout()
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -42,11 +44,13 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
     
     func titleLabelSetup() {
         titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        titleLabel.textColor = .thirdaryLabel
     }
     
     func valueLabelSetup() {
         valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
         valueLabel.textAlignment = .right
+        valueLabel.textColor = .thirdaryLabel
     }
     
     func titleLabelLayout() {
@@ -66,6 +70,8 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
             editUserProfileCellDelegate?.showEditNameViewController()
         case .dislikeIngredient:
             editUserProfileCellDelegate?.showEditDislikeIngredientViewController()
+        case .cuisine :
+            editUserProfileCellDelegate?.showEditFavoriteCuisineViewController()
         default :
             break
         }

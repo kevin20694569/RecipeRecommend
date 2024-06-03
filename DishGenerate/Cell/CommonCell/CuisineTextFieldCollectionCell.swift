@@ -64,13 +64,16 @@ class EquipmentTextFieldTrailingCollectionCell : EquipmentTextFieldCollectionCel
 class CuisineTextFieldCollectionCell : TextFieldSideCollectionCell {
     
     var cuisine : Cuisine!
+
     
-    weak var generateOptionCellDelegate : GenerateOptionCellDelegate?
+    weak var editCuisineCellDelegate : EditCuisineCellDelegate?
+
+    
     
     override func deleteSelfGesureTrigger(_ gesture: UITapGestureRecognizer) {
         super.deleteSelfGesureTrigger(gesture)
 
-        generateOptionCellDelegate?.deleteCuisine(cuisine: cuisine)
+        editCuisineCellDelegate?.deleteCuisine(cuisine: cuisine)
         
     }
 

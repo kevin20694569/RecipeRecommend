@@ -21,6 +21,7 @@
 		231341B12BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */; };
 		233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditDislikeViewController.swift */; };
 		233771A42C0D9AF500135497 /* SavedDishesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedDishesViewController.swift */; };
+		233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* DishTableViewController.swift */; };
@@ -120,6 +121,7 @@
 		231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonCollectionCell.swift; sourceTree = "<group>"; };
 		233771A12C0D66A200135497 /* EditDislikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDislikeViewController.swift; sourceTree = "<group>"; };
 		233771A32C0D9AF500135497 /* SavedDishesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedDishesViewController.swift; sourceTree = "<group>"; };
+		233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFavoriteCuisineViewController.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
 				236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */,
 				233771A12C0D66A200135497 /* EditDislikeViewController.swift */,
+				233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */,
 				233771A32C0D9AF500135497 /* SavedDishesViewController.swift */,
 			);
 			path = VIewController;
@@ -667,6 +670,7 @@
 				233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */,
 				23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */,
 				234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */,
+				233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */,
 				234BF5572BDEB8E80012CF6A /* CellProtocol.swift in Sources */,
 				2313419E2BEB4C120015DFA6 /* InputPhotoIngredientCollectionCell.swift in Sources */,
 				23C210242BFB8F06008F74D0 /* GeneratedDishesDisplayController.swift in Sources */,

@@ -1,12 +1,8 @@
 import UIKit
-
-
-
 class StepIngredientCell : GroupCornerBackgroundTableCell {
     
     var ingredient : Ingredient!
-    
-    
+
     var quantityLabel : UILabel! = UILabel()
     var nameLabel : UILabel! = UILabel()
     
@@ -15,9 +11,6 @@ class StepIngredientCell : GroupCornerBackgroundTableCell {
         nameLabel.text = ingredient.name
         quantityLabel.text = ingredient.quantity
     }
-    
-
-    
     
     func initLayout() {
         [nameLabel, quantityLabel].forEach() {
@@ -38,20 +31,24 @@ class StepIngredientCell : GroupCornerBackgroundTableCell {
         
     }
     
-    func separatorSetup() {
+    override func cellSetup() {
+        super.cellSetup()
         let bounds = UIScreen.main.bounds
-        separatorInset = UIEdgeInsets(top: 0, left: bounds.width, bottom: 0, right: bounds.width)
+        separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2, bottom: 0, right: bounds.width / 2)
     }
-
     
-
-
+    override func cellTapGestureSetup() {
+        super.cellTapGestureSetup()
+        cellTapGesture.isEnabled = false
+    }
     
     func labelSetup() {
         quantityLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         quantityLabel.numberOfLines = 0
+        quantityLabel.textColor = .thirdaryLabel
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         nameLabel.clipsToBounds = true
+        nameLabel.textColor = .thirdaryLabel
     
     }
     
@@ -59,7 +56,6 @@ class StepIngredientCell : GroupCornerBackgroundTableCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundSetup()
         labelSetup()
-        separatorSetup()
         initLayout()
     }
     

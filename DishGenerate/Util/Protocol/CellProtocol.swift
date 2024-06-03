@@ -110,6 +110,15 @@ enum GeneratedOptionIntertactionSection {
     case equipment, cuisine
 }
 
+protocol EditCuisineCellDelegate : NSObject, AddButtonHeaderViewDelegate  {
+    var collectionView : UICollectionView! { get }
+    var cuisines : [Cuisine] { get set }
+    var cuisineEditModeEnable : Bool! { get set }
+    func addCuisineCell(cuisine : Cuisine)
+    
+    func deleteCuisine(cuisine : Cuisine)
+}
+
 protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
     var collectionView : UICollectionView! { get }
     var equipments : [Equipment] { get set }
@@ -120,20 +129,13 @@ protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
     
 }
 
-protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate {
+protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate, EditCuisineCellDelegate {
     var quantity : Int { get set }
-    
-    var cuisines : [Cuisine] { get set }
-    
+
     var ingrdients : [Ingredient] { get set }
     
     var temperature : Double { get set }
-    
-    var cuisineEditModeEnable : Bool! { get set }
 
-    func addCuisineCell(cuisine : Cuisine)
-    
-    func deleteCuisine(cuisine : Cuisine)
 }
 
 extension GenerateOptionCellDelegate {
@@ -176,6 +178,7 @@ protocol EditUserProfileCellDelegate : UIViewController {
     func showUserImageSelectedPhotoViewController()
     func showEditNameViewController()
     func showEditDislikeIngredientViewController()
+    func showEditFavoriteCuisineViewController()
 }
 
 extension EditUserProfileCellDelegate {
@@ -188,5 +191,11 @@ extension EditUserProfileCellDelegate {
     func showEditDislikeIngredientViewController() {
         let controller = EditDislikeViewController(equipments: Equipment.examples)
         self.show(controller, sender: nil)
+    }
+    
+    func showEditFavoriteCuisineViewController() {
+        let controller = EditFavoriteCuisineViewController(cuisines: Cuisine.examples)
+        self.show(controller, sender: nil)
+        
     }
 }

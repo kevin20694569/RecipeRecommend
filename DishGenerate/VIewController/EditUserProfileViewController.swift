@@ -35,6 +35,8 @@ class EditUserProfileViewController : UIViewController {
         tableView.sectionHeaderHeight = 0
         tableView.isScrollEnabled = false
         tableView.allowsSelection = false
+        
+        
     }
     
     func viewSetup() {
@@ -44,7 +46,6 @@ class EditUserProfileViewController : UIViewController {
     func registerCell() {
         tableView.register(EditUserProfileUserImageViewTableCell.self, forCellReuseIdentifier: "EditUserProfileUserImageViewTableCell")
         tableView.register(EditUserProfileOptionCell.self, forCellReuseIdentifier: "EditUserProfileOptionCell")
-        
     }
     
     func initLayout() {
@@ -89,6 +90,7 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         }
         let row = indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: "EditUserProfileOptionCell", for: indexPath) as! EditUserProfileOptionCell
+        
         cell.editUserProfileCellDelegate = self
         let title = options[row]
         var value : String = ""
@@ -139,6 +141,31 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         }
         return 10
     }
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if indexPath.section == 0 {
+            return nil
+        }
+        return indexPath
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*let type = EditUserProfileOptionCellType(rawValue: indexPath.row)
+        switch type {
+        case .userName :
+            break
+        case .dislikeIngredient :
+            showEditDislikeIngredientViewController()
+        case .cuisine :
+            showEditFavoriteCuisineViewController()
+        default :
+            break
+        }*/
+       
+    }
+    
+    
 }
 
 extension EditUserProfileViewController : EditUserProfileCellDelegate {

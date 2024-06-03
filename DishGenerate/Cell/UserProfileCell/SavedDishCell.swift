@@ -32,6 +32,7 @@ class SavedDishCell : UICollectionViewCell {
         self.dish = dish
         self.titleLabel.text = dish.name
         complexityLabel.text = dish.complexity
+        self.imageView.image = dish.image
     }
     
     func initLayout() {

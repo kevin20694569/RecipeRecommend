@@ -334,7 +334,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let cuisine = model as? Cuisine {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldTrailingCollectionCell", for: indexPath) as! CuisineTextFieldTrailingCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editCuisineCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(cuisine: cuisine)
                     return cell
@@ -355,7 +355,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let cuisine = model as? Cuisine {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldCenterCollectionCell", for: indexPath) as! CuisineTextFieldCenterCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editCuisineCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(cuisine: cuisine)
                     return cell
@@ -375,7 +375,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let cuisine = model as? Cuisine {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldLeadingCollectionCell", for: indexPath) as! CuisineTextFieldLeadingCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editCuisineCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(cuisine: cuisine)
                     return cell

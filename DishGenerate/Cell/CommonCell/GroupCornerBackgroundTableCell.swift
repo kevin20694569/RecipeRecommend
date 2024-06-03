@@ -5,6 +5,8 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     
     var customAccessoryImageView : UIImageView! = UIImageView()
     
+    
+    
     var cellTapGesture : BackGroundColorTriggerTapGesture!
 
     func configureCorners(topCornerMask : Bool?) {
@@ -19,6 +21,7 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     func cellTapGestureSetup() {
         cellTapGesture = BackGroundColorTriggerTapGesture(target: self, action: #selector(cellGestureTriggered ( _ : )), originalBackgroundColor: background.backgroundColor, triggerColor: nil)
         background.addGestureRecognizer(cellTapGesture)
+       // cellTapGesture.isEnabled = false
     }
     
     @objc func cellGestureTriggered( _ gesture : UITapGestureRecognizer  ) {
@@ -31,16 +34,25 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
         background.backgroundColor = UIColor.thirdaryBackground
         background.clipsToBounds = true
         background.layer.cornerRadius = 20
+        
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        cellSetup()
         backgroundSetup()
         cellTapGestureSetup()
         backgroundLayout()
         customAccessoryImageViewSetup()
         customAccessoryImageViewLayout()
         
+    }
+    
+    func cellSetup() {
+        
+        let bounds = UIScreen.main.bounds
+        self.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2, bottom: 0, right: bounds.width / 2)
+        selectionStyle = .none
     }
     func customAccessoryImageViewSetup() {
         let checkmarkImage = UIImage(systemName: "chevron.right")?.withTintColor(.thirdaryLabel, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)))
@@ -76,7 +88,23 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
             background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             background.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
-        
-        
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        if selected {
+            triggerBackgroundColor()
+        } else {
+            recoverBackgroundColor()
+        }
+    }
+    
+    func recoverBackgroundColor() {
+        background.alpha = 1
+
+    }
+    
+    func triggerBackgroundColor() {
+        background.alpha = 0.5
     }
 }

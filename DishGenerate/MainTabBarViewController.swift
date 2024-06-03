@@ -12,7 +12,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     static var bottomBarFrame : CGRect! = .zero
     
-    var currentIndex : Int! = 1
+    var currentIndex : Int! = 0
     
     var tabBar : UITabBar! = UITabBar()
     
@@ -118,7 +118,10 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     func showViewController(at index: Int) {
         let selectedViewController = viewControllers[index]
-        
+        if currentIndex == index {
+            selectedViewController.popToRootViewController(animated: true)
+            return
+        }
         currentIndex = index
         view.addSubview(selectedViewController.view)
         selectedViewController.didMove(toParent: self)

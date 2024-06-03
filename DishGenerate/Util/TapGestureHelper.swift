@@ -13,7 +13,7 @@ class TapGestureHelper {
         view.isUserInteractionEnabled = true
         
         // 在 window 上增加手勢
-        view.addGestureRecognizer(tapGestureRecognizer!)
+        view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     @objc func dismissKeyBoard(tap: UITapGestureRecognizer) {

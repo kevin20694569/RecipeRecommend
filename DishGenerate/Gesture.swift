@@ -52,10 +52,12 @@ class BackGroundColorTriggerTapGesture : UITapGestureRecognizer, UIGestureRecogn
     }
     
     func recoverBackgroundColor() {
-        view?.backgroundColor = self.viewOriginalBackgroundColor
+        view?.alpha = 1
+       // view?.backgroundColor = self.viewOriginalBackgroundColor
     }
     
     func triggerBackgroundColor() {
-        view?.backgroundColor = triggerColor
+        view?.alpha = 0.5
+        //view?.backgroundColor = triggerColor
     }
 }

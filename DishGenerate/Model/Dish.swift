@@ -21,6 +21,7 @@ class Dish {
     var image : UIImage?
     
     var liked : Bool = false
+    var collected : Bool = false
     
     var status : DishGenerateStatus = .none
     

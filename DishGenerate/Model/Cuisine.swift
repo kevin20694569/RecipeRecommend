@@ -1,9 +1,13 @@
 
 import UIKit
 
-class Cuisine : SelectedModel  {
+class Cuisine : SelectedModel, NSCopying   {
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Cuisine(name: name, isSelected: isSelected)
+    }
+    
     static func == (lhs: Cuisine, rhs: Cuisine) -> Bool {
-        lhs.id == rhs.id
+        (lhs.id == rhs.id || lhs.name == rhs.name) && lhs.isSelected == rhs.isSelected
     }
     
     
