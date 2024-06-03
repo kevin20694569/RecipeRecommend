@@ -19,6 +19,7 @@
 		231341AD2BEBB2900015DFA6 /* IndicatorLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */; };
 		231341AF2BEBBAB90015DFA6 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AE2BEBBAB90015DFA6 /* LineView.swift */; };
 		231341B12BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */; };
+		233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditDislikeViewController.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* DishTableViewController.swift */; };
@@ -116,6 +117,7 @@
 		231341AC2BEBB2900015DFA6 /* IndicatorLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorLabelView.swift; sourceTree = "<group>"; };
 		231341AE2BEBBAB90015DFA6 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonCollectionCell.swift; sourceTree = "<group>"; };
+		233771A12C0D66A200135497 /* EditDislikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDislikeViewController.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -334,6 +336,7 @@
 				23C210292BFCFE1B008F74D0 /* DishDetailViewController.swift */,
 				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
 				236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */,
+				233771A12C0D66A200135497 /* EditDislikeViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -658,6 +661,7 @@
 				23B501282BF4F62E00EAB2D7 /* DishGenerateOptionViewController.swift in Sources */,
 				236B9EEB2C0CB8760004E15A /* User.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
+				233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */,
 				23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */,
 				234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */,
 				234BF5572BDEB8E80012CF6A /* CellProtocol.swift in Sources */,

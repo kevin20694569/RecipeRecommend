@@ -4,12 +4,12 @@ class EquipmentTextFieldCollectionCell : TextFieldSideCollectionCell {
     
     var equipment : Equipment!
     
-    weak var generateOptionCellDelegate : GenerateOptionCellDelegate?
+    weak var editEquipmentCellDelegate : EditEquipmentCellDelegate?
     
     override func deleteSelfGesureTrigger(_ gesture: UITapGestureRecognizer) {
         super.deleteSelfGesureTrigger(gesture)
 
-        generateOptionCellDelegate?.deleteEquipment(equipment: equipment)
+        editEquipmentCellDelegate?.deleteEquipment(equipment: equipment)
         
     }
 

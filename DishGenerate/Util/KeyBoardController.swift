@@ -4,7 +4,20 @@ import UIKit
 protocol KeyBoardControllerDelegate : UIViewController {
     var activeTextField : UITextField? { get set }
     var activeTextView : UITextView? { get set }
+    var keyboardController : KeyBoardController! { get set }
+    func registerKeyboardNotification()
+    func keyboardShown(notification: Notification)
+    func keyboardHidden(notification: Notification)
     
+}
+extension KeyBoardControllerDelegate {
+    
+    func keyboardShown(notification: Notification) {
+        self.keyboardController.keyboardShown(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
+    }
+    func keyboardHidden(notification: Notification) {
+        self.keyboardController.keyboardHidden(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
+    }
 }
 
 class KeyBoardController : NSObject {

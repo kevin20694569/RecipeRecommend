@@ -3,16 +3,18 @@ import UIKit
 class EditUserProfileViewController : UIViewController {
     var tableView : UITableView! = UITableView()
     
-    var options : [String]! = ["暱稱", "討厭的食材"]
+    var options : [String]! = ["暱稱", "討厭的食材", "喜好的菜式"]
     
     var user : User!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewSetup()
         registerCell()
         navItemSetup()
         tableViewSetup()
         initLayout()
+        
     }
     
     init(user: User) {
@@ -31,8 +33,12 @@ class EditUserProfileViewController : UIViewController {
         tableView.separatorStyle = .none
         tableView.sectionFooterHeight = 0
         tableView.sectionHeaderHeight = 0
-       // tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        tableView.isScrollEnabled = false
         tableView.allowsSelection = false
+    }
+    
+    func viewSetup() {
+        view.backgroundColor = .primaryBackground   
     }
     
     func registerCell() {
@@ -56,6 +62,7 @@ class EditUserProfileViewController : UIViewController {
     
     func navItemSetup() {
         self.navigationItem.title = "編輯個人檔案"
+        navigationItem.backButtonTitle = ""
     }
 }
 
@@ -87,17 +94,20 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         var value : String = ""
         var cellType : EditUserProfileOptionCellType! = cell.cellType
         
-        if row == 0 {
-            value = user.name
-            cell.configureCorners(topCornerMask: true)
-            cellType = .userName
-        } else if row == options.count - 1 {
+        if row == options.count - 1 {
             cell.configureCorners(topCornerMask: false)
-            cell.customAccessoryImageView.isHidden = false
-            cellType = .dislikeIngredient
         } else {
             cell.configureCorners(topCornerMask: nil)
         }
+        switch row {
+        case 0 :
+            value = user.name
+            cell.configureCorners(topCornerMask: true)
+            break
+        default :
+            cell.customAccessoryImageView.isHidden = false
+        }
+        cellType = .init(rawValue: row)
         cell.configure(title: title, value: value, cellType: cellType)
         
         return cell

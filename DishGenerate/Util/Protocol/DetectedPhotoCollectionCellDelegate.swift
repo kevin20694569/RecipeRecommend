@@ -22,7 +22,7 @@ protocol OptionGeneratedAddButtonHeaderViewDelegate : AddButtonHeaderViewDelegat
 }
 
 protocol DetectedPhotoCollectionCellDelegate : IngredientCellDelegate {
-  //  func reloadSection(sectionIndex : Int)
+
     
 }
 

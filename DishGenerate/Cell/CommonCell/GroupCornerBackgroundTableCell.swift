@@ -5,7 +5,7 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     
     var customAccessoryImageView : UIImageView! = UIImageView()
     
-    var cellTapGesture : BackGroundColorTriggerTapGesture! = BackGroundColorTriggerTapGesture()
+    var cellTapGesture : BackGroundColorTriggerTapGesture!
 
     func configureCorners(topCornerMask : Bool?) {
         guard let topCornerMask = topCornerMask else {
@@ -17,12 +17,13 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     }
     
     func cellTapGestureSetup() {
-        cellTapGesture = BackGroundColorTriggerTapGesture(target: self, action: #selector(cellGestureTriggered ( _ : )))
+        cellTapGesture = BackGroundColorTriggerTapGesture(target: self, action: #selector(cellGestureTriggered ( _ : )), originalBackgroundColor: background.backgroundColor, triggerColor: nil)
         background.addGestureRecognizer(cellTapGesture)
     }
     
     @objc func cellGestureTriggered( _ gesture : UITapGestureRecognizer  ) {
-        
+
+
     }
     
     func backgroundSetup() {
@@ -34,8 +35,8 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        cellTapGestureSetup()
         backgroundSetup()
+        cellTapGestureSetup()
         backgroundLayout()
         customAccessoryImageViewSetup()
         customAccessoryImageViewLayout()

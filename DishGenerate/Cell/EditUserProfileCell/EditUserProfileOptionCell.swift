@@ -1,7 +1,7 @@
 import UIKit
 
-enum EditUserProfileOptionCellType {
-    case userName, dislikeIngredient
+enum EditUserProfileOptionCellType : Int {
+    case userName, dislikeIngredient, cuisine
 }
 
 
@@ -60,9 +60,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
     }
     
     override func cellGestureTriggered( _ gesture : UITapGestureRecognizer ) {
-       // switch gesture.state {
-        //case .began :
-       // }
+        super.cellGestureTriggered(gesture)
         switch self.cellType {
         case .userName:
             editUserProfileCellDelegate?.showEditNameViewController()

@@ -96,6 +96,8 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     
     weak var optionGeneratedAddButtonHeaderViewDelegate : OptionGeneratedAddButtonHeaderViewDelegate?
     
+    weak var editEquipmentCellDelegate : EditEquipmentCellDelegate?
+    
     var type : AddButtonHeaderViewType! = .equipment
     
     var editButton : ZoomAnimatedButton! = ZoomAnimatedButton()
@@ -175,9 +177,19 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
         case .ingredient :
             ingredientAddButtonHeaderViewDelegate?.insertNewIngredient(ingredient: Ingredient(),section: .Text)
         case .equipment :
-            optionGeneratedAddButtonHeaderViewDelegate?.addEquipmentCell(equipment: Equipment())
+            if let delegate = optionGeneratedAddButtonHeaderViewDelegate {
+                delegate.addEquipmentCell(equipment: Equipment())
+                return
+            }
+            if let delegate = editEquipmentCellDelegate {
+                delegate.addEquipmentCell(equipment: Equipment())
+                return
+            }
         case .cuisine :
-            optionGeneratedAddButtonHeaderViewDelegate?.addCuisineCell(cuisine: Cuisine())
+            if let delegate = optionGeneratedAddButtonHeaderViewDelegate {
+                delegate.addCuisineCell(cuisine: Cuisine())
+                return 
+            }
 
         case .none:
             break
@@ -186,8 +198,18 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
         
     }
     
+    
     @objc func editButtonTapped( _ button : UIButton) {
-        ingredientAddButtonHeaderViewDelegate?.editModeToggleTo(type: self.type)
-        optionGeneratedAddButtonHeaderViewDelegate?.editModeToggleTo(type: self.type)
+        if let delegate = ingredientAddButtonHeaderViewDelegate {
+            delegate.editModeToggleTo(type: self.type)
+            return
+        }
+        if let delegate = optionGeneratedAddButtonHeaderViewDelegate {
+            delegate.editModeToggleTo(type: self.type)
+            return
+        }
+        if let delegate = self.editEquipmentCellDelegate {
+            delegate.editModeToggleTo(type: self.type)
+        }
     }
 }

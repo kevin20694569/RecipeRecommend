@@ -110,29 +110,28 @@ enum GeneratedOptionIntertactionSection {
     case equipment, cuisine
 }
 
-protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate {
-    
+protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
     var collectionView : UICollectionView! { get }
-    var quantity : Int { get set }
     var equipments : [Equipment] { get set }
+    func addEquipmentCell(equipment : Equipment)
+    func deleteEquipment(equipment : Equipment)
+    var equipmentEditModeEnable: Bool! { get set }
+}
+
+protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate {
+    var quantity : Int { get set }
     
     var cuisines : [Cuisine] { get set }
+    
     var ingrdients : [Ingredient] { get set }
     
     var temperature : Double { get set }
     
     var cuisineEditModeEnable : Bool! { get set }
-    
-    var equipmentEditModeEnable: Bool! { get set }
-    
-    func addEquipmentCell(equipment : Equipment)
-    func deleteEquipment(equipment : Equipment)
-    
-    func addCuisineCell(cuisine : Cuisine)
-    func deleteCuisine(cuisine : Cuisine)
-        
-    
 
+    func addCuisineCell(cuisine : Cuisine)
+    
+    func deleteCuisine(cuisine : Cuisine)
 }
 
 extension GenerateOptionCellDelegate {
@@ -185,6 +184,7 @@ extension EditUserProfileCellDelegate {
         
     }
     func showEditDislikeIngredientViewController() {
-        
+        let controller = EditDislikeViewController(equipments: Equipment.examples)
+        self.show(controller, sender: nil)
     }
 }

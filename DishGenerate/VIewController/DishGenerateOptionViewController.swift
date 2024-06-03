@@ -1,6 +1,11 @@
 import UIKit
 
 class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
+    func registerKeyboardNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     func editModeToggleTo(type: AddButtonHeaderViewType) {
         switch type {
         case .equipment :
@@ -139,8 +144,7 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+        registerKeyboardNotification()
         registerCell()
         registerCollectionHeaderView()
         collcectionViewSetup()
@@ -323,7 +327,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let equipment = model as? Equipment {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldTrailingCollectionCell", for: indexPath) as! EquipmentTextFieldTrailingCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editEquipmentCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(equipment: equipment)
                     return cell
@@ -344,7 +348,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let equipment = model as? Equipment {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldCenterCollectionCell", for: indexPath) as! EquipmentTextFieldCenterCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editEquipmentCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(equipment: equipment)
                     return cell
@@ -364,7 +368,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
                 } else if let equipment = model as? Equipment {
                     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldLeadingCollectionCell", for: indexPath) as! EquipmentTextFieldLeadingCollectionCell
                     cell.textfieldDelegate = self
-                    cell.generateOptionCellDelegate = self
+                    cell.editEquipmentCellDelegate = self
                     cell.textField.tag = Int(String(section) + String(row))!
                     cell.configure(equipment: equipment)
                     return cell
