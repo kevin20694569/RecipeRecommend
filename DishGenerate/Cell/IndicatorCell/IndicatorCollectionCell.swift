@@ -17,7 +17,7 @@ class IndicatorCollectionCell : UICollectionViewCell, IndicatorCell {
     
     var stackView : UIStackView! = UIStackView()
     
-    let navTitleArray : [String]! = ["照片輸入食材", "確認食材", "詳細需求", "生產食譜"]
+    let navTitleArray : [String]! = ["照片輸入食材", "確認食材", "詳細需求"]
 
     func indicatorViewSetup() {
         

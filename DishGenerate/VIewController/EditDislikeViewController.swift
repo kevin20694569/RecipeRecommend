@@ -20,16 +20,28 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
+    var rightButtonItem : UIBarButtonItem!
+    
     lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
     
-    var equipments : [Equipment] = Equipment.examples
+    var equipments : [Equipment] = []
     
     var equipmentEditModeEnable : Bool! = false
     
+    var equipmentsChanged : Bool! = false { didSet {
+        rightButtonItem.isEnabled = equipmentsChanged
+    }}
+    
+    var initEquipments : [Equipment] = []
+    
     init(equipments : [Equipment]) {
         super.init(nibName: nil, bundle: nil)
+        initEquipments = equipments.compactMap() { equipment in
+            return equipment.copy() as? Equipment
+        }
         self.equipments = equipments
         
+
     }
     
     required init?(coder: NSCoder) {
@@ -39,6 +51,7 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
+        navItemSetup()
         registerKeyboardNotification()
         registerCell()
         registerCollectionHeaderView()
@@ -49,8 +62,7 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     func viewSetup() {
         view.backgroundColor = .primaryBackground
     }
-    
-    
+
     func initLayout() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
@@ -90,14 +102,34 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
         if equipments.count <= Equipment.examples.count {
             self.equipmentEditModeEnable = false
         }
+        detectEquipmentsChanged()
     }
     
-    
+    func detectEquipmentsChanged() {
+        let validEquipments = self.equipments.filter { equipment in
+            return equipment.name != nil && equipment.name != ""
+        }
+        
+        equipmentsChanged = !(validEquipments == initEquipments)
+
+    }
     
     func addEquipmentCell(equipment: Equipment) {
         self.equipments.append(equipment)
         let indexPath = IndexPath(row: equipments.count - 1, section: 0)
         collectionView.insertItems(at: [indexPath])
+        detectEquipmentsChanged()
+    }
+    
+    func navItemSetup() {
+        rightButtonItem = UIBarButtonItem(title: "儲存", style: .plain, target: self, action: #selector(rightButtonItemTapped ( _ : )))
+        self.navigationItem.rightBarButtonItem = rightButtonItem
+        rightButtonItem.isEnabled = false
+    }
+
+    
+    @objc func rightButtonItemTapped(_ buttonItem : UIBarButtonItem) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     func registerCell() {
@@ -137,7 +169,7 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
         case 0 :
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonTrailngCollectionCell", for: indexPath) as! ButtonTrailngCollectionCell
-                
+                cell.buttonSideCollectionCellDelegate = self
                 cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
                 return cell
             } else {
@@ -146,13 +178,14 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
                 cell.editEquipmentCellDelegate = self
                 cell.textField.tag = Int(String(section) + String(row))!
                 cell.configure(equipment: equipment)
+                
                 return cell
             }
             
         case 1 :
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonCenterCollectionCell", for: indexPath) as! ButtonCenterCollectionCell
-
+                cell.buttonSideCollectionCellDelegate = self
                 cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
                 return cell
             }  else {
@@ -167,6 +200,7 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
         default:
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonLeadingCollectionCell", for: indexPath) as! ButtonLeadingCollectionCell
+                cell.buttonSideCollectionCellDelegate = self
                 cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
                 return cell
             } else {
@@ -208,13 +242,23 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
         return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
     }
     
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let cell = cell as? EquipmentTextFieldCollectionCell {
+            cell.editModeToggleTo(enable: self.equipmentEditModeEnable )
+        }
+    }
+    
     
     
     
     
 }
 
-extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout {
+extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout, ButtonSideCollectionCellDelegate {
+    func highlight(cell : UICollectionViewCell) {
+        detectEquipmentsChanged()
+    }
+    
     func editModeToggleTo(type: AddButtonHeaderViewType) {
         guard type == .equipment else {
             return
@@ -223,7 +267,7 @@ extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDe
             return
         }
         self.equipmentEditModeEnable.toggle()
-        
+
         self.collectionView.visibleCells.forEach() {
             if let cell = $0 as? EquipmentTextFieldCollectionCell {
                 cell.editModeToggleTo(enable: self.equipmentEditModeEnable)
@@ -231,8 +275,27 @@ extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDe
         }
     }
     
+    
+    
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeTextField = textField
+    }
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text as NSString? {
+
+            let updatedText = text.replacingCharacters(in: range, with: string)
+            for cell in collectionView.visibleCells {
+                if let cell = cell as? EquipmentTextFieldCollectionCell {
+                    if cell.textField.tag == textField.tag {
+                        cell.equipment.name = updatedText
+                        detectEquipmentsChanged()
+                        break
+                    }
+                }
+            }
+        }
+        
+        return true
     }
 }

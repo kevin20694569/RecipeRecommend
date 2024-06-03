@@ -116,6 +116,8 @@ protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
     func addEquipmentCell(equipment : Equipment)
     func deleteEquipment(equipment : Equipment)
     var equipmentEditModeEnable: Bool! { get set }
+    
+    
 }
 
 protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate {

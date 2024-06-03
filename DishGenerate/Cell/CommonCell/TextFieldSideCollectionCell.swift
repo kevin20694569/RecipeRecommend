@@ -83,9 +83,6 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
         background.clipsToBounds = true
         background.layer.cornerRadius = 12
     }
-    
-  
-    
 
     
     func textFieldSetup() {

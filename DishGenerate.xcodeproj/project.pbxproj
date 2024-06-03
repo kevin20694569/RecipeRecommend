@@ -20,6 +20,7 @@
 		231341AF2BEBBAB90015DFA6 /* LineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341AE2BEBBAB90015DFA6 /* LineView.swift */; };
 		231341B12BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */; };
 		233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditDislikeViewController.swift */; };
+		233771A42C0D9AF500135497 /* SavedDishesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedDishesViewController.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* DishTableViewController.swift */; };
@@ -43,7 +44,7 @@
 		236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784352C05CC74006C18A3 /* UserProfileViewController.swift */; };
 		236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */; };
 		2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */; };
-		2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */; };
+		2367843D2C05F59A006C18A3 /* SavedDishCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843C2C05F59A006C18A3 /* SavedDishCell.swift */; };
 		236B9EE92C0C9CA70004E15A /* EditUserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */; };
 		236B9EEB2C0CB8760004E15A /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EEA2C0CB8760004E15A /* User.swift */; };
 		236B9EED2C0CBEFC0004E15A /* ImageViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236B9EEC2C0CBEFC0004E15A /* ImageViewTableCell.swift */; };
@@ -118,6 +119,7 @@
 		231341AE2BEBBAB90015DFA6 /* LineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineView.swift; sourceTree = "<group>"; };
 		231341B02BEBCDFC0015DFA6 /* AddButtonCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButtonCollectionCell.swift; sourceTree = "<group>"; };
 		233771A12C0D66A200135497 /* EditDislikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDislikeViewController.swift; sourceTree = "<group>"; };
+		233771A32C0D9AF500135497 /* SavedDishesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedDishesViewController.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -145,7 +147,7 @@
 		236784352C05CC74006C18A3 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailCollectionCell.swift; sourceTree = "<group>"; };
 		2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadingLogoHeaderView.swift; sourceTree = "<group>"; };
-		2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDishCell.swift; sourceTree = "<group>"; };
+		2367843C2C05F59A006C18A3 /* SavedDishCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedDishCell.swift; sourceTree = "<group>"; };
 		236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserProfileViewController.swift; sourceTree = "<group>"; };
 		236B9EEA2C0CB8760004E15A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		236B9EEC2C0CBEFC0004E15A /* ImageViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewTableCell.swift; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
 				236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */,
 				233771A12C0D66A200135497 /* EditDislikeViewController.swift */,
+				233771A32C0D9AF500135497 /* SavedDishesViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -408,7 +411,7 @@
 			isa = PBXGroup;
 			children = (
 				236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */,
-				2367843C2C05F59A006C18A3 /* UserProfileDishCell.swift */,
+				2367843C2C05F59A006C18A3 /* SavedDishCell.swift */,
 			);
 			path = UserProfileCell;
 			sourceTree = "<group>";
@@ -673,7 +676,7 @@
 				23BA50BA2BF36AD300E3B85A /* CameraControllerDelegate.swift in Sources */,
 				236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */,
 				231341A12BEB4F6F0015DFA6 /* StepIndicatorCollectionCell.swift in Sources */,
-				2367843D2C05F59A006C18A3 /* UserProfileDishCell.swift in Sources */,
+				2367843D2C05F59A006C18A3 /* SavedDishCell.swift in Sources */,
 				236B9EED2C0CBEFC0004E15A /* ImageViewTableCell.swift in Sources */,
 				23C210282BFCEE37008F74D0 /* Step.swift in Sources */,
 				23C210202BFB28E6008F74D0 /* Equipment.swift in Sources */,
@@ -689,6 +692,7 @@
 				234BF55C2BDEC65E0012CF6A /* MainTabBarViewController.swift in Sources */,
 				231341AD2BEBB2900015DFA6 /* IndicatorLabelView.swift in Sources */,
 				23B501262BF4E72400EAB2D7 /* KeyBoardController.swift in Sources */,
+				233771A42C0D9AF500135497 /* SavedDishesViewController.swift in Sources */,
 				23C210182BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift in Sources */,
 				23C2101E2BFB27D7008F74D0 /* TextFieldSideCollectionCell.swift in Sources */,
 				23BA50B22BF3160500E3B85A /* View.swift in Sources */,

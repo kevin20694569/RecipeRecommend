@@ -427,6 +427,9 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let section = indexPath.section
         let screenBounds = UIScreen.main.bounds
+        if section == 0 {
+            return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
+        }
         if section == 1 {
             let font = UIFont.preferredFont(forTextStyle: .title3)
             return CGSize(width: screenBounds.width, height: font.lineHeight + 20)
@@ -467,7 +470,6 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
         
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SubLabelTitleLabelHeaderView", for: indexPath) as! SubLabelTitleLabelHeaderView
-        
         view.configure(title: option.title, subTitle: option.subTitle)
         return view
     }

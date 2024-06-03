@@ -30,10 +30,10 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     func showDishGeneratedOptionViewController() {
         var ingredients : [Ingredient] = self.photoOutputedIngredients.filter { ingredient in
-            return ingredient.name != nil
+            return ingredient.name != nil && ingredient.name != ""
         }
         let textOuputed = self.textInputIngredients.filter { ingredient in
-            return ingredient.name != nil
+            return ingredient.name != nil && ingredient.name != ""
         }
         ingredients += textOuputed
         let controller = DishGeneratedOptionViewController(ingredients: ingredients)
@@ -383,10 +383,10 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         let section = indexPath.section
         let screenBounds = UIScreen.main.bounds
         if section == 0 {
-            return CGSize(width: view.bounds.width, height: screenBounds.height * 0.08)
+            return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
         }
         if section == 1 {
-            return CGSize(width: view.bounds.width, height: screenBounds.height * 0.38)
+            return CGSize(width: screenBounds.width, height: screenBounds.height * 0.38)
         }
         let size = UIFont.preferredFont(forTextStyle: .title3)
         let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
@@ -410,7 +410,8 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
             return headerView
         }
         
-        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
+        return view
         
     }
     
@@ -429,8 +430,6 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         }
-        
-        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         
         if photoInputedIngredients.count < 1 && photoOutputedIngredients.count < 1 {

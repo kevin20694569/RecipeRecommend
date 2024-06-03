@@ -24,7 +24,7 @@ class User : Equatable {
     
     }
     
-    static let example : User = User(id: "id", name: "黃楷程", image: UIImage.焗烤玉米濃湯, image_URL: nil)
+    static let example : User = User(id: "id", name: "NameNameNameName", image: UIImage.焗烤玉米濃湯, image_URL: nil)
     
     
 }

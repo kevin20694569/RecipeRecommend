@@ -11,6 +11,8 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     var nameLabel : UILabel! = UILabel()
     
+    var user : User!
+    
     var editButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var editButtonTitleAttributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)])
@@ -41,7 +43,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         NSLayoutConstraint.activate([
 
             
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bounds.width * 0.13),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bounds.width * 0.08),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
@@ -56,6 +58,10 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         imageView.layoutIfNeeded()
         imageView.layer.cornerRadius = imageView.bounds.height / 2
     }
+    func configure(user : User) {
+        self.user = user
+        nameLabel.text = user.name
+    }
     
     func imageViewSetup() {
         imageView.backgroundColor = .thirdaryBackground
@@ -66,7 +72,8 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     func labelSetup() {
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        nameLabel.text = "這裡是名字"
+        nameLabel.text = ""
+        nameLabel.adjustsFontSizeToFitWidth = true
     }
     
     func buttonSetup() {

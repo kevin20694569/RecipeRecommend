@@ -1,6 +1,6 @@
 import UIKit
 
-class UserProfileDishCell : UICollectionViewCell {
+class SavedDishCell : UICollectionViewCell {
     
     var dish : Dish!
     

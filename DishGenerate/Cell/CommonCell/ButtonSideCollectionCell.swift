@@ -1,9 +1,14 @@
 import UIKit
+protocol ButtonSideCollectionCellDelegate : NSObject {
+    func highlight(cell : UICollectionViewCell)
+}
 class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSideCell {
     
     var button : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var anchorSide : HorizontalAnchorSide! = .center
+    
+    weak var buttonSideCollectionCellDelegate : ButtonSideCollectionCellDelegate?
     
 
     var model : (any SelectedModel)!
@@ -17,6 +22,7 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
         .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium),
         .foregroundColor : UIColor.white
     ])
+    
     
     
     override init(frame: CGRect) {
@@ -62,6 +68,7 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
     @objc func buttonTapped( _ button : UIButton) {
         model.isSelected.toggle()
         highlight(title: self.model.name, selected: model.isSelected)
+        buttonSideCollectionCellDelegate?.highlight(cell: self)
     }
     
 

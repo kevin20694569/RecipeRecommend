@@ -8,15 +8,17 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var userProfileNavViewController : UINavigationController!
     
+    var savedDishesNavViewController : UINavigationController!
+    
     static var bottomBarFrame : CGRect! = .zero
     
-    var currentIndex : Int! = 0
+    var currentIndex : Int! = 1
     
     var tabBar : UITabBar! = UITabBar()
     
     var bottomBarView : UIView! = UIView()
     
-    lazy var viewControllers : [UINavigationController]! = [mainNavViewController, userProfileNavViewController]
+    lazy var viewControllers : [UINavigationController]! = [savedDishesNavViewController, mainNavViewController, userProfileNavViewController]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -47,6 +49,11 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         let userProfileViewController = UserProfileViewController()
         let userProfileNavViewController = UINavigationController(rootViewController: userProfileViewController)
         self.userProfileNavViewController = userProfileNavViewController
+        
+        let savedDishesViewController = SavedDishesViewController()
+        
+        let savedDishesNavViewController = UINavigationController(rootViewController: savedDishesViewController)
+        self.savedDishesNavViewController = savedDishesNavViewController
     }
     
     func tabBarLayout() {
@@ -74,16 +81,12 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         self.view.layoutIfNeeded()
         MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
         bottomBarView.backgroundColor = .themeColor
-        
-    
     }
     
     func layoutSetup() {
-        self.view.addSubview(mainNavViewController.view)
+        showViewController(at: 1)
         self.view.addSubview(bottomBarView)
-
         self.view.addSubview(tabBar)
-
     }
     
     func tabBarSetup() {
@@ -94,11 +97,12 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.barStyle = .default
         
 
+        
         tabBar.barTintColor = .themeColor
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         
-        let itemImages : [UIImage] = [ UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
+        let itemImages : [UIImage] = [ UIImage(systemName: "square.and.arrow.down.fill")! ,UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
@@ -108,7 +112,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
             
         }
         tabBar.setItems(items, animated: false)
-        tabBar.selectedItem = tabBar.items?.first
+        tabBar.selectedItem = tabBar.items?[1]
         tabBar.delegate = self
     }
     

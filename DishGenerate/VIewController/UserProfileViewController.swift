@@ -41,7 +41,7 @@ class UserProfileViewController : UIViewController {
     }
     func registerCell() {
         self.collectionView.register(UserDetailCollectionCell.self, forCellWithReuseIdentifier: "UserDetailCollectionCell")
-        self.collectionView.register(UserProfileDishCell.self, forCellWithReuseIdentifier: "UserProfileDishCell")
+        self.collectionView.register(SavedDishCell.self, forCellWithReuseIdentifier: "SavedDishCell")
         
         self.collectionView.register(UserProfileDishDateCell.self, forCellWithReuseIdentifier: "UserProfileDishDateCell")
     }
@@ -92,12 +92,14 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         let section = indexPath.section
         let row = indexPath.row
         if section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserDetailCollectionCell", for: indexPath) as!  UserDetailCollectionCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserDetailCollectionCell", for: indexPath) as! UserDetailCollectionCell
+            
             cell.userProfileCellDelegate = self
+            cell.configure(user: user)
             return cell
         }
         let dish = historyDishes[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserProfileDishCell", for: indexPath) as!  UserProfileDishCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as!  SavedDishCell
     
         cell.configure(dish: dish)
         return cell
@@ -116,7 +118,7 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let bounds = view.bounds
         if section == 0 {
-            return UIEdgeInsets(top: bounds.height * 0.01, left: 0, bottom: bounds.height * 0.02, right: 0)
+            return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.04, right: 0)
         }
         return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }

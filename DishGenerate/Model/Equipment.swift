@@ -5,9 +5,14 @@ protocol SelectedModel : AnyObject, Equatable {
     var isSelected : Bool { get set }
 }
 
-class Equipment : SelectedModel  {
+class Equipment : SelectedModel, NSCopying  {
+    func copy(with zone: NSZone? = nil) -> Any {
+        return Equipment(name: name, isSelected: isSelected)
+    }
+    
+    
     static func == (lhs: Equipment, rhs: Equipment) -> Bool {
-        lhs.id == rhs.id    
+        lhs.id == rhs.id || lhs.isSelected == rhs.isSelected
     }
     
     var id : UUID = UUID()

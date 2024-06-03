@@ -1,10 +1,3 @@
-//
-//  DishGenerateUITestsLaunchTests.swift
-//  DishGenerateUITests
-//
-//  Created by 黃楷程 on 2024/4/28.
-//
-
 import XCTest
 
 final class DishGenerateUITestsLaunchTests: XCTestCase {

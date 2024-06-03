@@ -1,10 +1,3 @@
-//
-//  DishGenerateTests.swift
-//  DishGenerateTests
-//
-//  Created by 黃楷程 on 2024/4/28.
-//
-
 import XCTest
 @testable import DishGenerate
 
