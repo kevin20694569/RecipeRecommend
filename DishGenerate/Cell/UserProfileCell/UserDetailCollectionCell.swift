@@ -1,9 +1,4 @@
-
 import UIKit
-
-protocol UserProfileCellDelegate : UIViewController {
-    func showEditUserProfileViewController()
-}
 
 class UserDetailCollectionCell : UICollectionViewCell  {
     
@@ -27,9 +22,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         initLayout()
 
     }
-    
 
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

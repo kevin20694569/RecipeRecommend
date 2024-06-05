@@ -85,7 +85,7 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
         collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
@@ -93,9 +93,7 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
         let validEquipments = self.cuisines.filter { equipment in
             return equipment.name != nil && equipment.name != ""
         }
-        
         cuisinesChanged = !(validEquipments == initCuisines)
-
     }
 
     

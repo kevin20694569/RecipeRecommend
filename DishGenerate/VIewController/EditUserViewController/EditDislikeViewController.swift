@@ -81,7 +81,7 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
         collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
@@ -234,6 +234,8 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
         return CGSize(width: bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
         
     }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0

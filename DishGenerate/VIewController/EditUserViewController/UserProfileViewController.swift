@@ -1,13 +1,20 @@
 
 import UIKit
 
-class UserProfileViewController : UIViewController {
+class UserProfileViewController : UIViewController, EditUserNameViewControllerDelegate {
+    func reloadUserName() {
+        
+        self.collectionView.reloadSections([0])
+        
+    }
+    
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     var historyDishes : [Dish] = Dish.examples
     
-    var user : User = User.example
+    var user : User! = User.example
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -17,6 +24,16 @@ class UserProfileViewController : UIViewController {
         navItemSetup()
         initLayout()
         collectionViewSetup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navBarSetup()
+    }
+    
+    func navBarSetup() {
+        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
     }
     
     init() {
@@ -172,104 +189,10 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
 }
 
 extension UserProfileViewController : UserProfileCellDelegate {
-    func showDishDetailViewController(dish : Dish) {
-        let controller = DishDetailViewController(dish: dish)
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
-    }
-    
-    func showGeneratedDishesDisplayController(newDishes : [Dish]) {
-        let controller = GeneratedDishesDisplayController(dishes: newDishes)
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
-    }
-    
-    func showEditUserProfileViewController() {
-        let controller = EditUserProfileViewController(user : self.user)
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
-    }
+
 }
 
-class UserProfileDishCellHeaderView : UICollectionReusableView {
-    
-    var titleLabel : UILabel! = UILabel()
-    
-    var circleView : UIView! = UIView()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        circleViewSetup()
-        initLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initLayout() {
-        [circleView, titleLabel].forEach() {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            addSubview($0)
-        }
-        NSLayoutConstraint.activate([
-            circleView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            circleView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            circleView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.1),
-            
-            titleLabel.leadingAnchor.constraint(equalTo: circleView.leadingAnchor, constant: 20),
-            titleLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
-            
-        ])
-        circleView.layoutIfNeeded()
-        circleView.layer.cornerRadius = circleView.bounds.height / 2
-    }
-    
-    func circleViewSetup() {
-        circleView.backgroundColor = .secondaryBackground
-        
-    }
-}
 
-class UserProfileDishDateCell : UICollectionViewCell {
-    
-    var titleLabel : UILabel! = UILabel()
-    
-    var circleView : UIView! = UIView()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        circleViewSetup()
-        initLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initLayout() {
-        [circleView, titleLabel].forEach() {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            addSubview($0)
-        }
-        NSLayoutConstraint.activate([
-            circleView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            circleView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            circleView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.1),
-            
-            titleLabel.leadingAnchor.constraint(equalTo: circleView.leadingAnchor, constant: 20),
-            titleLabel.centerYAnchor.constraint(equalTo: circleView.centerYAnchor),
-            
-        ])
-        circleView.layoutIfNeeded()
-        circleView.layer.cornerRadius = circleView.bounds.height / 2
-    }
-    
-    func circleViewSetup() {
-        circleView.backgroundColor = .secondaryBackground
-        
-    }
-}
 
 
 

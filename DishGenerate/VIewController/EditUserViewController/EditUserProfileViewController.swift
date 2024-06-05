@@ -17,6 +17,17 @@ class EditUserProfileViewController : UIViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navBarSetup()
+    }
+    
+    func navBarSetup() {
+        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+    }
+    
     init(user: User) {
         super.init(nibName: nil, bundle: nil)
         self.user = user
@@ -137,9 +148,9 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return 0
+            return 8
         }
-        return 10
+        return 8
     }
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 {
@@ -147,28 +158,16 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         }
         return indexPath
     }
-    
-    
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        /*let type = EditUserProfileOptionCellType(rawValue: indexPath.row)
-        switch type {
-        case .userName :
-            break
-        case .dislikeIngredient :
-            showEditDislikeIngredientViewController()
-        case .cuisine :
-            showEditFavoriteCuisineViewController()
-        default :
-            break
-        }*/
-       
-    }
+
     
     
 }
 
 extension EditUserProfileViewController : EditUserProfileCellDelegate {
+    func reloadUserName() {
+        self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
+    }
+    
     
     
 }

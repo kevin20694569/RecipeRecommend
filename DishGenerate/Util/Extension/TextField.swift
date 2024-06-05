@@ -8,12 +8,19 @@ class CustomTextField : UITextField {
         self.textInsets = insets
     }
     
+    init() {
+        super.init(frame: .zero)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
-    var textInsets: UIEdgeInsets = .zero
+    var textInsets: UIEdgeInsets = {
+        let inset : CGFloat = 8
+        return UIEdgeInsets(top: inset, left: inset * 2, bottom: inset, right: inset * 2)
+    }()
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: textInsets)

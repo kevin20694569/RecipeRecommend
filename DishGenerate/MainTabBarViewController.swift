@@ -6,7 +6,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var mainNavViewController : MainNavgationController!
     
-    var userProfileNavViewController : UINavigationController!
+    var userProfileNavViewController : UserProfileNavViewController!
     
     var savedDishesNavViewController : UINavigationController!
     
@@ -47,7 +47,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         mainNavViewController.mainDishViewController = mainTableViewController
         
         let userProfileViewController = UserProfileViewController()
-        let userProfileNavViewController = UINavigationController(rootViewController: userProfileViewController)
+        let userProfileNavViewController = UserProfileNavViewController(rootViewController: userProfileViewController)
         self.userProfileNavViewController = userProfileNavViewController
         
         let savedDishesViewController = SavedDishesViewController()
@@ -151,3 +151,6 @@ extension MainTabBarViewController  {
     let vc = MainTabBarViewController()
     return vc
 }
+
+
+

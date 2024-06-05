@@ -174,7 +174,8 @@ extension SummaryDishTableCellDelegate {
     }
 }
 
-protocol EditUserProfileCellDelegate : UIViewController {
+protocol EditUserProfileCellDelegate : EditUserNameViewControllerDelegate {
+    var user : User! { get }
     func showUserImageSelectedPhotoViewController()
     func showEditNameViewController()
     func showEditDislikeIngredientViewController()
@@ -186,6 +187,9 @@ extension EditUserProfileCellDelegate {
         
     }
     func showEditNameViewController() {
+        let controller = EditUserNameViewController(user: user)
+        controller.editUserNameViewControllerDelegate = self
+        self.show(controller, sender: nil)
         
     }
     func showEditDislikeIngredientViewController() {
@@ -198,4 +202,31 @@ extension EditUserProfileCellDelegate {
         self.show(controller, sender: nil)
         
     }
+}
+
+protocol UserProfileCellDelegate : UIViewController {
+    var user : User! { get }
+    func showEditUserProfileViewController()
+    func showDishDetailViewController(dish : Dish)
+    func showGeneratedDishesDisplayController(newDishes : [Dish])
+    
+}
+
+extension UserProfileCellDelegate {
+    func showEditUserProfileViewController() {
+        let controller = EditUserProfileViewController(user : self.user)
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    func showDishDetailViewController(dish : Dish) {
+        let controller = DishDetailViewController(dish: dish)
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    func showGeneratedDishesDisplayController(newDishes : [Dish]) {
+        let controller = GeneratedDishesDisplayController(dishes: newDishes)
+        show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
 }
