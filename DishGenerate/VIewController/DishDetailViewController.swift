@@ -4,14 +4,19 @@ import UIKit
 class DishDetailViewController : UIViewController{
     
     var dish : Dish!
+    var steps : [Step]!
+    
+    var ingredients : [Ingredient]!
     
     var tableView : UITableView! = UITableView()
     
     var rightBarButton : UIButton! = UIButton()
     
-    init(dish : Dish) {
+    init(dish : Dish, steps : [Step]!, ingredients : [Ingredient]!) {
         super.init(nibName: nil, bundle: nil)
         self.dish = dish
+        self.steps = steps
+        self.ingredients = ingredients
     }
     
     
@@ -115,10 +120,10 @@ class DishDetailViewController : UIViewController{
 extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 1 {
-            return dish.steps.count
+            return dish.steps?.count ?? 0
              
         }
-        return dish.ingredients.count
+        return dish.ingredients?.count ?? 0
     }
     
     
@@ -132,10 +137,11 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
         let section = indexPath.section
         let row = indexPath.row
         if section == 1 {
-            let step = dish.steps[indexPath.row]
+            
+            let step = steps[indexPath.row]
             let cell = tableView.dequeueReusableCell(withIdentifier: "DishDetailStepCell", for: indexPath) as! DishDetailStepCell
             cell.configure(step : step)
-            if row == self.dish.steps.count - 1 {
+            if row == steps.count - 1 {
                 let bounds = UIScreen.main.bounds
                 cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2 , bottom: 0, right: bounds.width / 2)
             } else {
@@ -144,14 +150,14 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
             return cell
         }
         let bounds = UIScreen.main.bounds
-        let ingredient = dish.ingredients[row]
+        let ingredient = ingredients[row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "StepIngredientCell", for: indexPath) as! StepIngredientCell
         cell.configure(ingredient: ingredient)
         cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         if row == 0 {
             cell.configureCorners(topCornerMask: true)
             
-        } else if row == dish.ingredients.count - 1 {
+        } else if row == ingredients.count - 1 {
             cell.configureCorners(topCornerMask: false)
             cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2, bottom: 0, right: bounds.width / 2)
         } else {

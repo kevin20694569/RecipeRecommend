@@ -155,15 +155,19 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     func showCorrectIngredientViewController() {
         //let staticTitles : [(String, String)] = [("牛肉片", "豬肉片"), ("雞肉", "豬肉"), ("空心菜", "水蓮" )]
         let staticTitles : [(String, String)] = [("牛番茄", "蓮霧"), ("雞蛋", "鱈魚丸"), ("空心菜", "水蓮" )]
-        let photoInputedIngredients = cameraInputTableCell.images.enumerated().compactMap { (index, image) in
+     /*   let photoInputedIngredients = cameraInputTableCell.images.enumerated().compactMap { (index, image) in
             let titles = staticTitles[index]
             if let image = image {
                 return PhotoInputedIngredient(image: image, leftTitle: titles.0, rightTitle: titles.1)
             }
             return nil
-        }
+        }*/
         
-        let controller = CorrectIngredientViewController(photoInputedIngredients: photoInputedIngredients)
+        
+        
+   //     let controller = CorrectIngredientViewController(photoInputedIngredients: photoInputedIngredients)
+        let controller = CorrectIngredientViewController(photoInputedIngredients: PhotoInputedIngredient.examples)
+        
         show(controller, sender: nil)
         
     }

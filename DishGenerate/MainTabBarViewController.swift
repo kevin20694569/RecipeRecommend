@@ -27,14 +27,11 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         childViewControllersSetup()
         tabBarSetup()
         tabBarLayout()
-
         layoutSetup()
     }
     
@@ -151,6 +148,3 @@ extension MainTabBarViewController  {
     let vc = MainTabBarViewController()
     return vc
 }
-
-
-

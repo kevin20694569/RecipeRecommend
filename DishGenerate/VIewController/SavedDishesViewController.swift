@@ -181,7 +181,12 @@ extension SavedDishesViewController : UICollectionViewDelegate, UICollectionView
     }
     
     func showDishDetailViewController(dish : Dish) {
-        let controller = DishDetailViewController(dish: dish)
+        guard let steps = dish.steps,
+              let ingredients = dish.ingredients else {
+            return
+        }
+        
+        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }

@@ -3,6 +3,10 @@ import UIKit
 
 class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
+    var user_id : String = Environment.user_id
+    
+    var isLoadingNewDishes : Bool = false
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
@@ -14,7 +18,12 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func showDishDetailViewController(dish : Dish) {
-        let controller = DishDetailViewController(dish: dish)
+        guard let steps = dish.steps,
+              let ingredients = dish.ingredients else {
+            return
+        }
+        
+        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
@@ -60,6 +69,23 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         layoutSetup()
         tableViewSetup()
     }
+    
+    func getDishesOrderByCreatedTime(beforeTimeStamp : String) async {
+        do {
+            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, createdTime: beforeTimeStamp)
+            let newIndePaths = (dishes.count...dishes.count + newDishes.count - 1).compactMap { index in
+                return IndexPath(row: index, section: 0)
+            }
+            self.dishes.insert(contentsOf: newDishes, at: self.dishes.count)
+            tableView.beginUpdates()
+            tableView.insertRows(at: newIndePaths, with: .bottom)
+            tableView.endUpdates()
+        } catch {
+            print("getDishesOrderByCreatedTimeError", error.localizedDescription)
+        }
+    }
+    
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -252,6 +278,21 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         let dish = dishes[indexPath.row]
         showDishDetailViewController(dish: dish)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        guard !isLoadingNewDishes else {
+            return
+        }
+        if self.dishes.count - indexPath.row == 1 {
+            isLoadingNewDishes = true
+            Task {
+                
+                await getDishesOrderByCreatedTime(beforeTimeStamp: "")
+                isLoadingNewDishes = false
+            }
+        }
     }
 
 

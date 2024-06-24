@@ -4,7 +4,11 @@ enum DishGenerateStatus {
     case already, isGenerating, none
 }
 
-class Dish {
+class Dish : Equatable {
+    static func == (lhs: Dish, rhs: Dish) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     
     var id : String!
     var name : String!
@@ -27,12 +31,12 @@ class Dish {
     
     
     
-    var steps : [Step] = []
+    var steps : [Step]?
+
+    var ingredients : [Ingredient]?
     
-    var ingredients : [Ingredient] = []
     
-    
-    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: String!, image_ID: String!, isGenerateddetail: Bool, image : UIImage, steps : [Step], ingredients : [Ingredient], status : DishGenerateStatus) {
+    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: String!, image_ID: String!, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
         self.id = id
         self.name = name
         self.cuisine = cuisine
@@ -70,4 +74,106 @@ class Dish {
             return dish
         }
     }()
+    
+    convenience init?(json : DishJson) {
+        
+        self.init(id: json.id, name: json.name, cuisine: json.cuisine, preference_id: json.preference_id, user_id: json.user_id ?? Environment.user_id, created_Time: json.created_time, summary: json.summary, costTime: json.costtime, complexity: json.complexity, image_ID: json.image_id, isGenerateddetail: json.isgenerateddetail ?? false, image: nil, steps: nil, ingredients: nil, status: .none)
+    }
+    
+    
+    
+}
+
+struct DishesJsonResponse : Decodable {
+    var created : String
+    var usage : OpenAIAPIUsageJson
+    var dishes : [DishJson]
+    
+    enum CodingKeys: CodingKey {
+        case created
+        case usage
+        case dishes
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.created = try container.decode(String.self, forKey: .created)
+        self.usage = try container.decode(OpenAIAPIUsageJson.self, forKey: .usage)
+        self.dishes = try container.decode([DishJson].self, forKey: .dishes)
+    }
+}
+
+struct DishJson : Decodable {
+    var id : String?
+    var name : String?
+    var cuisine : String?
+    var preference_id : String?
+    var user_id : String?
+    var created_time : String?
+    var summary : String?
+    var costtime : String?
+    var complexity : String?
+    var image_id : String?
+    var isgenerateddetail : Bool?
+    var imageprompt : String?
+    var image_url : String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case name = "name"
+        case cuisine = "cuisine"
+        case preference_id = "preference_id"
+        case user_id = "user_id"
+        case created_time = "created_time"
+        case summary = "summary"
+        case costtime = "costtime"
+        case complexity = "complexity"
+        case image_id = "image_id"
+        case isgenerateddetail = "isgenerateddetail"
+        case imageprompt = "imageprompt"
+        case image_url = "image_url"
+    }
+    
+    init(from decoder: any Decoder) throws {
+        do {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.id = try container.decodeIfPresent(String.self, forKey: .id)
+            self.name = try container.decodeIfPresent(String.self, forKey: .name)
+            self.cuisine = try container.decodeIfPresent(String.self, forKey: .cuisine)
+            self.preference_id = try container.decodeIfPresent(String.self, forKey: .preference_id)
+            self.user_id = try container.decodeIfPresent(String.self, forKey: .user_id)
+            self.created_time = try container.decodeIfPresent(String.self, forKey: .created_time)
+            self.summary = try container.decodeIfPresent(String.self, forKey: .summary)
+            self.costtime = try container.decodeIfPresent(String.self, forKey: .costtime)
+            self.complexity = try container.decodeIfPresent(String.self, forKey: .complexity)
+            self.image_id = try container.decodeIfPresent(String.self, forKey: .image_id)
+            self.isgenerateddetail = try container.decodeIfPresent(Bool.self, forKey: .isgenerateddetail)
+            self.imageprompt = try container.decodeIfPresent(String.self, forKey: .imageprompt)
+            self.image_url = try container.decodeIfPresent(String.self, forKey: .image_url)
+        } catch {
+            print(error)
+            throw error
+        }
+    }
+
+    
+}
+
+struct OpenAIAPIUsageJson : Decodable {
+    var prompt_tokens : Int
+    var completion_tokens : Int
+    var total_tokens : Int
+    
+    enum CodingKeys: CodingKey {
+        case prompt_tokens
+        case completion_tokens
+        case total_tokens
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.prompt_tokens = try container.decode(Int.self, forKey: .prompt_tokens)
+        self.completion_tokens = try container.decode(Int.self, forKey: .completion_tokens)
+        self.total_tokens = try container.decode(Int.self, forKey: .total_tokens)
+    }
 }

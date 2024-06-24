@@ -168,8 +168,12 @@ protocol SummaryDishTableCellDelegate : UIViewController {
 
 extension SummaryDishTableCellDelegate {
     func showDishDetailViewController(dish : Dish) {
+        guard let steps = dish.steps,
+              let ingredients = dish.ingredients else {
+            return
+        }
         
-        let controller = DishDetailViewController(dish: dish)
+        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
         self.show(controller, sender: nil)
     }
 }
@@ -219,7 +223,12 @@ extension UserProfileCellDelegate {
         navigationController?.isNavigationBarHidden = false
     }
     func showDishDetailViewController(dish : Dish) {
-        let controller = DishDetailViewController(dish: dish)
+        guard let steps = dish.steps,
+              let ingredients = dish.ingredients else {
+            return
+        }
+        
+        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
