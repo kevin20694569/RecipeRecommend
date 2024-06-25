@@ -1,6 +1,6 @@
 import UIKit
 
-class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var dishes : [Dish]! = []
     
@@ -97,6 +97,11 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
         tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
+        
+        if self.dishes.count < 2 {
+            self.tableView.isScrollEnabled = false
+            tableView.separatorStyle = .none
+        }
     }
     
     func registerCell() {
@@ -109,7 +114,7 @@ class GeneratedDishesDisplayController : UIViewController, UITableViewDelegate, 
     
 }
 
-extension GeneratedDishesDisplayController : SummaryDishTableCellDelegate {
+extension DishSummaryDisplayController : SummaryDishTableCellDelegate {
 }
 
 

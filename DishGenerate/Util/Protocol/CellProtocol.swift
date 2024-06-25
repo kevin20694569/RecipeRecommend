@@ -130,11 +130,11 @@ protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
 }
 
 protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate, EditCuisineCellDelegate {
-    var quantity : Int { get set }
+    var quantity : Int { get }
 
     var ingrdients : [Ingredient] { get set }
     
-    var temperature : Double { get set }
+    var temperature : Double { get }
 
 }
 
@@ -233,7 +233,7 @@ extension UserProfileCellDelegate {
         navigationController?.isNavigationBarHidden = false
     }
     func showGeneratedDishesDisplayController(newDishes : [Dish]) {
-        let controller = GeneratedDishesDisplayController(dishes: newDishes)
+        let controller = DishSummaryDisplayController(dishes: newDishes)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }

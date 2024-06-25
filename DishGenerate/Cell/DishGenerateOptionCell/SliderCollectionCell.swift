@@ -10,6 +10,11 @@ class SliderCollectionCell : UICollectionViewCell {
     
     var labels : [UILabel]! = []
     
+    var minimumValue : Float { 0 }
+    var maximumValue : Float { 100 }
+    
+    
+    
     
     func initLayout() {
         [slider, allLabelStackView].forEach() { view in
@@ -31,17 +36,23 @@ class SliderCollectionCell : UICollectionViewCell {
     func sliderSetup() {
         slider.addTarget(self, action: #selector(sliderDidEndDraging(_:)), for: .touchUpInside)
         slider.addTarget(self, action: #selector(sliderDidEndDraging(_:)), for: .touchUpOutside)
+        slider.minimumValue = minimumValue
+        slider.maximumValue = maximumValue
     }
-    var currentValue : Float! = 0
+    var currentValue : Float! {
+        return 0
+    }
 
     
     @objc func sliderDidEndDraging( _ sender : UISlider) {
         guard let newValue = getSliderTargetValue(value: sender.value) else {
             return
         }
+
         UIView.animate(withDuration: 0.1) {
             sender.setValue(newValue, animated: true)
         }
+
 
     }
     
@@ -84,6 +95,23 @@ class SliderCollectionCell : UICollectionViewCell {
 
 class DifficultSliderCollectionCell : SliderCollectionCell  {
     
+    override var minimumValue : Float { 0 }
+    override var maximumValue : Float { 2 }
+    
+    var complexity : Complexity {
+        let count : Float = Float(labels.count)
+        let step : Float = 1 / (count - 1)
+        print(round( self.slider.value / step) * step)
+        switch round( self.slider.value / step) * step {
+        case 1 :
+            return .normal
+        case 2 :
+            return .hard
+        default :
+            return .easy
+        }
+    }
+    
     func configure(titleArray : [String]) {
         
         for (index, string) in titleArray.enumerated() {
@@ -92,10 +120,11 @@ class DifficultSliderCollectionCell : SliderCollectionCell  {
     }
     
     override func stackLabelLayout() {
-        let total = 4
+        let total = 2
         for _ in 0...total {
             let label = UILabel(frame: .zero)
             label.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+            label.textAlignment = .justified
             var starImage = UIImage(systemName: "star.fill")?.withConfiguration(UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)))
             starImage = starImage?.withTintColor(.yelloTheme, renderingMode: .alwaysOriginal    )
             let starImageView = UIImageView(image: starImage)
@@ -111,6 +140,14 @@ class DifficultSliderCollectionCell : SliderCollectionCell  {
 }
  
 class TemperatureSliderCollectionCell : SliderCollectionCell {
+    
+    override var minimumValue : Float { 0 }
+    override var maximumValue : Float { 1 }
+    
+    override var currentValue: Float! {
+        self.slider.value
+    }
+    
     func configure(titleArray : [String]) {
         for (index, string) in titleArray.enumerated() {
             labels[index].text = string
@@ -122,6 +159,8 @@ class TemperatureSliderCollectionCell : SliderCollectionCell {
         for _ in 0...total {
             let label = UILabel(frame: .zero)
             label.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+            label.textAlignment = .justified
+
             let stackView = UIStackView(arrangedSubviews: [label])
             
             stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -132,9 +171,23 @@ class TemperatureSliderCollectionCell : SliderCollectionCell {
             
         }
     }
+    
+    
+    override func getSliderTargetValue(value: Float) -> Float? {
+        return nil
+    }
 }
 
 class TimeSliderCollectionCell : SliderCollectionCell {
+    override var minimumValue : Float { 20 }
+    override var maximumValue : Float { 60 }
+    
+    
+
+    override var currentValue : Float! {
+        return  slider.value
+    }
+
     func configure(titleArray : [String]) {
         for (index, string) in titleArray.enumerated() {
             labels[index].text = string
@@ -146,6 +199,7 @@ class TimeSliderCollectionCell : SliderCollectionCell {
         for _ in 0...total {
             let label = UILabel(frame: .zero)
             label.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
+            label.textAlignment = .justified
             let stackView = UIStackView(arrangedSubviews: [label])
             
             stackView.translatesAutoresizingMaskIntoConstraints = false

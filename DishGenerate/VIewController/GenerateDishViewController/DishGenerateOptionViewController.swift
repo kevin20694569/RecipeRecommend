@@ -1,6 +1,9 @@
 import UIKit
 
 class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
+    
+
+    var user_id : String = Environment.user_id
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -103,16 +106,64 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     
     var equipments : [Equipment] = Equipment.examples
     
+    var markEquipments : [Equipment] {
+        return equipments.filter { equipment in
+            return equipment.name != "" && equipment.isSelected
+        }
+    }
+    
     var cuisines : [Cuisine] = Cuisine.examples
     
-    var generateTime : Double = 10
+    var markCuisines : [Cuisine] {
+        return cuisines.filter { cuisine in
+            return cuisine.name != "" && cuisine.isSelected
+        }
+    }
     
-    var quantity : Int = 1
-    
-    var difficult : Double! = 1
-    
-    var temperature : Double = 1
 
+    
+    var quantity : Int {
+        let indexPath = IndexPath(row: 0, section: 1)
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? QuantityCollectionCell {
+            if let text = cell.textField.text {
+                return Int(text) ?? 1
+            }
+        }
+        return 1
+    }
+    
+    
+    
+    var complexity : Complexity {
+        let indexPath = IndexPath(row: 0, section: 3)
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? DifficultSliderCollectionCell {
+            return cell.complexity
+             
+        }
+        return Complexity(rawValue: "簡單")!
+        
+    }
+    
+    var temperature : Double {
+        let indexPath = IndexPath(row: 0, section: 4)
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? TemperatureSliderCollectionCell {
+            
+            return Double(cell.currentValue)
+        }
+        return 0
+    }
+    
+    var costTime : Int {
+        let indexPath = IndexPath(row: 0, section: 5)
+        if let cell = self.collectionView.cellForItem(at: indexPath) as? TimeSliderCollectionCell {
+            return  Int(cell.currentValue)
+            
+        }
+        return 30
+    }
+    
+
+    
     var ingrdients : [Ingredient] = []
     
     var options : [(title : String?, subTitle : String?)] = [(nil, nil),
@@ -188,14 +239,35 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
-    func showCheckViewController() {
+    func showCheckViewController()  {
+        var referenced_in_history = false
+        if let referenced_in_historyCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 7)) as? ReferenceHistoryCollectionCell {
+            referenced_in_history = referenced_in_historyCell.referenced_in_history
+        }
+        let preference = DishPreference(id: UUID().uuidString, user_id: self.user_id, quantity: quantity, excluded_food: "", referenced_in_history: referenced_in_history, complexity: self.complexity, additional_text: "", timeLimit: "\(String(self.costTime))分鐘", equipments : self.markEquipments, temperature: self.temperature, cuisine: markCuisines , ingredients: self.ingrdients)
+        
+       
+        
+        
         if let nav = navigationController as? MainNavgationController,
            let mainTableController = nav.mainDishViewController {
-            mainTableController.generatedDishes = Dish.examples
             mainTableController.changeButtonStatus(status: .isGenerating)
             
+            Task {
+                do {
+                    let dishes = try await DishManager.shared.generateNewDishes(preference: preference, excluded_foods: nil)
+                    mainTableController.generatedDishes = dishes
+                    mainTableController.changeButtonStatus(status: .already)
+                    mainTableController.insertNewDishes(newDishes: dishes)
+                } catch {
+                    mainTableController.changeButtonStatus(status: .none)
+                    print("showCheckViewControllerError", error)
+                }
+            }
         }
+        
         navigationController?.popToRootViewController(animated: true)
+        
         
     }
     
@@ -392,20 +464,20 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
         
         if section == 3 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DifficultSliderCollectionCell", for: indexPath) as! DifficultSliderCollectionCell
-            let titleArray = ["1", "2", "3", "4", "5"]
+            let titleArray = ["簡單", "普通", "困難"]
             cell.configure(titleArray: titleArray)
             return cell
         }
         if section == 4 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TemperatureSliderCollectionCell", for: indexPath) as! TemperatureSliderCollectionCell
-            let titleArray =  ["穩定", "適中", "天馬行空"]
+            let titleArray =  ["穩定", "適中", "放飛"]
             cell.configure(titleArray: titleArray)
             return cell
         }
         
         if section == 5 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeSliderCollectionCell", for: indexPath) as! TimeSliderCollectionCell
-            let titleArray =  ["15分鐘", "30分鐘", "1小時"]
+            let titleArray =  ["20分鐘", "40分鐘", "1小時"]
             cell.configure(titleArray: titleArray)
             return cell
         }

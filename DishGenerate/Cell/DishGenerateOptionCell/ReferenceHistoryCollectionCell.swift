@@ -6,6 +6,8 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
     
     var titleLabel : UILabel! = UILabel()
     
+    var referenced_in_history : Bool! = false
+    
     lazy var buttonStackView : UIStackView! = UIStackView(arrangedSubviews: [leftButton, rightButton])
     
     var leftButton : ZoomAnimatedButton! = ZoomAnimatedButton()
@@ -35,7 +37,9 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
     
     
     func configure(enable : Bool) {
+        self.referenced_in_history = enable
         updateButtonStatus(enable: enable)
+
     }
     
     
@@ -81,6 +85,7 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
     }
     
     func updateButtonStatus(enable : Bool) {
+        referenced_in_history = enable
         let highlightButton = enable ? rightButton : leftButton
         let denyButton = highlightButton == rightButton ? leftButton : rightButton
         
@@ -92,6 +97,7 @@ class ReferenceHistoryCollectionCell : UICollectionViewCell {
             denyButton?.configuration?.attributedTitle =  AttributedString(title, attributes: deSelectAttributed )
             denyButton?.configuration?.baseBackgroundColor = .thirdaryBackground
         }
+
     }
     
     @objc func leftButtonTapped(_ button : UIButton) {

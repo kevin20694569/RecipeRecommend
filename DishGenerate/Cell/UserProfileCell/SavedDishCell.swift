@@ -31,7 +31,7 @@ class SavedDishCell : UICollectionViewCell {
     func configure(dish : Dish) {
         self.dish = dish
         self.titleLabel.text = dish.name
-        complexityLabel.text = dish.complexity
+        complexityLabel.text = dish.complexity.description
         self.imageView.image = dish.image
     }
     

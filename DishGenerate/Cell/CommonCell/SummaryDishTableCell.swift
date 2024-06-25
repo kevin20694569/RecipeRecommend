@@ -53,7 +53,7 @@ class SummaryDishTableCell : UITableViewCell {
         summaryLabel.text = dish.summary
         titleLabel.text = dish.name
         timeLabel.text = dish.costTime
-        difficultLabel.text = dish.complexity
+        difficultLabel.text = dish.complexity.description
         updateHeartButtonStatus()
         updateBottomButtonStatus(animated: false)
     }

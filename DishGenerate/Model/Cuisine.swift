@@ -26,6 +26,11 @@ class Cuisine : SelectedModel, NSCopying   {
         
     }
     
+    init(isSelected : Bool ) {
+        self.name = ""
+        self.isSelected = isSelected
+    }
+    
     
     static var examples : [Cuisine] = [Cuisine(name: "台式", isSelected: false),
                                        Cuisine(name: "日式", isSelected: false),

@@ -13,6 +13,9 @@ class DishDetailStepCell : UITableViewCell {
         self.step = step
         stepOrderLabel.text = String(step.order + 1)
         updateDescriptionLabel(text: step.description)
+        Task {
+            stepImageView.image = await step.getImage()
+        }
     }
     
     

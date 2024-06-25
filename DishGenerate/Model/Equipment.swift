@@ -4,10 +4,34 @@ protocol SelectedModel : AnyObject, Equatable {
     var id : UUID { get set }
     var name : String! { get set }
     var isSelected : Bool { get set }
+    
+    static func getRequestString(models : [Self]) -> String
+        
+    
 
 }
 
+extension SelectedModel {
+    
+    static func getRequestString(models : [Self]) -> String {
+        guard models.count > 0 && !models.isEmpty else {
+            return ""
+        }
+        var result : String = ""
+        if let name = models[0].name {
+            result = name
+        }
+        for model in models {
+            if let name = model.name {
+                result += ", \(name)"
+            }
+        }
+        return result
+    }
+}
+
 class Equipment : SelectedModel, NSCopying  {
+    
     func copy(with zone: NSZone? = nil) -> Any {
         return Equipment(name: name, isSelected: isSelected)
     }
@@ -29,6 +53,12 @@ class Equipment : SelectedModel, NSCopying  {
     
     init() {
         self.name = ""
+        
+    }
+    
+    init(isSelected : Bool ) {
+        self.name = ""
+        self.isSelected = isSelected
     }
     
     

@@ -110,6 +110,8 @@ class DishDetailViewController : UIViewController{
         
         tableView.register(StepIngredientCell.self, forCellReuseIdentifier: "StepIngredientCell")
         tableView.register(DishDetailStepCell.self, forCellReuseIdentifier: "DishDetailStepCell")
+        
+        //tableView.reg
     }
     
     required init?(coder: NSCoder) {

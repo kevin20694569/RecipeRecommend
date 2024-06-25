@@ -1,14 +1,34 @@
 
 import UIKit
-enum DishGenerateStatus {
-    case already, isGenerating, none
+
+
+
+enum Complexity : String  {
+    case easy = "簡單"  , normal = "普通" , hard = "困難", error = "錯誤"
+    
+    var description : String {
+        switch self {
+        case .easy :
+            return "簡單"
+        case .normal :
+            return "普通"
+        case .hard :
+            return "困難"
+            
+        default :
+            return ""
+        }
+    }
 }
 
-class Dish : Equatable {
+enum DishGenerateStatus {
+    case already, isGenerating, error,  none
+}
+
+class Dish : Equatable, GetImageModel {
     static func == (lhs: Dish, rhs: Dish) -> Bool {
         lhs.id == rhs.id
     }
-    
     
     var id : String!
     var name : String!
@@ -18,7 +38,7 @@ class Dish : Equatable {
     var created_Time : String!
     var summary : String!
     var costTime : String!
-    var complexity : String!
+    var complexity : Complexity!
     var image_ID : String!
     var isGeneratedDetail : Bool! = false
     var image_URL : URL?
@@ -36,7 +56,7 @@ class Dish : Equatable {
     var ingredients : [Ingredient]?
     
     
-    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: String!, image_ID: String!, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
+    init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: Complexity!, image_ID: String!, image_url : String? = nil, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
         self.id = id
         self.name = name
         self.cuisine = cuisine
@@ -52,6 +72,11 @@ class Dish : Equatable {
         self.steps = steps
         self.ingredients = ingredients
         self.status = status
+        
+        if let urlString = image_url,
+           let url = URL(string: urlString) {
+            self.image_URL = url
+        }
     }
     
     
@@ -68,7 +93,7 @@ class Dish : Equatable {
             let description = descriptions[index]
             let image = UIImage.dishImages[index]
             let cuisine = cuisines[index]
-            let complexity = complexities[index]
+            let complexity = Complexity.init(rawValue: complexities[index]) ?? .error 
             let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
             let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
             return dish
@@ -76,8 +101,19 @@ class Dish : Equatable {
     }()
     
     convenience init?(json : DishJson) {
-        
-        self.init(id: json.id, name: json.name, cuisine: json.cuisine, preference_id: json.preference_id, user_id: json.user_id ?? Environment.user_id, created_Time: json.created_time, summary: json.summary, costTime: json.costtime, complexity: json.complexity, image_ID: json.image_id, isGenerateddetail: json.isgenerateddetail ?? false, image: nil, steps: nil, ingredients: nil, status: .none)
+        var status : DishGenerateStatus = .none
+        if let steps = json.steps,
+           let ingredients = json.ingredients {
+            
+            status = !steps.isEmpty || !ingredients.isEmpty ? .already : .none
+        }
+        self.init(id: json.id, name: json.name, cuisine: json.cuisine, preference_id: json.preference_id, user_id: json.user_id ?? Environment.user_id, created_Time: json.created_time, summary: json.summary, costTime: json.costtime, complexity: Complexity.init(rawValue: json.complexity ?? "錯誤") ?? .error , image_ID: json.image_id, image_url: json.image_url, isGenerateddetail: json.isgenerateddetail ?? false, image: nil, steps: nil, ingredients: nil, status: status)
+        self.steps = json.steps?.compactMap({ json in
+            return Step(json: json)
+        })
+        self.ingredients = json.ingredients?.compactMap({ json in
+            return Ingredient(json: json)
+        })
     }
     
     
@@ -85,8 +121,8 @@ class Dish : Equatable {
 }
 
 struct DishesJsonResponse : Decodable {
-    var created : String
-    var usage : OpenAIAPIUsageJson
+    var created : Int?
+    var usage : OpenAIAPIUsageJson?
     var dishes : [DishJson]
     
     enum CodingKeys: CodingKey {
@@ -97,8 +133,8 @@ struct DishesJsonResponse : Decodable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.created = try container.decode(String.self, forKey: .created)
-        self.usage = try container.decode(OpenAIAPIUsageJson.self, forKey: .usage)
+        self.created = try? container.decode(Int.self, forKey: .created)
+        self.usage = try? container.decode(OpenAIAPIUsageJson.self, forKey: .usage)
         self.dishes = try container.decode([DishJson].self, forKey: .dishes)
     }
 }
@@ -118,6 +154,12 @@ struct DishJson : Decodable {
     var imageprompt : String?
     var image_url : String?
     
+    var ingredients : [IngredientJson]?
+    
+    var steps : [StepJson]?
+    
+    
+    
     enum CodingKeys: String, CodingKey {
         case id = "id"
         case name = "name"
@@ -132,6 +174,8 @@ struct DishJson : Decodable {
         case isgenerateddetail = "isgenerateddetail"
         case imageprompt = "imageprompt"
         case image_url = "image_url"
+        case ingredients = "ingredients"
+        case steps = "steps"
     }
     
     init(from decoder: any Decoder) throws {
@@ -142,14 +186,16 @@ struct DishJson : Decodable {
             self.cuisine = try container.decodeIfPresent(String.self, forKey: .cuisine)
             self.preference_id = try container.decodeIfPresent(String.self, forKey: .preference_id)
             self.user_id = try container.decodeIfPresent(String.self, forKey: .user_id)
-            self.created_time = try container.decodeIfPresent(String.self, forKey: .created_time)
+            self.created_time = try? container.decodeIfPresent(String.self, forKey: .created_time)
             self.summary = try container.decodeIfPresent(String.self, forKey: .summary)
             self.costtime = try container.decodeIfPresent(String.self, forKey: .costtime)
             self.complexity = try container.decodeIfPresent(String.self, forKey: .complexity)
             self.image_id = try container.decodeIfPresent(String.self, forKey: .image_id)
             self.isgenerateddetail = try container.decodeIfPresent(Bool.self, forKey: .isgenerateddetail)
-            self.imageprompt = try container.decodeIfPresent(String.self, forKey: .imageprompt)
-            self.image_url = try container.decodeIfPresent(String.self, forKey: .image_url)
+            self.imageprompt = try? container.decodeIfPresent(String.self, forKey: .imageprompt)
+            self.image_url = try? container.decodeIfPresent(String.self, forKey: .image_url)
+            self.ingredients = try? container.decodeIfPresent([IngredientJson].self, forKey: .ingredients)
+            self.steps = try? container.decodeIfPresent([StepJson].self, forKey: .steps)
         } catch {
             print(error)
             throw error

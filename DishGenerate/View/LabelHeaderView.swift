@@ -180,21 +180,21 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
             ingredientAddButtonHeaderViewDelegate?.insertNewIngredient(ingredient: Ingredient(),section: .Text)
         case .equipment :
             if let delegate = optionGeneratedAddButtonHeaderViewDelegate {
-                delegate.addEquipmentCell(equipment: Equipment())
+                delegate.addEquipmentCell(equipment: Equipment(isSelected: true))
                 return
             }
             if let delegate = editEquipmentCellDelegate {
-                delegate.addEquipmentCell(equipment: Equipment())
+                delegate.addEquipmentCell(equipment: Equipment(isSelected: true))
                 return
             }
         case .cuisine :
             if let delegate = optionGeneratedAddButtonHeaderViewDelegate {
-                delegate.addCuisineCell(cuisine: Cuisine())
-                return 
+                delegate.addCuisineCell(cuisine: Cuisine(isSelected: true))
+                return
             }
 
             if let delegate = editCuisineCellDelegate {
-                delegate.addCuisineCell(cuisine: Cuisine())
+                delegate.addCuisineCell(cuisine: Cuisine(isSelected: true))
                 return
             }
         case .none:

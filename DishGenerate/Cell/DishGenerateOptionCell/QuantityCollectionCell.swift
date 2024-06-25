@@ -81,7 +81,6 @@ class QuantityCollectionCell : UICollectionViewCell, UITextFieldDelegate {
     }
     @objc func stepperValueChanged( _ stepper : UIStepper) {
         textField.text = String(Int(stepper.value))
-        deleagate?.quantity = Int(stepper.value)
     }
     
     func stepperSetup() {
