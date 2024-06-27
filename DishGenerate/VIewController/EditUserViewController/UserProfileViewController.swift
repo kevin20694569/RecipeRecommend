@@ -2,11 +2,25 @@
 import UIKit
 
 class UserProfileViewController : UIViewController, EditUserNameViewControllerDelegate {
+    func reloadDish(dish: Dish) {
+        guard let index = historyDishes.firstIndex(of: dish) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: 1)
+        if let cell = collectionView.cellForItem(at: indexPath) as? DishDelegate  {
+            cell.reloadDish(dish: dish)
+        }
+    }
+    
+    var isLoadingNewDishes : Bool = false
+    
     func reloadUserName() {
         
         self.collectionView.reloadSections([0])
         
     }
+    
+    var user_id : String = Environment.user_id
     
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
@@ -17,6 +31,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
         registerCell()
         registerReuseHeaderView()
         viewSetup()
@@ -24,6 +39,55 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         navItemSetup()
         initLayout()
         collectionViewSetup()
+        Task {
+            await reloadCollectionView()
+        }
+    }
+    
+    func reloadCollectionView() async {
+        defer {
+            collectionView.refreshControl?.endRefreshing()
+        }
+        do {
+            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
+            self.historyDishes.removeAll()
+            self.historyDishes.append(contentsOf: newDishes)
+            collectionView.performBatchUpdates ({
+
+                self.collectionView.reloadSections([1])
+            }) { bool in
+ 
+            }
+        } catch {
+            print("reloadCollectionViewError", error)
+        }
+    }
+    
+    func insertNewDishes(newDishes : [Dish], insertFunc: insertFuncToArray ) {
+        
+        let newIndexPaths = (historyDishes.count...historyDishes.count + newDishes.count - 1).compactMap { index in
+            return IndexPath(row: index, section: 1)
+        }
+        collectionView.performBatchUpdates {
+            if insertFunc == .unshift {
+                self.historyDishes.insert(contentsOf: newDishes, at: 0)
+            } else {
+                self.historyDishes.insert(contentsOf: newDishes, at: self.historyDishes.count)
+            }
+            collectionView.insertItems(at: newIndexPaths)
+        }
+    }
+        
+    
+    
+    @objc func handleReloadDishNotification(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
+            reloadDish(dish: dish)
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +113,8 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
-
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
+        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
     }
     
     func collectionViewFlowSetup() {
@@ -94,7 +159,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
 }
 
-extension UserProfileViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension UserProfileViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ShowDishViewControllerDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
@@ -181,16 +246,37 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
             return
         }
         let dish = historyDishes[indexPath.row]
-        showDishDetailViewController(dish: dish)
+        if dish.status == .already {
+            self.showDishDetailViewController(dish: dish)
+        } else {
+            showDishSummaryDisplayController(dishes: [dish])
+        }
     }
     
-
-
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard !isLoadingNewDishes else {
+            return
+        }
+        guard let created_time = self.historyDishes.last?.created_Time else {
+            return
+        }
+        if self.historyDishes.count - indexPath.row == 5 {
+            isLoadingNewDishes = true
+            
+            Task {
+                let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
+                
+                insertNewDishes(newDishes: newDishes, insertFunc: .push)
+                isLoadingNewDishes = false
+            }
+        }
+    }
 }
 
 extension UserProfileViewController : UserProfileCellDelegate {
-
+    
 }
+
 
 
 

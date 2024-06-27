@@ -49,13 +49,18 @@ class Dish : NSObject, GetImageModel {
     var liked : Bool = false
     var collected : Bool = false
     
+    
     var status : DishGenerateStatus = .none
     
-    
+    var quantity : Int = 1
     
     var steps : [Step]?
 
     var ingredients : [Ingredient]?
+    
+
+    
+
     
     
     init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: String!, complexity: Complexity!, image_ID: String!, image_url : String? = nil, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
@@ -97,7 +102,7 @@ class Dish : NSObject, GetImageModel {
             let cuisine = cuisines[index]
             let complexity = Complexity.init(rawValue: complexities[index]) ?? .error 
             let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
-            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.none)
+            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
             return dish
         }
     }()
@@ -116,6 +121,7 @@ class Dish : NSObject, GetImageModel {
         self.ingredients = json.ingredients?.compactMap({ json in
             return Ingredient(json: json)
         })
+       
     }
     
     
@@ -193,7 +199,14 @@ struct DishJson : Decodable {
             self.costtime = try container.decodeIfPresent(String.self, forKey: .costtime)
             self.complexity = try container.decodeIfPresent(String.self, forKey: .complexity)
             self.image_id = try container.decodeIfPresent(String.self, forKey: .image_id)
-            self.isgenerateddetail = try container.decodeIfPresent(Bool.self, forKey: .isgenerateddetail)
+            if let isgenerateddetail = try? container.decodeIfPresent(Bool.self, forKey: .isgenerateddetail) {
+                self.isgenerateddetail = isgenerateddetail
+            } else {
+                let int = try? container.decodeIfPresent(Int.self, forKey: .isgenerateddetail)
+                self.isgenerateddetail = int == 1
+            }
+           
+           
             self.imageprompt = try? container.decodeIfPresent(String.self, forKey: .imageprompt)
             self.image_url = try? container.decodeIfPresent(String.self, forKey: .image_url)
             self.ingredients = try? container.decodeIfPresent([IngredientJson].self, forKey: .ingredients)

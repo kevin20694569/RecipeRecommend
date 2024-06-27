@@ -208,11 +208,9 @@ extension EditUserProfileCellDelegate {
     }
 }
 
-protocol UserProfileCellDelegate : UIViewController {
+protocol UserProfileCellDelegate : ShowDishViewControllerDelegate {
     var user : User! { get }
     func showEditUserProfileViewController()
-    func showDishDetailViewController(dish : Dish)
-    func showGeneratedDishesDisplayController(newDishes : [Dish])
     
 }
 

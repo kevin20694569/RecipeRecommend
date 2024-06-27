@@ -61,9 +61,44 @@ final class DishManager : MainServerAPIManager {
         return dishes
     }
     
+    func generateDishDetail(dish_id : String, quantity : Int) async throws -> Dish {
+        guard let url = URL(string: "\(self.serverUrlPrefix)/remote/generateddishdetail") else {
+            throw APIError.BadRequestURL
+        }
+        
+        let params : [String : Any?] = [
+            "dish_id" : dish_id,
+            "user_id" : self.user_id,
+            "quantity" : quantity,
+            "maxsteps" : 12
+        ]
+        var req = URLRequest(url: url)
+        
+        let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+        req.httpBody = body
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpMethod = "POST"
+        let (data, _) = try await URLSession.shared.data(for: req)
+       
+        let decoder = JSONDecoder()
+        let result = try decoder.decode(DishesJsonResponse.self, from: data)
+        if let json = result.dishes.first {
+            if let dish = Dish(json: json) {
+                return dish
+            }
+        }
+        
+        throw DishError.RespondError
+        
+
+       
+    }
+    
     func markAsLiked(dish_id : String) {
         
     }
+    
+
     
 
     

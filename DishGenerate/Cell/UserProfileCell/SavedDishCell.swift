@@ -1,6 +1,10 @@
 import UIKit
 
-class SavedDishCell : UICollectionViewCell {
+class SavedDishCell : UICollectionViewCell, DishDelegate {
+    func reloadDish(dish: Dish) {
+        self.dish = dish
+    }
+    
     
     var dish : Dish!
     
@@ -33,6 +37,9 @@ class SavedDishCell : UICollectionViewCell {
         self.titleLabel.text = dish.name
         complexityLabel.text = dish.complexity.description
         self.imageView.image = dish.image
+        Task {
+            self.imageView.image = await dish.image_URL?.getImage()
+        }
     }
     
     func initLayout() {

@@ -1,21 +1,16 @@
 import UIKit
 
-protocol ReloadDishDelegate : NSObject {
-    func reloadDish(dish : Dish)
-}
-extension Notification.Name {
-    static let reloadDishNotification = Notification.Name("ReloadDishNotification")
-}
-
-
-class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, ReloadDishDelegate {
+class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, DishDelegate {
     
     func reloadDish(dish: Dish) {
-        guard let index = dishes.firstIndex(of: dish) else {
+        guard let index = dishes.firstIndex(where: { oldDish in
+            dish.id == oldDish.id
+        }) else {
             return
         }
         let indexPath = IndexPath(row: index, section: 0)
-        if let cell = tableView.cellForRow(at: indexPath) as? ReloadDishDelegate  {
+        if let cell = tableView.cellForRow(at: indexPath) as? DishDelegate  {
+            
             cell.reloadDish(dish: dish)
         }
     }
@@ -34,7 +29,7 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
 
     var dishes : [Dish]! = []
     
-    weak var reloadDishDelegate : ReloadDishDelegate?
+    weak var reloadDishDelegate : DishDelegate?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dishes.count
@@ -82,6 +77,8 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
         tableViewSetup()
         initLayout()
     }
+    
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

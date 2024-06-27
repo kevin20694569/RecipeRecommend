@@ -52,9 +52,9 @@ struct StepJson : Decodable {
     var id : String
     var step_order : Int
     var description : String
-    var image_id : String
+    var image_id : String?
     var dish_id : String
-    var created_time : String
+    var created_time : String?
     var imageprompt : String?
     
     var image_url : String?
@@ -70,6 +70,9 @@ struct StepJson : Decodable {
         case image_url = "image_url"
     }
     
+    
+    
+    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
@@ -77,10 +80,11 @@ struct StepJson : Decodable {
         self.description = try container.decode(String.self, forKey: .description)
         self.image_id = try container.decode(String.self, forKey: .image_id)
         self.dish_id = try container.decode(String.self, forKey: .dish_id)
-        self.created_time = try container.decode(String.self, forKey: .created_time)
+        self.created_time = try? container.decode(String.self, forKey: .created_time)
         self.imageprompt = try? container.decode(String.self, forKey: .imageprompt)
         self.image_url = try? container.decode(String.self, forKey: .image_url)
     }
+
     
     
 }

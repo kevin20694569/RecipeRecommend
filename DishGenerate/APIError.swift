@@ -13,3 +13,15 @@ enum APIError : LocalizedError {
         
     }
 }
+
+enum DishError : LocalizedError {
+    case RespondError
+    
+    var errorDescription: String? {
+        switch self {
+        case .RespondError :
+            return "Respond錯誤"
+        }
+        
+    }
+}

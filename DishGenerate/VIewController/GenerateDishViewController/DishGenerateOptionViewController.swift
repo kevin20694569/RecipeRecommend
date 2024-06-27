@@ -258,7 +258,6 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
                     let dishes = try await DishManager.shared.generateNewDishes(preference: preference, excluded_foods: nil)
                     mainTableController.generatedDishes = dishes
                     mainTableController.changeButtonStatus(status: .already)
-                    mainTableController.insertNewDishes(newDishes: dishes)
                 } catch {
                     mainTableController.changeButtonStatus(status: .none)
                     print("showCheckViewControllerError", error)

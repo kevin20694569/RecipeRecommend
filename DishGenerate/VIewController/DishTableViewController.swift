@@ -1,17 +1,23 @@
 import UIKit
+
+enum insertFuncToArray {
+    case unshift, push
+}
  
 
-class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ReloadDishDelegate {
+class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowDishViewControllerDelegate {
     func reloadDish(dish: Dish) {
-        guard let index = dishes.firstIndex(of: dish) else {
+        guard let index = dishes.firstIndex(where: { oldDish in
+            dish.id == oldDish.id
+        }) else {
             return
         }
+        dishes[index] = dish
         let indexPath = IndexPath(row: index, section: 0)
-        if let cell = tableView.cellForRow(at: indexPath) as? ReloadDishDelegate  {
+        if let cell = tableView.cellForRow(at: indexPath) as? DishDelegate  {
             cell.reloadDish(dish: dish)
         }
     }
-    
     
     var user_id : String = Environment.user_id
     
@@ -38,28 +44,13 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navigationController?.isNavigationBarHidden = false
     }
     
-    func showDishDetailViewController(dish : Dish) {
-        guard let steps = dish.steps,
-              let ingredients = dish.ingredients else {
-            return
-        }
-        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
-    }
-    
-    func showDishSummaryDisplayController(newDishes : [Dish]) {
-        let controller = DishSummaryDisplayController(dishes: newDishes)
-        controller.reloadDishDelegate = self
 
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
-
-    }
     
     var buttonStatus : DishGenerateStatus! = DishGenerateStatus.none
     
-    var generatedDishes : [Dish]?
+    var generatedDishes : [Dish]? = Dish.examples
+    
+    var generatedDishesIsAppended : Bool = false
     
     var dishes : [Dish] = Dish.examples
     
@@ -91,28 +82,30 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navSetup()
         layoutSetup()
         tableViewSetup()
-        
+        if generatedDishes != nil {
+            changeButtonStatus(status: .already)
+        }
+
         Task {
-            //await reloadTableView()
+            await reloadTableView()
         }
     }
     
-    func getDishesOrderByCreatedTime(beforeTimeStamp : String) async {
-        do {
-            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: beforeTimeStamp)
-            insertNewDishes(newDishes : newDishes)
-        } catch {
-            print("getDishesOrderByCreatedTimeError", error.localizedDescription)
-        }
-    }
+
     
-    func insertNewDishes(newDishes : [Dish]) {
-        let newIndePaths = (dishes.count...dishes.count + newDishes.count - 1).compactMap { index in
+    func insertNewDishes(newDishes : [Dish], insertFunc: insertFuncToArray ) {
+        
+        let newIndexPaths = (dishes.count...dishes.count + newDishes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 0)
         }
-        self.dishes.insert(contentsOf: newDishes, at: self.dishes.count)
+        if insertFunc == .unshift {
+            self.dishes.insert(contentsOf: newDishes, at: 0)
+        } else {
+            self.dishes.insert(contentsOf: newDishes, at: self.dishes.count)
+        }
+        
         tableView.beginUpdates()
-        tableView.insertRows(at: newIndePaths, with: .automatic)
+        tableView.insertRows(at: newIndexPaths, with: .automatic)
         tableView.endUpdates()
     }
     
@@ -149,6 +142,9 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.delaysContentTouches = false
+        
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
+        tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshControllerTriggered( _: )), for: .valueChanged)
@@ -163,15 +159,18 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func reloadTableView() async {
-        do {
-            self.dishes.removeAll()
-            self.tableView.reloadSections([0], with: .automatic)
-            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
-            self.insertNewDishes(newDishes: newDishes)
+        defer {
             tableView.refreshControl?.endRefreshing()
-            
+        }
+        do {
+            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
+            tableView.beginUpdates()
+            self.dishes.removeAll()
+            self.dishes.append(contentsOf: newDishes)
+            tableView.reloadSections([0], with: .automatic)
+            tableView.endUpdates()
         } catch {
-            print("reloadTableViewErroR", error)
+            print("reloadTableViewError", error)
         }
     }
     
@@ -213,7 +212,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.bottomBarFrame.height),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
            
 
         ])
@@ -268,7 +267,13 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
             return
         }
         if let dishes = generatedDishes  {
-            showDishSummaryDisplayController(newDishes: dishes)
+            showDishSummaryDisplayController(dishes: dishes)
+            if !generatedDishesIsAppended {
+                self.dishes.insert(contentsOf: dishes, at: 0)
+                tableView.reloadSections([0], with: .automatic)
+                generatedDishesIsAppended = true
+            }
+
         } else {
             showInputPhotoIngredientViewController()
         }
@@ -291,33 +296,35 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         let diffY = scrollView.contentOffset.y - previousOffsetY
         var newConstant: CGFloat = searchBarAnchorConstaint.constant - diffY
-       
-        if scrollView.contentOffset.y <= 0 {
-            UIView.animate(withDuration: 0.1, animations: {
-          //      self.searchBarAnchorConstaint.constant = 0
-            })
-            
-            return
-        }
-        var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
         
-        if let navigationController = navigationController,
-            let navBarFrame = navigationController.navigationBar.superview?.convert(navigationController.navigationBar.frame, to: self.view) {
-            frame = navBarFrame
+        if scrollView.contentOffset.y <= 0 {
+            if scrollView.contentOffset.y <= 0 {
+                UIView.animate(withDuration: 0.1, animations: {
+                    //      self.searchBarAnchorConstaint.constant = 0
+                })
+                
+                return
+            }
+            var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
+            
+            if let navigationController = navigationController,
+               let navBarFrame = navigationController.navigationBar.superview?.convert(navigationController.navigationBar.frame, to: self.view) {
+                frame = navBarFrame
+            }
+            
+            if diffY < 0 {
+                newConstant = min( 0  ,newConstant)
+            } else if diffY > 0 {
+                newConstant = max( -frame.maxY ,newConstant)
+            }
+            let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
+            
+            [searchBar, searchBarRightButton].forEach( ) {
+                $0.layer.opacity = persent
+            }
+            searchBarAnchorConstaint.constant = newConstant
+            previousOffsetY = scrollView.contentOffset.y
         }
-    
-        if diffY < 0 {
-            newConstant = min( 0  ,newConstant)
-        } else if diffY > 0 {
-            newConstant = max( -frame.maxY ,newConstant)
-        }
-        let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
-
-        [searchBar, searchBarRightButton].forEach( ) {
-            $0.layer.opacity = persent
-        }
-        searchBarAnchorConstaint.constant = newConstant
-        previousOffsetY = scrollView.contentOffset.y
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -340,25 +347,26 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         if status == .already {
              showDishDetailViewController(dish: dish)
         } else {
-            showDishSummaryDisplayController(newDishes: [dish])
+            showDishSummaryDisplayController(dishes: [dish])
         }
     }
     
 
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.isSelected = false
         guard !isLoadingNewDishes else {
             return
         }
         guard let created_time = self.dishes.last?.created_Time else {
             return
         }
-        if self.dishes.count - indexPath.row == 1 {
+        if self.dishes.count - indexPath.row == 12 {
             isLoadingNewDishes = true
             
             Task {
-                await getDishesOrderByCreatedTime(beforeTimeStamp: created_time )
+                let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
+                
+                insertNewDishes(newDishes: newDishes, insertFunc: .push)
                 isLoadingNewDishes = false
             }
         }

@@ -1,5 +1,5 @@
 import UIKit
-class StepIngredientCell : GroupCornerBackgroundTableCell {
+class DishDetailIngredientCell : GroupCornerBackgroundTableCell {
     
     var ingredient : Ingredient!
 
@@ -9,7 +9,7 @@ class StepIngredientCell : GroupCornerBackgroundTableCell {
     func configure(ingredient : Ingredient) {
         self.ingredient = ingredient
         nameLabel.text = ingredient.name
-        quantityLabel.text = ingredient.quantity
+        quantityLabel.text = ingredient.quantityDescription
     }
     
     func initLayout() {
@@ -45,6 +45,7 @@ class StepIngredientCell : GroupCornerBackgroundTableCell {
     func labelSetup() {
         quantityLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         quantityLabel.numberOfLines = 0
+        quantityLabel.adjustsFontSizeToFitWidth = true
         quantityLabel.textColor = .thirdaryLabel
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         nameLabel.clipsToBounds = true

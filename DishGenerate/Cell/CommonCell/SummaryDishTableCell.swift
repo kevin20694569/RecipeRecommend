@@ -1,9 +1,6 @@
 import UIKit
 
-
-
-
-class SummaryDishTableCell : UITableViewCell, ReloadDishDelegate {
+class SummaryDishTableCell : UITableViewCell, DishDelegate {
     func reloadDish(dish: Dish) {
         self.dish = dish
         self.updateBottomButtonStatus(animated: true)
@@ -35,7 +32,6 @@ class SummaryDishTableCell : UITableViewCell, ReloadDishDelegate {
     
     var generatedStringAttributes : AttributeContainer! = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)])
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         buttonSetup()
@@ -61,6 +57,9 @@ class SummaryDishTableCell : UITableViewCell, ReloadDishDelegate {
         difficultLabel.text = dish.complexity.description
         updateHeartButtonStatus()
         updateBottomButtonStatus(animated: false)
+        Task {
+            dishImageView.image = await dish.image_URL?.getImage()
+        }
     }
     
     func initLayout() {
@@ -192,13 +191,13 @@ class SummaryDishTableCell : UITableViewCell, ReloadDishDelegate {
         }
         self.dish.status = .isGenerating
         NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["dish" : dish])
-        defer {
-            // self.updateBottomButtonStatus(animated: true)
+        do {
+            let dish = try await DishManager.shared.generateDishDetail(dish_id: dish.id, quantity: 1)
+            NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["dish" : dish])
+        } catch {
+            print("generateDishDetailError", error)
         }
-        
-        try? await Task.sleep(nanoseconds: 3000000000)
-        self.dish.status = .already
-        NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["dish" : dish])
+
     }
     
     func updateBottomButtonStatus(animated : Bool) {

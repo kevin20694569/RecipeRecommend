@@ -46,7 +46,7 @@
 		23525E482C103BAE0070DD9B /* TextFieldTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23525E472C103BAE0070DD9B /* TextFieldTableCell.swift */; };
 		23525E4A2C103BCF0070DD9B /* ViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23525E492C103BCF0070DD9B /* ViewControllerDelegate.swift */; };
 		236784322C02EB57006C18A3 /* DishDetailStepCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784312C02EB57006C18A3 /* DishDetailStepCell.swift */; };
-		236784342C02F2DD006C18A3 /* StepIngredientCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784332C02F2DD006C18A3 /* StepIngredientCell.swift */; };
+		236784342C02F2DD006C18A3 /* DishDetailIngredientCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784332C02F2DD006C18A3 /* DishDetailIngredientCell.swift */; };
 		236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784352C05CC74006C18A3 /* UserProfileViewController.swift */; };
 		236784392C05D899006C18A3 /* UserDetailCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */; };
 		2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */; };
@@ -100,6 +100,9 @@
 		23C63B872C2A6271007F3C23 /* DishPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B862C2A6271007F3C23 /* DishPreference.swift */; };
 		23C63B892C2AAC02007F3C23 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B882C2AAC02007F3C23 /* URL.swift */; };
 		23C63B8B2C2AB0EE007F3C23 /* ModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B8A2C2AB0EE007F3C23 /* ModelProtocol.swift */; };
+		23C63B8D2C2D389A007F3C23 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B8C2C2D389A007F3C23 /* Other.swift */; };
+		23C63B8F2C2D3910007F3C23 /* DishDetailSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B8E2C2D3910007F3C23 /* DishDetailSummaryCell.swift */; };
+		23C63B912C2DDD9A007F3C23 /* DishDetailQuantityAdjustCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B902C2DDD9A007F3C23 /* DishDetailQuantityAdjustCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,7 +166,7 @@
 		23525E472C103BAE0070DD9B /* TextFieldTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableCell.swift; sourceTree = "<group>"; };
 		23525E492C103BCF0070DD9B /* ViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerDelegate.swift; sourceTree = "<group>"; };
 		236784312C02EB57006C18A3 /* DishDetailStepCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishDetailStepCell.swift; sourceTree = "<group>"; };
-		236784332C02F2DD006C18A3 /* StepIngredientCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepIngredientCell.swift; sourceTree = "<group>"; };
+		236784332C02F2DD006C18A3 /* DishDetailIngredientCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishDetailIngredientCell.swift; sourceTree = "<group>"; };
 		236784352C05CC74006C18A3 /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		236784382C05D899006C18A3 /* UserDetailCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailCollectionCell.swift; sourceTree = "<group>"; };
 		2367843A2C05E820006C18A3 /* LeadingLogoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeadingLogoHeaderView.swift; sourceTree = "<group>"; };
@@ -217,6 +220,9 @@
 		23C63B862C2A6271007F3C23 /* DishPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishPreference.swift; sourceTree = "<group>"; };
 		23C63B882C2AAC02007F3C23 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		23C63B8A2C2AB0EE007F3C23 /* ModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelProtocol.swift; sourceTree = "<group>"; };
+		23C63B8C2C2D389A007F3C23 /* Other.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Other.swift; sourceTree = "<group>"; };
+		23C63B8E2C2D3910007F3C23 /* DishDetailSummaryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishDetailSummaryCell.swift; sourceTree = "<group>"; };
+		23C63B902C2DDD9A007F3C23 /* DishDetailQuantityAdjustCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishDetailQuantityAdjustCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -355,6 +361,7 @@
 				23C2100E2BF88CEE008F74D0 /* TextField.swift */,
 				23C2102B2BFDBA40008F74D0 /* UIImage.swift */,
 				23C63B882C2AAC02007F3C23 /* URL.swift */,
+				23C63B8C2C2D389A007F3C23 /* Other.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -465,7 +472,9 @@
 			isa = PBXGroup;
 			children = (
 				236784312C02EB57006C18A3 /* DishDetailStepCell.swift */,
-				236784332C02F2DD006C18A3 /* StepIngredientCell.swift */,
+				236784332C02F2DD006C18A3 /* DishDetailIngredientCell.swift */,
+				23C63B8E2C2D3910007F3C23 /* DishDetailSummaryCell.swift */,
+				23C63B902C2DDD9A007F3C23 /* DishDetailQuantityAdjustCell.swift */,
 			);
 			name = StepDetailCell;
 			sourceTree = "<group>";
@@ -712,7 +721,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23525E462C103B120070DD9B /* UserProfileDishDateCell.swift in Sources */,
-				236784342C02F2DD006C18A3 /* StepIngredientCell.swift in Sources */,
+				236784342C02F2DD006C18A3 /* DishDetailIngredientCell.swift in Sources */,
 				236784322C02EB57006C18A3 /* DishDetailStepCell.swift in Sources */,
 				231341AF2BEBBAB90015DFA6 /* LineView.swift in Sources */,
 				23C2102C2BFDBA40008F74D0 /* UIImage.swift in Sources */,
@@ -724,6 +733,7 @@
 				234BF51A2BDEA4120012CF6A /* DishGenerate.xcdatamodeld in Sources */,
 				23C63B802C29AF7B007F3C23 /* Environment.swift in Sources */,
 				2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */,
+				23C63B912C2DDD9A007F3C23 /* DishDetailQuantityAdjustCell.swift in Sources */,
 				23B501242BF4E5AA00EAB2D7 /* TapGestureHelper.swift in Sources */,
 				236784362C05CC74006C18A3 /* UserProfileViewController.swift in Sources */,
 				23525E422C1039B90070DD9B /* UserProfileNavViewController.swift in Sources */,
@@ -742,6 +752,7 @@
 				23C2100F2BF88CEE008F74D0 /* TextField.swift in Sources */,
 				234BF5462BDEAA1A0012CF6A /* DishTableCell.swift in Sources */,
 				234BF5142BDEA4120012CF6A /* DishTableViewController.swift in Sources */,
+				23C63B8F2C2D3910007F3C23 /* DishDetailSummaryCell.swift in Sources */,
 				23C2102A2BFCFE1B008F74D0 /* DishDetailViewController.swift in Sources */,
 				23C63B852C29F398007F3C23 /* APIManager.swift in Sources */,
 				23C210122BF8934B008F74D0 /* QuantityCollectionCell.swift in Sources */,
@@ -774,6 +785,7 @@
 				234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */,
 				23C210222BFB2A96008F74D0 /* Cuisine.swift in Sources */,
 				23C210302BFE1510008F74D0 /* CuisineTextFieldCollectionCell.swift in Sources */,
+				23C63B8D2C2D389A007F3C23 /* Other.swift in Sources */,
 				23C63B872C2A6271007F3C23 /* DishPreference.swift in Sources */,
 				236B9EE92C0C9CA70004E15A /* EditUserProfileViewController.swift in Sources */,
 				23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */,

@@ -94,7 +94,6 @@ class DishDetailViewController : UIViewController{
             rightBarButton.configuration?.baseForegroundColor = .primaryLabel
             rightBarButton.configuration?.image = UIImage(systemName: "star")
         }
-
     }
     
     func navBarStyleSetup() {
@@ -108,15 +107,23 @@ class DishDetailViewController : UIViewController{
     }
 
     func registerCell() {
+        tableView.register(DishDetailQuantityAdjustCell.self, forCellReuseIdentifier: "DishDetailQuantityAdjustCell")
         tableView.register(DishDetailSummaryCell.self, forCellReuseIdentifier: "DishDetailSummaryCell")
-        tableView.register(StepIngredientCell.self, forCellReuseIdentifier: "StepIngredientCell")
+        tableView.register(DishDetailIngredientCell.self, forCellReuseIdentifier: "StepIngredientCell")
         tableView.register(DishDetailStepCell.self, forCellReuseIdentifier: "DishDetailStepCell")
-        
-        //tableView.reg
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        guard let ingredients = self.dish.ingredients else {
+            return
+        }
+        ingredients.forEach() {
+            $0.multiplication = 1
+        }
     }
 }
 
@@ -126,6 +133,9 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
             return 1
         }
         if section == 1 {
+            return 1
+        }
+        if section == 2 {
             return dish.ingredients?.count ?? 0
         }
         return dish.steps?.count ?? 0
@@ -134,7 +144,7 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -150,9 +160,20 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
         }
 
         if section == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DishDetailQuantityAdjustCell", for: indexPath) as! DishDetailQuantityAdjustCell
+            cell.deleagate = self
+            cell.configure(quantity: dish.quantity )
+            
+            return cell
+            
+            
+        }
+        
+        if section == 2 {
+            
             let bounds = UIScreen.main.bounds
             let ingredient = ingredients[row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "StepIngredientCell", for: indexPath) as! StepIngredientCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "StepIngredientCell", for: indexPath) as! DishDetailIngredientCell
             cell.configure(ingredient: ingredient)
             cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
             if row == 0 {
@@ -165,21 +186,19 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
                 cell.configureCorners(topCornerMask: nil)
             }
             return cell
+
         }
         
-        if section == 2 {
-            let step = steps[indexPath.row]
-            let cell = tableView.dequeueReusableCell(withIdentifier: "DishDetailStepCell", for: indexPath) as! DishDetailStepCell
-            cell.configure(step : step)
-            if row == steps.count - 1 {
-                let bounds = UIScreen.main.bounds
-                cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2 , bottom: 0, right: bounds.width / 2)
-            } else {
-                cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-            }
-            return cell
+        let step = steps[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DishDetailStepCell", for: indexPath) as! DishDetailStepCell
+        cell.configure(step : step)
+        if row == steps.count - 1 {
+            let bounds = UIScreen.main.bounds
+            cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2 , bottom: 0, right: bounds.width / 2)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         }
-        return UITableViewCell()
+        return cell
     }
     
 
@@ -201,129 +220,42 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 0
     }
-}
-
-class DishDetailSummaryCell : UITableViewCell {
     
-    var dish : Dish!
-
-    var dishImageView : UIImageView! = UIImageView()
-    
-    var titleLabel : UILabel = UILabel()
-    
-    var complexityStackView : UIStackView! = UIStackView()
-    
-    var costTimeLabel : UILabel = UILabel()
-    
-    var complexityLabel : UILabel = UILabel()
-    
-
-    
-    var summaryLabel : UILabel! = UILabel()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        imageViewSetup()
-        labeltSetup()
-        stackViewSetup()
-        initLayout()
-        cellSetup()
-    }
-    
-    func imageViewSetup() {
-        dishImageView.contentMode = .scaleAspectFill
-        dishImageView.clipsToBounds = true
-        dishImageView.layer.cornerRadius = 16
-    }
-    
-    func labeltSetup() {
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
-        titleLabel.numberOfLines = 0
-        summaryLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        summaryLabel.numberOfLines = 0
-    }
-    func stackViewSetup() {
-        complexityStackView.axis = .horizontal
-        complexityStackView.spacing = 4
-        let starImageView = UIImageView(image: UIImage(systemName: "star.fill")?.withTintColor(.yelloTheme  , renderingMode: .alwaysOriginal))
-        complexityStackView.addArrangedSubview(starImageView)
-        complexityStackView.addArrangedSubview(complexityLabel)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initLayout() {
-        
-        contentView.addSubview(dishImageView)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(summaryLabel)
-        contentView.addSubview(complexityStackView)
-        contentView.addSubview(costTimeLabel)
-        contentView.subviews.forEach() {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        imageViewLayout()
-        stackViewLayout()
-        labelLayout()
-        
-    }
-    
-    func cellSetup() {
-        let screenBounds = UIScreen.main.bounds
-        self.separatorInset = UIEdgeInsets(top: 0, left: screenBounds.width / 2, bottom: 0, right: screenBounds.width / 2)
-    }
-    
-    func labelLayout() {
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: dishImageView.bottomAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: dishImageView.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -20),
-            
-            summaryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-            summaryLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            summaryLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            
-            costTimeLabel.centerYAnchor.constraint(equalTo: complexityStackView.centerYAnchor),
-            costTimeLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -20),
-        ])
-    }
-    
-
-    
-    func stackViewLayout() {
-        let screenBounds = UIScreen.main.bounds
-        NSLayoutConstraint.activate([
-            complexityStackView.leadingAnchor.constraint(equalTo: summaryLabel.leadingAnchor),
-            complexityStackView.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 20),
-            dishImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            complexityStackView.bottomAnchor.constraint(equalTo:  contentView.bottomAnchor, constant: -20),
-        ])
-    }
-    
-    func imageViewLayout() {
-        let screenBounds = UIScreen.main.bounds
-        NSLayoutConstraint.activate([
-            dishImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            dishImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            dishImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            //dishImageView.bottomAnchor.constraint(equalTo:  contentView.bottomAnchor, constant: -20),
-            dishImageView.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.3)
-        ])
-    }
-    
-    func configure(dish : Dish) {
-        self.dish = dish
-        self.titleLabel.text = dish.name
-        summaryLabel.text = dish.summary
-        costTimeLabel.text = dish.costTime
-        complexityLabel.text = dish.complexity.description
-        Task {
-            dishImageView.image = await dish.getImage()
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let ingredient = ingredients[indexPath.row]
+        if let cell = cell as? DishDetailIngredientCell {
+            cell.quantityLabel.text = ingredient.quantityDescription
+            cell.quantityLabel.layoutIfNeeded()
         }
     }
 }
+
+
+
+extension DishDetailViewController : DishDetailQuantityAdjustCellDelegate {
+    func quantityTriggered(to: Int) {
+        guard let ingredients = dish.ingredients else {
+            return
+        }
+        
+        for ingredient in ingredients {
+            print("s")
+            ingredient.multiplication = Double(to)
+            if let index = ingredients.firstIndex(of: ingredient) {
+                let indexPath = IndexPath(row: index, section: 2)
+                if let cell = tableView.cellForRow(at: indexPath) as? DishDetailIngredientCell {
+                    cell.quantityLabel.text = ingredient.quantityDescription
+                    cell.quantityLabel.layoutIfNeeded()
+                }
+            }
+            
+        }
+    }
+    
+    
+}
+
+
 
 
 

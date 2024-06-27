@@ -9,13 +9,15 @@ enum SaveDishDisplayStatus {
             return "喜歡"
         case .collect :
             return "收藏"
-        default :
-            return ""
         }
     }
 }
 
-class SavedDishesViewController : UIViewController {
+class SavedDishesViewController : UIViewController, ShowDishViewControllerDelegate  {
+    func reloadDish(dish: Dish) {
+        
+    }
+    
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
@@ -178,17 +180,6 @@ extension SavedDishesViewController : UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 2
-    }
-    
-    func showDishDetailViewController(dish : Dish) {
-        guard let steps = dish.steps,
-              let ingredients = dish.ingredients else {
-            return
-        }
-        
-        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
-        show(controller, sender: nil)
-        navigationController?.isNavigationBarHidden = false
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

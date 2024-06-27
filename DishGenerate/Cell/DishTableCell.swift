@@ -1,7 +1,7 @@
 import UIKit
 
 
-class DishSnapshotCell : UITableViewCell, DishTableCell, ReloadDishDelegate {
+class DishSnapshotCell : UITableViewCell, DishTableCell, DishDelegate {
     func reloadDish(dish: Dish) {
         self.currentDish = dish
         configureDetailStatus()

@@ -35,7 +35,7 @@ class DishDetailStepCell : UITableViewCell {
             descriptionLabel.topAnchor.constraint(equalTo: stepImageView.bottomAnchor, constant: 20),
             descriptionLabel.leadingAnchor.constraint(equalTo: stepImageView.leadingAnchor, constant: 4),
             descriptionLabel.trailingAnchor.constraint(equalTo: stepImageView.trailingAnchor, constant: -4),
-            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
             
             stepOrderLabel.leadingAnchor.constraint(equalTo: stepImageView.leadingAnchor, constant: 12),
             stepOrderLabel.topAnchor.constraint(equalTo: stepImageView.topAnchor, constant: 12),
