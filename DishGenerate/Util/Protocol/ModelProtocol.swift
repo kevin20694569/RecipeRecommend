@@ -10,10 +10,11 @@ protocol GetImageModel : AnyObject {
 
 extension GetImageModel {
     func getImage() async -> UIImage? {
-        return nil
+
         if let image = self.image {
             return image
         }
+        return nil
         if let image = await self.image_URL?.getImage() {
             self.image = image
         }

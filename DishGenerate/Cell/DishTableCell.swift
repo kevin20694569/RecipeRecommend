@@ -1,8 +1,13 @@
 import UIKit
 
 
-class DishSnapshotCell : UITableViewCell, DishTableCell {
+class DishSnapshotCell : UITableViewCell, DishTableCell, ReloadDishDelegate {
+    func reloadDish(dish: Dish) {
+        self.currentDish = dish
+        configureDetailStatus()
+    }
     
+
     var dishImageView : UIImageView! = UIImageView()
     var nameLabel : UILabel! = UILabel()
     var timeLabel : UILabel! = UILabel()

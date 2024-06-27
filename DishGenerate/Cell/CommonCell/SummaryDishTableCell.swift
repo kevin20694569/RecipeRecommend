@@ -3,7 +3,12 @@ import UIKit
 
 
 
-class SummaryDishTableCell : UITableViewCell {
+class SummaryDishTableCell : UITableViewCell, ReloadDishDelegate {
+    func reloadDish(dish: Dish) {
+        self.dish = dish
+        self.updateBottomButtonStatus(animated: true)
+    }
+    
     
     var dish : Dish!
     
@@ -168,14 +173,17 @@ class SummaryDishTableCell : UITableViewCell {
         let status = dish.status
         
         if status == .already  {
-            summaryDishTableCellDelegate?.showDishDetailViewController(dish: self.dish)
+            summaryDishTableCellDelegate?.showDishDetailViewController(dish: dish)
         } else if status == .none {
             Task {
                 await generateDishDetail()
+
             }
         }
         
     }
+    
+
     
     func generateDishDetail() async  {
         
@@ -183,22 +191,19 @@ class SummaryDishTableCell : UITableViewCell {
             return
         }
         self.dish.status = .isGenerating
-        bottomButton.configuration?.attributedTitle = nil
-        self.bottomButton.configuration?.showsActivityIndicator = true
-
-        Task {
-            defer {
-                self.updateBottomButtonStatus(animated: true)
-                self.bottomButton.configuration?.showsActivityIndicator = false
-            }
-            try? await Task.sleep(nanoseconds: 500000000)
-            self.dish.status = .already
+        NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["dish" : dish])
+        defer {
+            // self.updateBottomButtonStatus(animated: true)
         }
-
+        
+        try? await Task.sleep(nanoseconds: 3000000000)
+        self.dish.status = .already
+        NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["dish" : dish])
     }
     
     func updateBottomButtonStatus(animated : Bool) {
         if dish.status == .already {
+            self.bottomButton.configuration?.showsActivityIndicator = false
             bottomButton.configuration?.attributedTitle = AttributedString("查看食譜", attributes: generatedStringAttributes)
             if animated {
                 UIView.animate(withDuration: 0.4) {
@@ -207,7 +212,8 @@ class SummaryDishTableCell : UITableViewCell {
             } else {
                 bottomButton.backgroundColor = .orangeTheme
             }
-        } else {
+        } else if dish.status == .none {
+            self.bottomButton.configuration?.showsActivityIndicator = false
             bottomButton.configuration?.attributedTitle = AttributedString("生成詳細食譜", attributes: generatedStringAttributes)
             if animated {
                 UIView.animate(withDuration: 0.4) {
@@ -216,6 +222,9 @@ class SummaryDishTableCell : UITableViewCell {
             } else {
                 bottomButton.backgroundColor = .themeColor
             }
+        } else if dish.status == .isGenerating {
+            bottomButton.configuration?.attributedTitle = nil
+            self.bottomButton.configuration?.showsActivityIndicator = true
         }
     }
     

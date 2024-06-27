@@ -1,7 +1,17 @@
 import UIKit
  
 
-class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ReloadDishDelegate {
+    func reloadDish(dish: Dish) {
+        guard let index = dishes.firstIndex(of: dish) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: 0)
+        if let cell = tableView.cellForRow(at: indexPath) as? ReloadDishDelegate  {
+            cell.reloadDish(dish: dish)
+        }
+    }
+    
     
     var user_id : String = Environment.user_id
     
@@ -11,37 +21,47 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         return true
     }
     
+    @objc func handleReloadDishNotification(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
+            reloadDish(dish: dish)
+        }
+    }
+    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     func showInputPhotoIngredientViewController() {
         let controller = InputPhotoIngredientViewController()
         self.show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
     
-
-    
     func showDishDetailViewController(dish : Dish) {
         guard let steps = dish.steps,
               let ingredients = dish.ingredients else {
             return
         }
-        
         let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
     
     func showDishSummaryDisplayController(newDishes : [Dish]) {
-
         let controller = DishSummaryDisplayController(dishes: newDishes)
+        controller.reloadDishDelegate = self
+
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
+
     }
     
     var buttonStatus : DishGenerateStatus! = DishGenerateStatus.none
     
     var generatedDishes : [Dish]?
     
-    var dishes : [Dish] = []//Dish.examples
+    var dishes : [Dish] = Dish.examples
     
     var searchBar : UISearchBar! = UISearchBar()
     
@@ -63,6 +83,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
         generateButtonSetup()
         tabBarSetup()
         registerCells()
@@ -70,8 +91,9 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         navSetup()
         layoutSetup()
         tableViewSetup()
+        
         Task {
-            await reloadTableView()
+            //await reloadTableView()
         }
     }
     
@@ -88,7 +110,6 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let newIndePaths = (dishes.count...dishes.count + newDishes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 0)
         }
-        print(newIndePaths)
         self.dishes.insert(contentsOf: newDishes, at: self.dishes.count)
         tableView.beginUpdates()
         tableView.insertRows(at: newIndePaths, with: .automatic)
@@ -316,10 +337,10 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         cell?.isSelected = false
         let dish = dishes[indexPath.row]
         let status = dish.status
-        if status == .none {
-            showDishSummaryDisplayController(newDishes: [dish])
-        } else if status == .already {
+        if status == .already {
              showDishDetailViewController(dish: dish)
+        } else {
+            showDishSummaryDisplayController(newDishes: [dish])
         }
     }
     

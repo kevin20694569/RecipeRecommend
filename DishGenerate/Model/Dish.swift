@@ -25,7 +25,9 @@ enum DishGenerateStatus {
     case already, isGenerating, error,  none
 }
 
-class Dish : Equatable, GetImageModel {
+class Dish : NSObject, GetImageModel {
+
+    
     static func == (lhs: Dish, rhs: Dish) -> Bool {
         lhs.id == rhs.id
     }
@@ -95,7 +97,7 @@ class Dish : Equatable, GetImageModel {
             let cuisine = cuisines[index]
             let complexity = Complexity.init(rawValue: complexities[index]) ?? .error 
             let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
-            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
+            let dish = Dish(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: indexString, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.none)
             return dish
         }
     }()

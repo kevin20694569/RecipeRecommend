@@ -1,9 +1,40 @@
 import UIKit
 
-class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+protocol ReloadDishDelegate : NSObject {
+    func reloadDish(dish : Dish)
+}
+extension Notification.Name {
+    static let reloadDishNotification = Notification.Name("ReloadDishNotification")
+}
+
+
+class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, ReloadDishDelegate {
+    
+    func reloadDish(dish: Dish) {
+        guard let index = dishes.firstIndex(of: dish) else {
+            return
+        }
+        let indexPath = IndexPath(row: index, section: 0)
+        if let cell = tableView.cellForRow(at: indexPath) as? ReloadDishDelegate  {
+            cell.reloadDish(dish: dish)
+        }
+    }
+    
+    @objc func handleReloadDishNotification(_ notification: Notification) {
+        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
+            reloadDish(dish: dish)
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
 
     var dishes : [Dish]! = []
     
+    weak var reloadDishDelegate : ReloadDishDelegate?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dishes.count
@@ -43,6 +74,8 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
+
         registerCell()
         buttonSetup()
         viewSetup()
