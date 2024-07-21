@@ -2,14 +2,14 @@
 import UIKit
 
 class UserProfileViewController : UIViewController, EditUserNameViewControllerDelegate {
-    func reloadDish(dish: Dish) {
-        guard let index = historyDishes.firstIndex(of: dish) else {
+    func reloadRecipe(recipe: Recipe) {
+      /*  guard let index = historyDishes.firstIndex(of: recipe) else {
             return
         }
         let indexPath = IndexPath(row: index, section: 1)
         if let cell = collectionView.cellForItem(at: indexPath) as? DishDelegate  {
-            cell.reloadDish(dish: dish)
-        }
+            cell.reloadDish(recipe: recipe)
+        }*/
     }
     
     var isLoadingNewDishes : Bool = false
@@ -25,7 +25,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
-    var historyDishes : [Dish] = Dish.examples
+    var historyDishes : [Recipe] = Recipe.examples
     
     var user : User! = User.example
     
@@ -48,8 +48,8 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         defer {
             collectionView.refreshControl?.endRefreshing()
         }
-        do {
-            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
+       /* do {
+            let newDishes = try await RecipeManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
             self.historyDishes.removeAll()
             self.historyDishes.append(contentsOf: newDishes)
             collectionView.performBatchUpdates ({
@@ -60,10 +60,10 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
             }
         } catch {
             print("reloadCollectionViewError", error)
-        }
+        }*/
     }
     
-    func insertNewDishes(newDishes : [Dish], insertFunc: insertFuncToArray ) {
+    func insertNewDishes(newDishes : [Recipe], insertFunc: insertFuncToArray ) {
         
         let newIndexPaths = (historyDishes.count...historyDishes.count + newDishes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 1)
@@ -81,8 +81,8 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     
     @objc func handleReloadDishNotification(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
-            reloadDish(dish: dish)
+        if let userInfo = notification.userInfo, let dish = userInfo["recipe"] as? Recipe  {
+            reloadRecipe(recipe: dish)
         }
     }
 
@@ -159,7 +159,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
 }
 
-extension UserProfileViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ShowDishViewControllerDelegate {
+extension UserProfileViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ShowRecipeViewControllerDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
@@ -246,30 +246,30 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
             return
         }
         let dish = historyDishes[indexPath.row]
-        if dish.status == .already {
-            self.showDishDetailViewController(dish: dish)
+       /* if recipe.status == .already {
+            self.showDishDetailViewController(recipe: recipe)
         } else {
-            showDishSummaryDisplayController(dishes: [dish])
-        }
+            showDishSummaryDisplayController(dishes: [recipe])
+        }*/
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard !isLoadingNewDishes else {
             return
         }
-        guard let created_time = self.historyDishes.last?.created_Time else {
+       /* guard let created_time = self.historyDishes.last?.created_Time else {
             return
         }
         if self.historyDishes.count - indexPath.row == 5 {
             isLoadingNewDishes = true
             
             Task {
-                let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
+                let newDishes = try await RecipeManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
                 
                 insertNewDishes(newDishes: newDishes, insertFunc: .push)
                 isLoadingNewDishes = false
             }
-        }
+        }*/
     }
 }
 

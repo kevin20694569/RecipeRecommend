@@ -164,6 +164,19 @@ class Ingredient : Equatable {
     static let emptyHolder = Ingredient(name: "高麗菜", quantity: "1 / 4 顆")
     
     static var examples : [Ingredient] = Array.init(repeating: emptyHolder, count: 8)
+
+    static var dish1Ingredient : [Ingredient] = [Ingredient(name: "空心菜", quantity: "1/2把"),
+                                                 Ingredient(name: "牛肉絲", quantity: "150g"),
+                                                 Ingredient(name: "蔥段", quantity: "適量"),
+                                                 Ingredient(name: "蒜片", quantity: "適量"),
+                                                 Ingredient(name: "鹽", quantity: "適量"),
+                                                 Ingredient(name: "醬油", quantity: "少許"),
+                                                 Ingredient(name: "太白粉", quantity: "少許"),
+                                                 Ingredient(name: "調理油", quantity: "適量"),
+                                                 Ingredient(name: "水", quantity: "少許"),
+    ]
+
+    static var realIngredientsArray : [[Ingredient]] = [[Ingredient(name: "酸高麗菜", quantity: "四分之一顆"), Ingredient(name: "清雞胸肉", quantity: "半片"), Ingredient(name: "小黃瓜刨絲", quantity: "兩條"), Ingredient(name: "洋蔥絲", quantity: "半顆"), Ingredient(name: "辣椒", quantity: "適量")]]
     
     
 }

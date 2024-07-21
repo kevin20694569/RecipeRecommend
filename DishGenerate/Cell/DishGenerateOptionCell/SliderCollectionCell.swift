@@ -57,9 +57,7 @@ class SliderCollectionCell : UICollectionViewCell {
     }
     
     func getSliderTargetValue(value : Float) -> Float? {
-        let count : Float = Float(labels.count)
-        let step : Float = 1 / (count - 1)
-        return round(value / step) * step
+        return round(value)
 
     }
 
@@ -93,7 +91,9 @@ class SliderCollectionCell : UICollectionViewCell {
 }
 
 
-class DifficultSliderCollectionCell : SliderCollectionCell  {
+class DifficultSliderCollectionCell : SliderCollectionCell, DishPreferenceCell  {
+    var preference: DishPreference!
+    
     
     override var minimumValue : Float { 0 }
     override var maximumValue : Float { 2 }
@@ -101,8 +101,7 @@ class DifficultSliderCollectionCell : SliderCollectionCell  {
     var complexity : Complexity {
         let count : Float = Float(labels.count)
         let step : Float = 1 / (count - 1)
-        print(round( self.slider.value / step) * step)
-        switch round( self.slider.value / step) * step {
+        switch round( self.slider.value)  {
         case 1 :
             return .normal
         case 2 :
@@ -137,9 +136,19 @@ class DifficultSliderCollectionCell : SliderCollectionCell  {
             
         }
     }
+    
+    override func sliderDidEndDraging( _ sender : UISlider) {
+        super.sliderDidEndDraging(sender)
+        self.preference.complexity = self.complexity
+        
+    }
+    
+    
 }
- 
-class TemperatureSliderCollectionCell : SliderCollectionCell {
+
+class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
+    var preference: DishPreference!
+    
     
     override var minimumValue : Float { 0 }
     override var maximumValue : Float { 1 }
@@ -171,6 +180,11 @@ class TemperatureSliderCollectionCell : SliderCollectionCell {
             
         }
     }
+    override func sliderDidEndDraging( _ sender : UISlider) {
+        super.sliderDidEndDraging(sender)
+        self.preference.temperature = Double(self.currentValue)
+        
+    }
     
     
     override func getSliderTargetValue(value: Float) -> Float? {
@@ -178,7 +192,9 @@ class TemperatureSliderCollectionCell : SliderCollectionCell {
     }
 }
 
-class TimeSliderCollectionCell : SliderCollectionCell {
+class TimeSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
+    var preference: DishPreference!
+    
     override var minimumValue : Float { 20 }
     override var maximumValue : Float { 60 }
     
@@ -209,6 +225,13 @@ class TimeSliderCollectionCell : SliderCollectionCell {
             
         }
     }
+    
+    override func sliderDidEndDraging( _ sender : UISlider) {
+        super.sliderDidEndDraging(sender)
+        self.preference.timeLimit = Int(round(self.currentValue))
+        
+    }
+    
     
     override func getSliderTargetValue(value: Float) -> Float? {
         return nil

@@ -23,7 +23,7 @@ extension SelectedModel {
         }
         for model in models {
             if let name = model.name {
-                result += ", \(name)"
+                result += ",\(name)"
             }
         }
         return result

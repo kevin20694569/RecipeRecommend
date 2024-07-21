@@ -4,7 +4,10 @@ import Foundation
 struct Environment {
     static let ServerIP : String = {
         if let path = Bundle.main.path(forResource: "env", ofType: "plist") {
-            return NSDictionary(contentsOfFile: path)?["LoopholeIP"] as? String ?? ""
+            if let ip = NSDictionary(contentsOfFile: path)?["LoopholeIP"] as? String,
+               ip != "" {
+                return ip
+            }
             return NSDictionary(contentsOfFile: path)?["ServerIP"] as? String ?? ""
         }
         return ""

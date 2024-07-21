@@ -1,9 +1,15 @@
 import UIKit
 
+protocol DishPreferenceCell {
+    var preference : DishPreference! { get set }
+}
+
+
 class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
-    
 
     var user_id : String = Environment.user_id
+    
+    lazy var preference : DishPreference = DishPreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature) 
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -46,6 +52,11 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     var activeTextField : UITextField?
     var activeTextView : UITextView?
     
+    var indicatorSection : Int = 0
+    var equipmentSection : Int = 1
+    
+
+    
     lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
     
     
@@ -55,12 +66,12 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
             return
         }
         
-        
+        let section = equipmentSection
         let needReloadIndexPaths = (index...equipments.count ).compactMap { index in
-            return IndexPath(row: index, section: 2)
+            return IndexPath(row: index, section: section)
         }
         equipments.remove(at: index)
-        let deletedIndexPath = IndexPath(row: index, section: 2)
+        let deletedIndexPath = IndexPath(row: index, section: section)
         collectionView.deleteItems(at: [deletedIndexPath])
         collectionView.reloadItems(at: needReloadIndexPaths)
         if equipments.count <= Equipment.examples.count {
@@ -73,11 +84,12 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
             self.cuisineEditModeEnable = false
             return
         }
+        let section = cuisineSection
         let needReloadIndexPaths = (index...cuisines.count ).compactMap { index in
-            return IndexPath(row: index, section: 6)
+            return IndexPath(row: index, section: section)
         }
         cuisines.remove(at: index)
-        let deletedIndexPath = IndexPath(row: index, section: 6)
+        let deletedIndexPath = IndexPath(row: index, section: section)
         collectionView.deleteItems(at: [deletedIndexPath])
         collectionView.reloadItems(at: needReloadIndexPaths)
         if cuisines.count <= Cuisine.examples.count {
@@ -88,20 +100,16 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     
     func addEquipmentCell(equipment: Equipment) {
         self.equipments.append(equipment)
-        let indexPath = IndexPath(row: equipments.count - 1, section: 2)
+        let indexPath = IndexPath(row: equipments.count - 1, section: equipmentSection)
         collectionView.insertItems(at: [indexPath])
     }
     
     func addCuisineCell(cuisine: Cuisine) {
 
         self.cuisines.append(cuisine)
-        let indexPath = IndexPath(row: cuisines.count - 1, section: 6)
+        let indexPath = IndexPath(row: cuisines.count - 1, section: cuisineSection)
         collectionView.insertItems(at: [indexPath])
     }
-    
-
-    
-    
     
     
     var equipments : [Equipment] = Equipment.examples
@@ -112,7 +120,9 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         }
     }
     
-    var cuisines : [Cuisine] = Cuisine.examples
+    var cuisines : [Cuisine] = Cuisine.examples.compactMap() {
+        return $0.copy() as? Cuisine
+    }
     
     var markCuisines : [Cuisine] {
         return cuisines.filter { cuisine in
@@ -120,22 +130,9 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         }
     }
     
-
-    
-    var quantity : Int {
-        let indexPath = IndexPath(row: 0, section: 1)
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? QuantityCollectionCell {
-            if let text = cell.textField.text {
-                return Int(text) ?? 1
-            }
-        }
-        return 1
-    }
-    
-    
-    
+    var complexitySection : Int = 2
     var complexity : Complexity {
-        let indexPath = IndexPath(row: 0, section: 3)
+        let indexPath = IndexPath(row: 0, section: complexitySection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? DifficultSliderCollectionCell {
             return cell.complexity
              
@@ -143,9 +140,9 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         return Complexity(rawValue: "簡單")!
         
     }
-    
+    var temperatureSection : Int = 3
     var temperature : Double {
-        let indexPath = IndexPath(row: 0, section: 4)
+        let indexPath = IndexPath(row: 0, section: complexitySection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TemperatureSliderCollectionCell {
             
             return Double(cell.currentValue)
@@ -153,27 +150,32 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         return 0
     }
     
+    var costTimeSection : Int = 4
+    
     var costTime : Int {
-        let indexPath = IndexPath(row: 0, section: 5)
+        let indexPath = IndexPath(row: 0, section: costTimeSection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TimeSliderCollectionCell {
             return  Int(cell.currentValue)
             
         }
         return 30
     }
+    var cuisineSection : Int = 5
+    
+    var additionalTextSection : Int = 6
     
 
     
     var ingrdients : [Ingredient] = []
     
     var options : [(title : String?, subTitle : String?)] = [(nil, nil),
-                                                             ("份量人數", nil),
+                                                           //  ("份量人數", nil),
                                                              ("擁有的設備", "(可多選)"),
                                                              ("難易程度", nil),
                                                              ("創意程度", nil),
                                                              ("製作時間", nil),
                                                              ("指定菜式", "(可多選)"),
-                                                             (nil, nil),
+                                                             //(nil, nil),
                                                              ("其他補充", "(如素食、過敏原、忌口...等等)")]
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
@@ -190,7 +192,9 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
     lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "生成", image: nil, target: self, action: #selector(rightButtonItemTapped ( _ : )))
     
     @objc func rightButtonItemTapped( _ barButtonItem : UIBarButtonItem) {
-        showCheckViewController()
+        Task {
+            await generateRecommendRecipes()
+        }
     }
     
     override func viewDidLoad() {
@@ -239,28 +243,26 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
         collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
-    func showCheckViewController()  {
-        var referenced_in_history = false
-        if let referenced_in_historyCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 7)) as? ReferenceHistoryCollectionCell {
-            referenced_in_history = referenced_in_historyCell.referenced_in_history
-        }
-        let preference = DishPreference(id: UUID().uuidString, user_id: self.user_id, quantity: quantity, excluded_food: "", referenced_in_history: referenced_in_history, complexity: self.complexity, additional_text: "", timeLimit: "\(String(self.costTime))分鐘", equipments : self.markEquipments, temperature: self.temperature, cuisine: markCuisines , ingredients: self.ingrdients)
+    func generateRecommendRecipes()  {
         
-       
-        
+        preference.equipments = self.equipments
+        preference.cuisine = self.cuisines
+        preference.ingredients = self.ingrdients
         
         if let nav = navigationController as? MainNavgationController,
            let mainTableController = nav.mainDishViewController {
             mainTableController.changeButtonStatus(status: .isGenerating)
-            
             Task {
                 do {
-                    let dishes = try await DishManager.shared.generateNewDishes(preference: preference, excluded_foods: nil)
-                    mainTableController.generatedDishes = dishes
+                    
+                    let (preference, recipes) = try await RecipeManager.shared.getRecommendRecipes(user_id: self.user_id, preference: preference)
+                    mainTableController.generatedDishes = recipes
+                    mainTableController.generatedPreference = preference
                     mainTableController.changeButtonStatus(status: .already)
+                    
                 } catch {
                     mainTableController.changeButtonStatus(status: .none)
-                    print("showCheckViewControllerError", error)
+                    print("getRecommendRecipesError", error)
                 }
             }
         }
@@ -336,15 +338,15 @@ class DishGeneratedOptionViewController : UIViewController, GenerateOptionCellDe
 extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 9
+        return 7
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 2 :
+        case equipmentSection :
             return equipments.count
         
-        case 6 :
+        case cuisineSection :
             return cuisines.count
         default :
             return 1
@@ -354,32 +356,32 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let section = indexPath.section
-        if section == 0 {
+        if section == indicatorSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "IndicatorCollectionCell", for: indexPath) as! IndicatorCollectionCell
             cell.configure(highlightIndex: 2)
         
             return cell
         }
-        if section == 1 {
+      /*  if section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "QuantityCollectionCell", for: indexPath) as! QuantityCollectionCell
             cell.deleagate = self
             return cell
-        }
-        if section == 2 || section == 6 {
+        }*/
+        if section == equipmentSection || section == cuisineSection {
             let row = indexPath.row
             var title : String = ""
             var isSelected : Bool = false
             var model : (any SelectedModel)!
             var isDefaultModel : Bool = true
         
-            if section == 2 {
+            if section == equipmentSection {
                 model = equipments[row]
                 title = model.name
                 isSelected = model.isSelected
                 isDefaultModel = row <= Equipment.examples.count - 1
             }
             
-            if section == 6 {
+            if section == cuisineSection {
                 model = cuisines[row]
                 title = model.name
                 isSelected = model.isSelected
@@ -461,32 +463,35 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
 
         }
         
-        if section == 3 {
+        if section == complexitySection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DifficultSliderCollectionCell", for: indexPath) as! DifficultSliderCollectionCell
             let titleArray = ["簡單", "普通", "困難"]
+            cell.preference = self.preference
             cell.configure(titleArray: titleArray)
             return cell
         }
-        if section == 4 {
+        if section == temperatureSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TemperatureSliderCollectionCell", for: indexPath) as! TemperatureSliderCollectionCell
             let titleArray =  ["穩定", "適中", "放飛"]
+            cell.preference = self.preference
             cell.configure(titleArray: titleArray)
             return cell
         }
         
-        if section == 5 {
+        if section == costTimeSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeSliderCollectionCell", for: indexPath) as! TimeSliderCollectionCell
             let titleArray =  ["20分鐘", "40分鐘", "1小時"]
+            cell.preference = self.preference
             cell.configure(titleArray: titleArray)
             return cell
         }
         
-        if section == 7 {
+       /* if section == 6 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReferenceHistoryCollectionCell", for: indexPath) as! ReferenceHistoryCollectionCell
             return cell
-        }
+        }*/
         
-        if section == 8 {
+        if section == additionalTextSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddtionalTextCollectionCell", for: indexPath) as! AddtionalTextCollectionCell
             cell.textViewDelegate = self
             cell.configure()
@@ -498,19 +503,19 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let section = indexPath.section
         let screenBounds = UIScreen.main.bounds
-        if section == 0 {
+        if section == indicatorSection {
             return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
         }
-        if section == 1 {
+     /*   if section == 1 {
             let font = UIFont.preferredFont(forTextStyle: .title3)
             return CGSize(width: screenBounds.width, height: font.lineHeight + 20)
-        }
-        if section == 2 || section == 6 {
+        }*/
+        if section == equipmentSection || section == cuisineSection {
             let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
             let verInset : CGFloat = 8
             return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
         }
-        if section == 8 {
+        if section == additionalTextSection {
             return CGSize(width: screenBounds.width, height: screenBounds.height * 0.15)
         }
         return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
@@ -522,7 +527,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
         let section = indexPath.section
         let option = options[section]
         
-        if section == 2 {
+        if section == equipmentSection {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AddButtonHeaderView", for: indexPath) as! AddButtonHeaderView
             view.optionGeneratedAddButtonHeaderViewDelegate = self
  
@@ -530,15 +535,13 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
             return view
         }
         
-        if section == 6 {
+        if section == cuisineSection {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AddButtonHeaderView", for: indexPath) as! AddButtonHeaderView
             view.optionGeneratedAddButtonHeaderViewDelegate = self
             view.configure(title: option.title, subTitle: option.subTitle, type: .cuisine)
             return view
         }
-    
-        
-        
+
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SubLabelTitleLabelHeaderView", for: indexPath) as! SubLabelTitleLabelHeaderView
         view.configure(title: option.title, subTitle: option.subTitle)
@@ -552,7 +555,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let screenBounds = UIScreen.main.bounds
         let titleFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
-        if section >= 2 && section <= 6 || section == 8 {
+        if section >= equipmentSection && section <= cuisineSection || section == additionalTextSection {
             return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
         }
         return CGSize(width: screenBounds.width, height: 0)
@@ -560,7 +563,7 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
 
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section == 2 || section == 6 {
+        if section == equipmentSection  || section == cuisineSection {
             return 12
         }
         return 0
@@ -588,6 +591,15 @@ extension DishGeneratedOptionViewController : UICollectionViewDelegate, UICollec
         self.activeTextView = textView
     }
     
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if let textViewText = textView.text as NSString? {
+            
+            let updatedText = textViewText.replacingCharacters(in: range, with: text)
+            preference.addictionalText = updatedText
+        }
+        return true
+    }
+        
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let text = textField.text as NSString? {
             

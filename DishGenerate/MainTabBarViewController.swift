@@ -10,6 +10,8 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var savedDishesNavViewController : UINavigationController!
     
+    var preferenceNavViewController : UINavigationController!
+    
     static var bottomBarFrame : CGRect! = .zero
     
     var currentIndex : Int! = 0
@@ -18,7 +20,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var bottomBarView : UIView! = UIView()
     
-    lazy var viewControllers : [UINavigationController]! = [savedDishesNavViewController, mainNavViewController, userProfileNavViewController]
+    lazy var viewControllers : [UINavigationController]! = [savedDishesNavViewController, mainNavViewController, preferenceNavViewController , userProfileNavViewController]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -47,10 +49,12 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         let userProfileNavViewController = UserProfileNavViewController(rootViewController: userProfileViewController)
         self.userProfileNavViewController = userProfileNavViewController
         
-        let savedDishesViewController = SavedDishesViewController()
+        let savedDishesViewController = SavedRecipesViewController()
         
         let savedDishesNavViewController = UINavigationController(rootViewController: savedDishesViewController)
         self.savedDishesNavViewController = savedDishesNavViewController
+        
+        self.preferenceNavViewController = UINavigationController(rootViewController: DisplayPreferenceViewController())
     }
     
     func tabBarLayout() {
@@ -99,7 +103,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         
-        let itemImages : [UIImage] = [ UIImage(systemName: "square.and.arrow.down.fill")! ,UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
+        let itemImages : [UIImage] = [ UIImage(systemName: "square.and.arrow.down.fill")! ,UIImage(systemName: "house")!, UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")! , UIImage(systemName: "person.circle.fill")!]
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
@@ -107,7 +111,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
             item.tag = index
             return item
             
-        }
+        } 
         tabBar.setItems(items, animated: false)
         tabBar.selectedItem = tabBar.items?[1]
         tabBar.delegate = self

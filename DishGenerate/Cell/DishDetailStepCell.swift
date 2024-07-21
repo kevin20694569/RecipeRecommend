@@ -47,10 +47,15 @@ class DishDetailStepCell : UITableViewCell {
         stepOrderLabel.layer.cornerRadius = 8
         
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        stepImageView.image = nil
+    }
 
          
     func imageViewSetup() {
-        stepImageView.contentMode = .scaleAspectFit
+        stepImageView.contentMode = .scaleAspectFill
         stepImageView.clipsToBounds = true
         stepImageView.layer.cornerRadius = 16
         stepImageView.backgroundColor = .secondaryBackground

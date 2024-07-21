@@ -27,7 +27,7 @@ class User : Equatable, GetImageModel {
         }
     }
     
-    static let example : User = User(id: "id", name: "NameNameNameName", image: UIImage.焗烤玉米濃湯)
+    static let example : User = User(id: "id", name: "世新大學", image: UIImage.焗烤玉米濃湯)
     
     convenience init(json : UserJson) {
         self.init(id: json.id, name: json.name, image: nil, image_URLString: json.image_url, created_time: json.created_time)

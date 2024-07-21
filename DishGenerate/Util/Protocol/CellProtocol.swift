@@ -1,7 +1,25 @@
 import UIKit
 
-protocol DishTableCell : UITableViewCell {
-    func configure(dish : Dish)
+protocol RecipeStatusControll : NSObject {
+    func markRecipeLike(recipe_id : String, like : Bool) async
+    
+    func configureRecipeLikedStatus(liked : Bool)
+}
+
+protocol RecipeTableCell : UITableViewCell, RecipeStatusControll {
+    func configure(dish : Recipe)
+    
+    
+}
+
+extension RecipeStatusControll {
+    func markRecipeLike(recipe_id : String, like : Bool) async {
+        do {
+            try await RecipeManager.shared.markAsLiked(recipe_id: recipe_id, like: like)
+        } catch {
+            print("markRecipeLikeError", error)
+        }
+    }
 }
 
 enum HorizontalAnchorSide {
@@ -130,7 +148,6 @@ protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
 }
 
 protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate, EditCuisineCellDelegate {
-    var quantity : Int { get }
 
     var ingrdients : [Ingredient] { get set }
     
@@ -163,11 +180,11 @@ extension GenerateOptionCellDelegate {
 }
 
 protocol SummaryDishTableCellDelegate : UIViewController {
-    func showDishDetailViewController(dish : Dish)
+    func showDishDetailViewController(dish : Recipe)
 }
 
 extension SummaryDishTableCellDelegate {
-    func showDishDetailViewController(dish : Dish) {
+    func showDishDetailViewController(dish : Recipe) {
         guard let steps = dish.steps,
               let ingredients = dish.ingredients else {
             return
@@ -208,7 +225,7 @@ extension EditUserProfileCellDelegate {
     }
 }
 
-protocol UserProfileCellDelegate : ShowDishViewControllerDelegate {
+protocol UserProfileCellDelegate : ShowRecipeViewControllerDelegate {
     var user : User! { get }
     func showEditUserProfileViewController()
     
@@ -220,7 +237,7 @@ extension UserProfileCellDelegate {
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
-    func showDishDetailViewController(dish : Dish) {
+    func showRecipeDetailViewController(dish : Recipe) {
         guard let steps = dish.steps,
               let ingredients = dish.ingredients else {
             return
@@ -230,10 +247,20 @@ extension UserProfileCellDelegate {
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
-    func showGeneratedDishesDisplayController(newDishes : [Dish]) {
-        let controller = DishSummaryDisplayController(dishes: newDishes)
+    func showGeneratedDishesDisplayController(newDishes : [Recipe]) {
+        let controller = RecipeSummaryDisplayController(dishes: newDishes)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
     
+}
+
+protocol DisplayPreferenceCellDelegate : UIViewController {
+    func showDishSummaryViewController(preference_id : String)
+}
+extension DisplayPreferenceCellDelegate {
+    func showDishSummaryViewController(preference_id : String) {
+        let controller = RecipeSummaryDisplayController(preference_id: preference_id)
+        show(controller, sender: nil)
+    }
 }

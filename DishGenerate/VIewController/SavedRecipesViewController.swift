@@ -13,8 +13,9 @@ enum SaveDishDisplayStatus {
     }
 }
 
-class SavedDishesViewController : UIViewController, ShowDishViewControllerDelegate  {
-    func reloadDish(dish: Dish) {
+class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDelegate  {
+    
+    func reloadRecipe(recipe: Recipe) {
         
     }
     
@@ -27,9 +28,9 @@ class SavedDishesViewController : UIViewController, ShowDishViewControllerDelega
     
     var displayStatus : SaveDishDisplayStatus! = .liked
     
-    var collectedDishes : [Dish] = Dish.examples
+    var collectedDishes : [Recipe] = Recipe.examples
     
-    var likedDishes : [Dish] = Dish.examples
+    var likedDishes : [Recipe] = Recipe.examples
     
     var buttonAttributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium), .foregroundColor : UIColor.primaryLabel])
     
@@ -144,7 +145,7 @@ class SavedDishesViewController : UIViewController, ShowDishViewControllerDelega
     }
 }
 
-extension SavedDishesViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension SavedRecipesViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch displayStatus {
         case .liked :
@@ -191,7 +192,7 @@ extension SavedDishesViewController : UICollectionViewDelegate, UICollectionView
             dishes = collectedDishes
         }
         let dish = dishes[indexPath.row]
-        showDishDetailViewController(dish: dish)
+        showRecipeDetailViewController(dish: dish)
     }
     
     

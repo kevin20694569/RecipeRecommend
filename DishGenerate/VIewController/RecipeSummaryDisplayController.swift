@@ -1,23 +1,27 @@
 import UIKit
 
-class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, DishDelegate {
+class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, RecipeDelegate, RecipeStatusControll {
+    func configureRecipeLikedStatus(liked: Bool) {
     
-    func reloadDish(dish: Dish) {
+    }
+    
+    
+    func reloadRecipe(recipe: Recipe) {
         guard let index = dishes.firstIndex(where: { oldDish in
-            dish.id == oldDish.id
+            recipe.id == oldDish.id
         }) else {
             return
         }
         let indexPath = IndexPath(row: index, section: 0)
-        if let cell = tableView.cellForRow(at: indexPath) as? DishDelegate  {
+        if let cell = tableView.cellForRow(at: indexPath) as? RecipeDelegate  {
             
-            cell.reloadDish(dish: dish)
+            cell.reloadRecipe(recipe: recipe)
         }
     }
     
     @objc func handleReloadDishNotification(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
-            reloadDish(dish: dish)
+        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Recipe  {
+            reloadRecipe(recipe: dish)
         }
     }
 
@@ -25,11 +29,28 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
         NotificationCenter.default.removeObserver(self)
     }
     
+    func getRecipesByPreferencID(preference_id : String) async {
+        do {
+            let newRecipes = try await RecipeManager.shared.getRecipesByPreferencID(preference_id: preference_id)
+            self.dishes.insert(contentsOf: newRecipes, at: dishes.count)
+            self.tableView.reloadData()
+            if newRecipes.count > 1 {
+                tableView.isScrollEnabled = true
+            }
+        } catch {
+            tableView.refreshControl?.endRefreshing()
+            print("getRecipesByPreferencIDError", error)
+        }
+    }
     
 
-    var dishes : [Dish]! = []
     
-    weak var reloadDishDelegate : DishDelegate?
+
+    var dishes : [Recipe]! = []
+    
+    var preference_id : String!
+    
+    weak var reloadDishDelegate : RecipeDelegate?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dishes.count
@@ -37,7 +58,7 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dish = dishes[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryDishTableCell", for: indexPath) as! SummaryDishTableCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryRecipeTableCell", for: indexPath) as! SummaryRecipeTableCell
         cell.summaryDishTableCellDelegate = self
         cell.configure(dish: dish)
         return cell
@@ -58,9 +79,19 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
     var tableView : UITableView! = UITableView()
     
     
-    init(dishes : [Dish]) {
+    init(dishes : [Recipe]) {
         super.init(nibName: nil, bundle: nil)
         self.dishes = dishes
+    }
+    
+    init(preference_id : String) {
+        super.init(nibName: nil, bundle: nil)
+        self.preference_id = preference_id
+        Task {
+            tableView.refreshControl?.beginRefreshing()
+            await getRecipesByPreferencID(preference_id: preference_id)
+            
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -135,7 +166,7 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
     }
     
     func registerCell() {
-        tableView.register(SummaryDishTableCell.self, forCellReuseIdentifier: "SummaryDishTableCell")
+        tableView.register(SummaryRecipeTableCell.self, forCellReuseIdentifier: "SummaryRecipeTableCell")
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -144,7 +175,7 @@ class DishSummaryDisplayController : UIViewController, UITableViewDelegate, UITa
     
 }
 
-extension DishSummaryDisplayController : SummaryDishTableCellDelegate {
+extension RecipeSummaryDisplayController : SummaryDishTableCellDelegate {
 }
 
 

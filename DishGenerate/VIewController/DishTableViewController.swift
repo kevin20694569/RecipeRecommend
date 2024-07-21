@@ -5,17 +5,17 @@ enum insertFuncToArray {
 }
  
 
-class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowDishViewControllerDelegate {
-    func reloadDish(dish: Dish) {
+class DishTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate {
+    func reloadRecipe(recipe: Recipe) {
         guard let index = dishes.firstIndex(where: { oldDish in
-            dish.id == oldDish.id
+            recipe.id == oldDish.id
         }) else {
             return
         }
-        dishes[index] = dish
+        dishes[index] = recipe
         let indexPath = IndexPath(row: index, section: 0)
-        if let cell = tableView.cellForRow(at: indexPath) as? DishDelegate  {
-            cell.reloadDish(dish: dish)
+        if let cell = tableView.cellForRow(at: indexPath) as? RecipeDelegate  {
+            cell.reloadRecipe(recipe: recipe)
         }
     }
     
@@ -28,8 +28,8 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     @objc func handleReloadDishNotification(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Dish  {
-            reloadDish(dish: dish)
+        if let userInfo = notification.userInfo, let dish = userInfo["recipe"] as? Recipe  {
+            reloadRecipe(recipe: dish)
         }
     }
     
@@ -48,11 +48,13 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var buttonStatus : DishGenerateStatus! = DishGenerateStatus.none
     
-    var generatedDishes : [Dish]? = Dish.examples
+    var generatedDishes : [Recipe]?//= Dish.examples
+    
+    var generatedPreference : DishPreference?
     
     var generatedDishesIsAppended : Bool = false
     
-    var dishes : [Dish] = Dish.examples
+    var dishes : [Recipe] = []//Recipe.realExamples // Dish.examples
     
     var searchBar : UISearchBar! = UISearchBar()
     
@@ -93,7 +95,7 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
     
 
     
-    func insertNewDishes(newDishes : [Dish], insertFunc: insertFuncToArray ) {
+    func insertNewDishes(newDishes : [Recipe], insertFunc: insertFuncToArray ) {
         
         let newIndexPaths = (dishes.count...dishes.count + newDishes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 0)
@@ -163,16 +165,19 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
             tableView.refreshControl?.endRefreshing()
         }
         do {
-            let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: "")
+            let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: "")
             tableView.beginUpdates()
             self.dishes.removeAll()
-            self.dishes.append(contentsOf: newDishes)
+            self.dishes.append(contentsOf: newRecipes)
+            tableView.refreshControl?.endRefreshing()
             tableView.reloadSections([0], with: .automatic)
             tableView.endUpdates()
         } catch {
             print("reloadTableViewError", error)
         }
     }
+    
+
     
 
     
@@ -343,12 +348,8 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = tableView.cellForRow(at: indexPath)
         cell?.isSelected = false
         let dish = dishes[indexPath.row]
-        let status = dish.status
-        if status == .already {
-             showDishDetailViewController(dish: dish)
-        } else {
-            showDishSummaryDisplayController(dishes: [dish])
-        }
+       // let status = recipe.status
+        showRecipeDetailViewController(dish: dish)
     }
     
 
@@ -357,19 +358,19 @@ class DishTableViewController: UIViewController, UITableViewDelegate, UITableVie
         guard !isLoadingNewDishes else {
             return
         }
-        guard let created_time = self.dishes.last?.created_Time else {
+       /* guard let created_time = self.dishes.last?.created_Time else {
             return
         }
         if self.dishes.count - indexPath.row == 12 {
             isLoadingNewDishes = true
             
             Task {
-                let newDishes = try await DishManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
+                let newDishes = try await RecipeManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
                 
                 insertNewDishes(newDishes: newDishes, insertFunc: .push)
                 isLoadingNewDishes = false
             }
-        }
+        }*/
     }
 }
 

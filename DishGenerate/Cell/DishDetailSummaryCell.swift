@@ -2,7 +2,7 @@ import UIKit
 
 class DishDetailSummaryCell : UITableViewCell {
     
-    var dish : Dish!
+    var dish : Recipe!
 
     var dishImageView : UIImageView! = UIImageView()
     
@@ -46,6 +46,7 @@ class DishDetailSummaryCell : UITableViewCell {
         let starImageView = UIImageView(image: UIImage(systemName: "star.fill")?.withTintColor(.yelloTheme  , renderingMode: .alwaysOriginal))
         complexityStackView.addArrangedSubview(starImageView)
         complexityStackView.addArrangedSubview(complexityLabel)
+        complexityStackView.isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -106,17 +107,17 @@ class DishDetailSummaryCell : UITableViewCell {
             dishImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             dishImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             dishImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            //dishImageView.bottomAnchor.constraint(equalTo:  contentView.bottomAnchor, constant: -20),
+            //recipeImageView.bottomAnchor.constraint(equalTo:  contentView.bottomAnchor, constant: -20),
             dishImageView.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.3)
         ])
     }
     
-    func configure(dish : Dish) {
+    func configure(dish : Recipe) {
         self.dish = dish
         self.titleLabel.text = dish.name
-        summaryLabel.text = dish.summary
-        costTimeLabel.text = dish.costTime
-        complexityLabel.text = dish.complexity.description
+        summaryLabel.text = dish.description
+        costTimeLabel.text = dish.costTimeDescription
+        //complexityLabel.text = recipe.complexity.description
         Task {
             dishImageView.image = await dish.getImage()
         }

@@ -1,9 +1,9 @@
 
 import UIKit
 
-class DishDetailViewController : UIViewController{
+class DishDetailViewController : UIViewController, RecipeStatusControll {
     
-    var dish : Dish!
+    var dish : Recipe!
     var steps : [Step]!
     
     var ingredients : [Ingredient]!
@@ -12,7 +12,9 @@ class DishDetailViewController : UIViewController{
     
     var rightBarButton : UIButton! = UIButton()
     
-    init(dish : Dish, steps : [Step]!, ingredients : [Ingredient]!) {
+    weak var recipeStatusDelegate : RecipeStatusControll?
+    
+    init(dish : Recipe, steps : [Step]!, ingredients : [Ingredient]!) {
         super.init(nibName: nil, bundle: nil)
         self.dish = dish
         self.steps = steps
@@ -32,6 +34,7 @@ class DishDetailViewController : UIViewController{
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navBarStyleSetup()
+        configureRecipeLikedStatus(liked: self.dish.liked)
     }
     
     func tableViewSetup() {
@@ -74,7 +77,7 @@ class DishDetailViewController : UIViewController{
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
         config.baseForegroundColor = .primaryLabel
-        config.image = UIImage(systemName: "star")
+        config.image = UIImage(systemName: "heart")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
         rightBarButton.configuration = config
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.rightBarButton)
@@ -82,18 +85,25 @@ class DishDetailViewController : UIViewController{
     }
     
     @objc func rightBarButtonTapped(_ button : UIButton) {
-        collectDish(!dish.collected)
+        dish.liked.toggle()
+        configureRecipeLikedStatus(liked: dish.liked)
+        recipeStatusDelegate?.configureRecipeLikedStatus(liked: dish.liked)
+        Task {
+            try await RecipeManager.shared.markAsLiked(recipe_id: self.dish.id, like: dish.liked)
+        }
     }
     
     
-    func configureButtonStyle(collected : Bool) {
-        if collected {
-            rightBarButton.configuration?.baseForegroundColor = .yelloTheme
-            rightBarButton.configuration?.image = UIImage(systemName: "star.fill")
+    func configureRecipeLikedStatus(liked : Bool) {
+        if liked {
+            rightBarButton.configuration?.baseForegroundColor = .systemRed
+            rightBarButton.configuration?.image = UIImage(systemName: "heart.fill")
+        
         } else {
             rightBarButton.configuration?.baseForegroundColor = .primaryLabel
-            rightBarButton.configuration?.image = UIImage(systemName: "star")
+            rightBarButton.configuration?.image = UIImage(systemName: "heart")
         }
+
     }
     
     func navBarStyleSetup() {
@@ -103,7 +113,7 @@ class DishDetailViewController : UIViewController{
     
     func collectDish(_ bool : Bool) {
         dish.collected = bool
-        configureButtonStyle(collected: dish.collected)
+        configureRecipeLikedStatus(liked: dish.collected)
     }
 
     func registerCell() {
@@ -132,19 +142,19 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
         if section == 0 {
             return 1
         }
-        if section == 1 {
+     /*   if section == 1 {
             return 1
+        }*/
+        if section == 1 {
+            return ingredients.count
         }
-        if section == 2 {
-            return dish.ingredients?.count ?? 0
-        }
-        return dish.steps?.count ?? 0
+        return steps.count
     }
     
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -159,17 +169,17 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
             return cell
         }
 
-        if section == 1 {
+     /*   if section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DishDetailQuantityAdjustCell", for: indexPath) as! DishDetailQuantityAdjustCell
             cell.deleagate = self
-            cell.configure(quantity: dish.quantity )
+            cell.configure(quantity: recipe.quantity )
             
             return cell
             
             
-        }
+        }*/
         
-        if section == 2 {
+        if section == 1 {
             
             let bounds = UIScreen.main.bounds
             let ingredient = ingredients[row]
@@ -211,9 +221,9 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
         if section == 0 {
             return 20
         }
-        if section == 1 {
+       /* if section == 1 {
             return 20
-        }
+        }*/
         return 0
 
     }
@@ -222,10 +232,13 @@ extension DishDetailViewController : UITableViewDelegate , UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let ingredient = ingredients[indexPath.row]
-        if let cell = cell as? DishDetailIngredientCell {
-            cell.quantityLabel.text = ingredient.quantityDescription
-            cell.quantityLabel.layoutIfNeeded()
+        let section = indexPath.section
+        if section == 2 {
+            let ingredient = ingredients[indexPath.row]
+            if let cell = cell as? DishDetailIngredientCell {
+                cell.quantityLabel.text = ingredient.quantityDescription
+                cell.quantityLabel.layoutIfNeeded()
+            }
         }
     }
 }
@@ -239,7 +252,6 @@ extension DishDetailViewController : DishDetailQuantityAdjustCellDelegate {
         }
         
         for ingredient in ingredients {
-            print("s")
             ingredient.multiplication = Double(to)
             if let index = ingredients.firstIndex(of: ingredient) {
                 let indexPath = IndexPath(row: index, section: 2)

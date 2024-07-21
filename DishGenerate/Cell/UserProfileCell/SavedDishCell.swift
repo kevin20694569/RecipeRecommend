@@ -1,12 +1,12 @@
 import UIKit
 
-class SavedDishCell : UICollectionViewCell, DishDelegate {
-    func reloadDish(dish: Dish) {
-        self.dish = dish
+class SavedDishCell : UICollectionViewCell, RecipeDelegate {
+    func reloadRecipe(recipe: Recipe) {
+        self.dish = recipe
     }
     
     
-    var dish : Dish!
+    var dish : Recipe!
     
     var background : UIView! = UIView()
     
@@ -32,10 +32,10 @@ class SavedDishCell : UICollectionViewCell, DishDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(dish : Dish) {
+    func configure(dish : Recipe) {
         self.dish = dish
         self.titleLabel.text = dish.name
-        complexityLabel.text = dish.complexity.description
+     //   complexityLabel.text = recipe.complexity.description
         self.imageView.image = dish.image
         Task {
             self.imageView.image = await dish.image_URL?.getImage()

@@ -5,5 +5,7 @@ protocol APIManager : NSObject {
 }
 class MainServerAPIManager : NSObject, APIManager {
     var user_id : String = Environment.user_id
-    var serverUrlPrefix : String = Environment.ServerIP
+    var serverUrlPrefix : String {
+        return Environment.ServerIP
+    }
 }
