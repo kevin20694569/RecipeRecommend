@@ -11,15 +11,10 @@ class Ingredient : Equatable {
         guard models.count > 0 && !models.isEmpty else {
             return ""
         }
-        var result : String = ""
-        if let name = models[0].name {
-            result = name
+        var titles = models.compactMap() {
+            return $0.name
         }
-        for model in models {
-            if let name = model.name {
-                result += ", \(name)"
-            }
-        }
+        let result = titles.joined(separator: ",")
         return result
     }
     

@@ -133,9 +133,9 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         
         
     }
-   // var images : [UIImage?] = [nil]
+    var images : [UIImage?] = [nil]
     
-    var images : [UIImage?] = UIImage.ingredientImages
+   // var images : [UIImage?] = UIImage.ingredientImages
     
     func addButtonEnable(enable : Bool) {
         addButtonEnable = enable

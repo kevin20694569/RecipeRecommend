@@ -54,6 +54,10 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     func configure(user : User) {
         self.user = user
         nameLabel.text = user.name
+        Task {
+            let image = await user.getImage()
+            self.imageView.image = image
+        }
     }
     
     func imageViewSetup() {

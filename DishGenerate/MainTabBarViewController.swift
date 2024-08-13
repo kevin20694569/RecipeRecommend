@@ -20,7 +20,9 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var bottomBarView : UIView! = UIView()
     
-    lazy var viewControllers : [UINavigationController]! = [savedDishesNavViewController, mainNavViewController, preferenceNavViewController , userProfileNavViewController]
+    lazy var viewControllers : [UINavigationController] = [preferenceNavViewController, mainNavViewController , userProfileNavViewController]
+    
+    var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -29,6 +31,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         childViewControllersSetup()
@@ -40,7 +43,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     lazy var bottomBarViews : [UIView] = [bottomBarView, tabBar]
     
     func childViewControllersSetup() {
-        let mainTableViewController = DishTableViewController()
+        let mainTableViewController = RecipeTableViewController()
 
         self.mainNavViewController = MainNavgationController(rootViewController: mainTableViewController)
         mainNavViewController.mainDishViewController = mainTableViewController
@@ -64,19 +67,17 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
-            
             bottomBarView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             bottomBarView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            bottomBarView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            bottomBarView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
 
         ])
         self.view.layoutIfNeeded()
         NSLayoutConstraint.activate([
-
             tabBar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             tabBar.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             tabBar.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-            
+
             bottomBarView.topAnchor.constraint(equalTo: tabBar.topAnchor)
         ])
         self.view.layoutIfNeeded()
@@ -96,21 +97,15 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
-        
-
-        
         tabBar.barTintColor = .themeColor
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
-        
-        let itemImages : [UIImage] = [ UIImage(systemName: "square.and.arrow.down.fill")! ,UIImage(systemName: "house")!, UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")! , UIImage(systemName: "person.circle.fill")!]
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
             let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))
             item.tag = index
             return item
-            
         } 
         tabBar.setItems(items, animated: false)
         tabBar.selectedItem = tabBar.items?[1]
@@ -131,16 +126,14 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
                 viewController.view.removeFromSuperview()
                 viewController.removeFromParent()
             }
-            
         }
         bottomBarViews.forEach() {
             view.addSubview($0)
         }
         self.tabBar.selectedItem = tabBar.items?[index]
-        
     }
-
 }
+
 
 extension MainTabBarViewController  {
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -149,6 +142,9 @@ extension MainTabBarViewController  {
 }
 
 #Preview {
-    let vc = MainTabBarViewController()
-    return vc
+    return LoginViewController()
+    if let jwt_token = SessionManager.shared.getJWTTokenFromUserDefaults() {
+        return MainTabBarViewController()
+    }
+    return LoginViewController()
 }

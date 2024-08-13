@@ -14,7 +14,7 @@ extension GetImageModel {
         if let image = self.image {
             return image
         }
-        //return nil
+        return nil
         if let image = await image_URL?.getImage() {
             self.image = image
         }
@@ -28,24 +28,24 @@ protocol RecipeDelegate : NSObject {
 }
 
 protocol ShowRecipeViewControllerDelegate : UIViewController, RecipeDelegate {
-    func showRecipeDetailViewController(dish : Recipe)
-    func showDishSummaryDisplayController(dishes : [Recipe])
+    func showRecipeDetailViewController(recipe : Recipe)
+    func showRecipeSummaryDisplayController(recipes : [Recipe])
 }
 
 extension ShowRecipeViewControllerDelegate  {
-    func showRecipeDetailViewController(dish : Recipe) {
-        guard let steps = dish.steps,
-              let ingredients = dish.ingredients else {
+    func showRecipeDetailViewController(recipe : Recipe) {
+        guard let steps = recipe.steps,
+              let ingredients = recipe.ingredients else {
             return
         }
-        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
+        let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
         controller.recipeStatusDelegate = self as? any RecipeStatusControll
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
     
-    func showDishSummaryDisplayController(dishes : [Recipe]) {
-        let controller = RecipeSummaryDisplayController(dishes: dishes)
+    func showRecipeSummaryDisplayController(recipes : [Recipe]) {
+        let controller = RecipeSummaryDisplayController(dishes: recipes)
         controller.reloadDishDelegate = self
 
         show(controller, sender: nil)

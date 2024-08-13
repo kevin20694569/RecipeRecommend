@@ -220,28 +220,13 @@ struct RecipeJson : Decodable {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.id = try container.decodeIfPresent(String.self, forKey: .id)
             self.title = try container.decodeIfPresent(String.self, forKey: .title)
-           // self.cuisine = try container.decodeIfPresent(String.self, forKey: .cuisine)
-        //    self.preference_id = try container.decodeIfPresent(String.self, forKey: .preference_id)
-        //    self.user_id = try container.decodeIfPresent(String.self, forKey: .user_id)
-        //    self.created_time = try? container.decodeIfPresent(String.self, forKey: .created_time)
             self.description = try container.decodeIfPresent(String.self, forKey: .summary)
             self.costtime = try container.decodeIfPresent(Int.self, forKey: .costtime)
-       //     self.complexity = try container.decodeIfPresent(String.self, forKey: .complexity)
-         //   self.image_id = try container.decodeIfPresent(String.self, forKey: .image_id)
-        /*    if let isgenerateddetail = try? container.decodeIfPresent(Bool.self, forKey: .isgenerateddetail) {
-                self.isgenerateddetail = isgenerateddetail
-            } else {
-                let int = try? container.decodeIfPresent(Int.self, forKey: .isgenerateddetail)
-                self.isgenerateddetail = int == 1
-            }
-           */
-           
-        //    self.imageprompt = try? container.decodeIfPresent(String.self, forKey: .imageprompt)
             self.image_url = try? container.decodeIfPresent(String.self, forKey: .image_url)
             self.ingredients = try? container.decodeIfPresent([IngredientJson].self, forKey: .ingredients)
             self.steps = try? container.decodeIfPresent([StepJson].self, forKey: .steps)
             self.tags = try? container.decodeIfPresent([TagJson].self, forKey: .tags)
-            if let liked = try container.decodeIfPresent(Bool.self, forKey: .liked) {
+            if let liked = try? container.decodeIfPresent(Bool.self, forKey: .liked) {
                 self.liked = liked
             }
         } catch {

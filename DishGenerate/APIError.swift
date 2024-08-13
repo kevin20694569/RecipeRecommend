@@ -10,7 +10,24 @@ enum APIError : LocalizedError {
         case .BadRequestURL :
             return "URL失效"
         }
-        
+    }
+}
+
+enum AuthenticError : LocalizedError {
+    case LostJWTKey
+    case InvalidJWTKey
+    case DecodeDataFail
+    
+    var LostJWTKey: String? {
+        switch self {
+        case .LostJWTKey :
+            return "Lost Jwt-Key"
+        case .InvalidJWTKey :
+            return "Invalid Jwt-Key"
+        case .DecodeDataFail :
+            return "Decode Data Fail"
+        }
+
     }
 }
 

@@ -20,7 +20,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     }
     
     @objc func handleReloadDishNotification(_ notification: Notification) {
-        if let userInfo = notification.userInfo, let dish = userInfo["dish"] as? Recipe  {
+        if let userInfo = notification.userInfo, let dish = userInfo["recipe"] as? Recipe  {
             reloadRecipe(recipe: dish)
         }
     }
@@ -60,7 +60,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
         let dish = dishes[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryRecipeTableCell", for: indexPath) as! SummaryRecipeTableCell
         cell.summaryDishTableCellDelegate = self
-        cell.configure(dish: dish)
+        cell.configure(recipe: dish)
         return cell
     }
     
@@ -172,10 +172,24 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? SummaryRecipeTableCell {
+            let firstIndexPath : IndexPath = IndexPath(row: 0, section: 0)
+            cell.tagCollectionView.scrollToItem(at: firstIndexPath, at: .centeredHorizontally, animated: false)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let cell = cell as? SummaryRecipeTableCell {
+            
+            cell.tagCollectionView.reloadSections([0])
+        }
+        
+    }
     
 }
 
-extension RecipeSummaryDisplayController : SummaryDishTableCellDelegate {
+extension RecipeSummaryDisplayController : SummaryRecipeTableCellDelegate {
 }
 
 

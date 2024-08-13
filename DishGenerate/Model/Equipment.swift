@@ -17,15 +17,15 @@ extension SelectedModel {
         guard models.count > 0 && !models.isEmpty else {
             return ""
         }
-        var result : String = ""
-        if let name = models[0].name {
-            result = name
-        }
-        for model in models {
-            if let name = model.name {
-                result += ",\(name)"
+    
+        var titles = models.compactMap {
+            if $0.isSelected {
+                return $0.name
             }
+            return nil
         }
+        print(titles)
+        let result = titles.joined(separator: ",")
         return result
     }
 }

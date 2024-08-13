@@ -5,9 +5,13 @@ class LeadingLogoHeaderView : UICollectionReusableView {
     
     var titleLabel : UILabel! = UILabel()
     
+    var imageViewTrigger : (() async -> Void)?
+    
+    var imageViewTapGesture : UITapGestureRecognizer!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        gestureSetup()
         labelSetup()
         imageViewSetup()
         initLayout()
@@ -36,7 +40,11 @@ class LeadingLogoHeaderView : UICollectionReusableView {
             
         ])
         
+        
+        
     }
+    
+
     
     func configure(logoImage : UIImage, title : String) {
         self.imageView.image = logoImage
@@ -45,8 +53,27 @@ class LeadingLogoHeaderView : UICollectionReusableView {
     
     func imageViewSetup() {
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(imageViewTapGesture)
+    }
+    
+    @objc func imageViewGestureTriggered() {
+        guard let trigger = imageViewTrigger else {
+            return
+        }
+        Task {
+            await trigger()
+        }
         
     }
+    
+    func gestureSetup() {
+        
+        imageViewTapGesture = UITapGestureRecognizer(target: self, action: #selector (imageViewGestureTriggered))
+
+    }
+    
+
     
     func labelSetup() {
         titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)

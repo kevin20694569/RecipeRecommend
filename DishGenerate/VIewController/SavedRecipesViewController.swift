@@ -141,7 +141,7 @@ class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDel
     }
     
     func registerCell() {
-        collectionView.register(SavedDishCell.self, forCellWithReuseIdentifier: "SavedDishCell")
+        collectionView.register(HistoryRecipeCell.self, forCellWithReuseIdentifier: "SavedDishCell")
     }
 }
 
@@ -164,9 +164,9 @@ extension SavedRecipesViewController : UICollectionViewDelegate, UICollectionVie
             dishes = collectedDishes
         }
         let dish = dishes[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as! SavedDishCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as! HistoryRecipeCell
         
-        cell.configure(dish: dish)
+        cell.configure(recipe: dish)
         return cell
     }
     
@@ -192,7 +192,7 @@ extension SavedRecipesViewController : UICollectionViewDelegate, UICollectionVie
             dishes = collectedDishes
         }
         let dish = dishes[indexPath.row]
-        showRecipeDetailViewController(dish: dish)
+        showRecipeDetailViewController(recipe: dish)
     }
     
     

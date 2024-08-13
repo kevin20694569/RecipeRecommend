@@ -7,7 +7,7 @@ protocol RecipeStatusControll : NSObject {
 }
 
 protocol RecipeTableCell : UITableViewCell, RecipeStatusControll {
-    func configure(dish : Recipe)
+    func configure(recipe : Recipe)
     
     
 }
@@ -179,19 +179,20 @@ extension GenerateOptionCellDelegate {
     }
 }
 
-protocol SummaryDishTableCellDelegate : UIViewController {
-    func showDishDetailViewController(dish : Recipe)
+protocol SummaryRecipeTableCellDelegate : UIViewController {
+    func showRecipeDetailViewController(recipe : Recipe)
 }
 
-extension SummaryDishTableCellDelegate {
-    func showDishDetailViewController(dish : Recipe) {
-        guard let steps = dish.steps,
-              let ingredients = dish.ingredients else {
+extension SummaryRecipeTableCellDelegate {
+    func showRecipeDetailViewController(recipe : Recipe) {
+        guard let steps = recipe.steps,
+              let ingredients = recipe.ingredients else {
             return
         }
         
-        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
+        let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
         self.show(controller, sender: nil)
+
     }
 }
 
@@ -237,13 +238,13 @@ extension UserProfileCellDelegate {
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
-    func showRecipeDetailViewController(dish : Recipe) {
-        guard let steps = dish.steps,
-              let ingredients = dish.ingredients else {
+    func showRecipeDetailViewController(recipe : Recipe) {
+        guard let steps = recipe.steps,
+              let ingredients = recipe.ingredients else {
             return
         }
         
-        let controller = DishDetailViewController(dish: dish, steps: steps, ingredients: ingredients)
+        let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }

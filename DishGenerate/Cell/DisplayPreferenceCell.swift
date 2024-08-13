@@ -87,7 +87,7 @@ class DisplayPreferenceCell : UITableViewCell {
     }
     
     func initLayout() {
-        /*[mainView, ingredientsLabel, cuisineLabel, equipmentsLabel, complexityLabel, timeLimitLabel, created_timeLabel].forEach() { view in
+        /*[mainView, ingredientsLabel, cuisineLabel, equipmentsLabel, costTimeLabel, timeLimitLabel, created_timeLabel].forEach() { view in
             contentView.addSubview(view)
             view.translatesAutoresizingMaskIntoConstraints = false
         }*/
@@ -132,8 +132,8 @@ class DisplayPreferenceCell : UITableViewCell {
            /* ingredientsLabel.topAnchor.constraint(equalTo: mainView.topAnchor, constant: verConstant),
             cuisineLabel.topAnchor.constraint(equalTo: ingredientsLabel.bottomAnchor, constant: verConstant),
             equipmentsLabel.topAnchor.constraint(equalTo: cuisineLabel.bottomAnchor, constant: verConstant),
-            complexityLabel.topAnchor.constraint(equalTo: equipmentsLabel.bottomAnchor, constant: verConstant),
-            timeLimitLabel.topAnchor.constraint(equalTo: complexityLabel.bottomAnchor, constant: verConstant),
+            costTimeLabel.topAnchor.constraint(equalTo: equipmentsLabel.bottomAnchor, constant: verConstant),
+            timeLimitLabel.topAnchor.constraint(equalTo: costTimeLabel.bottomAnchor, constant: verConstant),
             created_timeLabel.topAnchor.constraint(equalTo: timeLimitLabel.bottomAnchor, constant: verConstant),
             created_timeLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -verConstant)*/
             labelStackView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: verConstant),

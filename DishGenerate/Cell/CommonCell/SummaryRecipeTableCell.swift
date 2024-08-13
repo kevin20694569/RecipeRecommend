@@ -30,7 +30,7 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     
     var tagCollectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
-    weak var summaryDishTableCellDelegate : SummaryDishTableCellDelegate?
+    weak var summaryDishTableCellDelegate : SummaryRecipeTableCellDelegate?
     
     var generatedStringAttributes : AttributeContainer! = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)])
     
@@ -48,8 +48,10 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         initLayout()
     }
     
+    
+    
     func registerCell() {
-        self.tagCollectionView.register(SummaryTagCollectionCell.self, forCellWithReuseIdentifier:  "SummaryTagCollectionCell")
+        self.tagCollectionView.register(TagCollectionCell.self, forCellWithReuseIdentifier:  "TagCollectionCell")
         
     }
     
@@ -57,17 +59,17 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(dish : Recipe) {
-        self.recipe = dish
-        recipeImageView.image = dish.image
-        summaryLabel.text = dish.description
-        titleLabel.text = dish.name
-        timeLabel.text = dish.costTimeDescription
+    func configure(recipe : Recipe) {
+        self.recipe = recipe
+        recipeImageView.image = recipe.image
+        summaryLabel.text = recipe.description
+        titleLabel.text = recipe.name
+        timeLabel.text = recipe.costTimeDescription
        // difficultLabel.text = recipe.complexity.description
-        configureRecipeLikedStatus(liked: dish.liked)
+        configureRecipeLikedStatus(liked: recipe.liked)
         updateBottomButtonStatus(animated: false)
         Task {
-            recipeImageView.image = await dish.getImage()
+            recipeImageView.image = await recipe.getImage()
         }
     }
     
@@ -188,7 +190,6 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .bold))
         heartButton.configuration = config
         heartButton.addTarget(self, action: #selector(heartButtonTapped( _ :)), for: .touchUpInside)
-        
         var bottomButtonConfig = UIButton.Configuration.filled()
         bottomButtonConfig.baseBackgroundColor = .clear
     
@@ -203,7 +204,10 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     }
     
     @objc func bottomButtonTapped(_ button : UIButton) {
-        summaryDishTableCellDelegate?.showDishDetailViewController(dish: recipe)
+        guard let delegate = summaryDishTableCellDelegate else {
+           return
+        }
+        delegate.showRecipeDetailViewController(recipe: recipe)
     }
     
 
@@ -292,82 +296,17 @@ extension SummaryRecipeTableCell : UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SummaryTagCollectionCell", for: indexPath) as! SummaryTagCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TagCollectionCell", for: indexPath) as! TagCollectionCell
         let text = self.recipe.tags?[indexPath.row].title
         cell.configure(tagText : text ?? "")
         
         return cell
     }
     
+
+    
+
+    
     
 }
 
-class SummaryTagCollectionCell : UICollectionViewCell {
-    
-    
-    var titleLabel : UILabel = UILabel()
-    
-    var mainView : UIView = UIView()
-    
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        mainViewSetup()
-        labelSetup()
-        initLayout()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initLayout() {
-        [mainView, titleLabel].forEach() {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview($0)
-        }
-        mainViewLayout()
-        titleLabelLayout()
-        
-    }
-    
-    func labelSetup() {
-        titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.textColor = .primaryLabel
-        titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
-    }
-    
-    func mainViewSetup() {
-        mainView.clipsToBounds = true
-        mainView.layer.cornerRadius = 16
-        mainView.backgroundColor = .thirdaryBackground
-    }
-    
-    func mainViewLayout() {
-        NSLayoutConstraint.activate([
-            mainView.topAnchor.constraint(equalTo: topAnchor),
-            mainView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ])
-    }
-    
-    func titleLabelLayout() {
-        NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
-            titleLabel.centerYAnchor.constraint(equalTo: mainView.centerYAnchor),
-            titleLabel.topAnchor.constraint(equalTo: mainView.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor),
-        ])
-    }
-    
-    func configure(tagText : String) {
-        titleLabel.text = tagText
-    }
-    
-    
-    
-}
