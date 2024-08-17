@@ -1,7 +1,7 @@
 
 import UIKit
 
-class Cuisine : SelectedModel, NSCopying   {
+class Cuisine : SelectedModel, NSCopying, Codable   {
     func copy(with zone: NSZone? = nil) -> Any {
         return Cuisine(name: name, isSelected: isSelected)
     }

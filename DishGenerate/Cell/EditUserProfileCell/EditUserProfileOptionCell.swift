@@ -48,7 +48,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
     }
     
     func valueLabelSetup() {
-        valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium)
+        valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         valueLabel.textAlignment = .right
         valueLabel.textColor = .thirdaryLabel
     }
@@ -67,9 +67,12 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
         super.cellGestureTriggered(gesture)
         switch self.cellType {
         case .userName:
+            guard valueLabel.text != "anonymous" else {
+                return
+            }
             editUserProfileCellDelegate?.showEditNameViewController()
         case .dislikeIngredient:
-            editUserProfileCellDelegate?.showEditDislikeIngredientViewController()
+            editUserProfileCellDelegate?.showEditEquipementViewController()
         case .cuisine :
             editUserProfileCellDelegate?.showEditFavoriteCuisineViewController()
         default :

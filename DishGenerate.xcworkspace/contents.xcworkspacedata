@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:DishGenerate.xcodeproj">
+      location = "group:/Users/huangkaicheng/Desktop/DishGenerate/RecipeRecommend.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

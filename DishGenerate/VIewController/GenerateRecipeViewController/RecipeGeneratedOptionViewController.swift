@@ -7,7 +7,7 @@ protocol DishPreferenceCell {
 
 class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
 
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     
     lazy var preference : DishPreference = DishPreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature)
     func registerKeyboardNotification() {
@@ -16,6 +16,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     }
     
     func editModeToggleTo(type: AddButtonHeaderViewType) {
+
         switch type {
         case .equipment :
             guard self.equipments.count > Equipment.examples.count else {
@@ -33,7 +34,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
                 return
             }
             self.cuisineEditModeEnable.toggle()
-            
+           
             self.collectionView.visibleCells.forEach() {
                 if let cell = $0 as? CuisineTextFieldCollectionCell {
                     cell.editModeToggleTo(enable: self.cuisineEditModeEnable)
@@ -112,7 +113,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     }
     
     
-    var equipments : [Equipment] = Equipment.examples
+    var equipments : [Equipment] = EditUserDefaultManager.shared.getEquipments()
     
     var markEquipments : [Equipment] {
         return equipments.filter { equipment in
@@ -120,9 +121,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         }
     }
     
-    var cuisines : [Cuisine] = Cuisine.examples.compactMap() {
-        return $0.copy() as? Cuisine
-    }
+    var cuisines : [Cuisine] =  EditUserDefaultManager.shared.getCuisines()
     
     var markCuisines : [Cuisine] {
         return cuisines.filter { cuisine in

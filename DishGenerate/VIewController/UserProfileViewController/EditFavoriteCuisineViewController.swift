@@ -40,10 +40,18 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
     
     init(cuisines : [Cuisine]) {
         super.init(nibName: nil, bundle: nil)
+        if let cuisines = try? EditUserDefaultManager.shared.getCuisines() {
+            initCuisines = cuisines.compactMap() { cuisine in
+                return cuisine.copy() as? Cuisine
+            }
+            self.cuisines = cuisines
+            return
+        }
         initCuisines = cuisines.compactMap() { cuisine in
             return cuisine.copy() as? Cuisine
         }
         self.cuisines = cuisines
+
         
 
     }
@@ -129,10 +137,14 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
         self.navigationItem.rightBarButtonItem = rightButtonItem
         rightButtonItem.isEnabled = false
     }
-
     
     @objc func rightButtonItemTapped(_ buttonItem : UIBarButtonItem) {
-        self.navigationController?.popViewController(animated: true)
+        do {
+            try EditUserDefaultManager.shared.setCuisines(cuisines: self.cuisines)
+            self.navigationController?.popViewController(animated: true)
+        } catch {
+            print(error)
+        }
     }
     
     func registerCell() {
@@ -153,8 +165,6 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
     
     func registerCollectionHeaderView() {
         collectionView.register(AddButtonHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AddButtonHeaderView")
-        
-        
     }
 }
 
@@ -247,6 +257,7 @@ extension EditFavoriteCuisineViewController : UICollectionViewDelegate, UICollec
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? EquipmentTextFieldCollectionCell {
+            
             cell.editModeToggleTo(enable: self.cuisineEditModeEnable )
         }
     }
@@ -266,13 +277,13 @@ extension EditFavoriteCuisineViewController : UITextFieldDelegate, AddButtonHead
         guard type == .cuisine else {
             return
         }
-        guard self.cuisines.count > Equipment.examples.count else {
+        guard self.cuisines.count > Cuisine.examples.count else {
             return
         }
         self.cuisineEditModeEnable.toggle()
 
         self.collectionView.visibleCells.forEach() {
-            if let cell = $0 as? EquipmentTextFieldCollectionCell {
+            if let cell = $0 as? CuisineTextFieldCollectionCell {
                 cell.editModeToggleTo(enable: self.cuisineEditModeEnable)
             }
         }

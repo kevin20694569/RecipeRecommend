@@ -18,7 +18,7 @@
                BlueprintIdentifier = "234BF50B2BDEA4120012CF6A"
                BuildableName = "DishGenerate.app"
                BlueprintName = "DishGenerate"
-               ReferencedContainer = "container:DishGenerate.xcodeproj">
+               ReferencedContainer = "container:RecipeRecommend.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -38,7 +38,7 @@
                BlueprintIdentifier = "234BF5242BDEA4150012CF6A"
                BuildableName = "DishGenerateTests.xctest"
                BlueprintName = "DishGenerateTests"
-               ReferencedContainer = "container:DishGenerate.xcodeproj">
+               ReferencedContainer = "container:RecipeRecommend.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -49,7 +49,7 @@
                BlueprintIdentifier = "234BF52E2BDEA4150012CF6A"
                BuildableName = "DishGenerateUITests.xctest"
                BlueprintName = "DishGenerateUITests"
-               ReferencedContainer = "container:DishGenerate.xcodeproj">
+               ReferencedContainer = "container:RecipeRecommend.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,7 +71,7 @@
             BlueprintIdentifier = "234BF50B2BDEA4120012CF6A"
             BuildableName = "DishGenerate.app"
             BlueprintName = "DishGenerate"
-            ReferencedContainer = "container:DishGenerate.xcodeproj">
+            ReferencedContainer = "container:RecipeRecommend.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -95,7 +95,7 @@
             BlueprintIdentifier = "234BF50B2BDEA4120012CF6A"
             BuildableName = "DishGenerate.app"
             BlueprintName = "DishGenerate"
-            ReferencedContainer = "container:DishGenerate.xcodeproj">
+            ReferencedContainer = "container:RecipeRecommend.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

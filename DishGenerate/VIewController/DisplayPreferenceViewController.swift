@@ -5,7 +5,7 @@ class DisplayPreferenceViewController : UIViewController {
     var preferences : [DishPreference]! = [] // DishPreference.examples
     var tableView : UITableView! = UITableView()
     
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     
     override func viewDidLoad() {
         super.viewDidLoad()

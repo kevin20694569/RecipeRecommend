@@ -217,5 +217,8 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
         if let delegate = self.editEquipmentCellDelegate {
             delegate.editModeToggleTo(type: self.type)
         }
+        if let delegate = self.editCuisineCellDelegate {
+            delegate.editModeToggleTo(type: self.type)
+        }
     }
 }

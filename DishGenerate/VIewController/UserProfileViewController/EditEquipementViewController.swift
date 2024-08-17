@@ -1,6 +1,47 @@
 import UIKit
 
-class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, EditEquipmentCellDelegate {
+class EditUserDefaultManager {
+    
+    static let shared : EditUserDefaultManager = EditUserDefaultManager()
+    
+    func setEquipments(equipements : [Equipment]) throws {
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(equipements)
+        UserDefaults.standard.set(encodedData, forKey: "equipments")
+    }
+    
+    func getEquipments() -> [Equipment] {
+        let decoder = JSONDecoder()
+        
+        guard let data = UserDefaults.standard.data(forKey: "equipments") else {
+            return Equipment.examples
+        }
+        guard let equipments = try? decoder.decode([Equipment].self, from: data) else {
+            return Equipment.examples
+        }
+        return equipments
+    }
+    
+    func setCuisines(cuisines : [Cuisine]) throws {
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(cuisines)
+        UserDefaults.standard.set(encodedData, forKey: "cuisines")
+    }
+    
+    func getCuisines() -> [Cuisine] {
+        let decoder = JSONDecoder()
+        
+        guard let data = UserDefaults.standard.data(forKey: "cuisines") else {
+            return Cuisine.examples
+        }
+        guard let cuisines = try? decoder.decode([Cuisine].self, from: data) else {
+            return Cuisine.examples
+        }
+        return cuisines
+    }
+}
+
+class EditEquipementViewController : UIViewController, KeyBoardControllerDelegate, EditEquipmentCellDelegate {
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -36,12 +77,17 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     
     init(equipments : [Equipment]) {
         super.init(nibName: nil, bundle: nil)
+        if let equipments = try? EditUserDefaultManager.shared.getEquipments() {
+            initEquipments = equipments.compactMap() { equipment in
+                return equipment.copy() as? Equipment
+            }
+            self.equipments = equipments
+            return
+        }
         initEquipments = equipments.compactMap() { equipment in
             return equipment.copy() as? Equipment
         }
         self.equipments = equipments
-        
-
     }
     
     required init?(coder: NSCoder) {
@@ -57,6 +103,7 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
         registerCollectionHeaderView()
         collcectionViewSetup()
         initLayout()
+        
     }
     
     func viewSetup() {
@@ -132,7 +179,14 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
 
     
     @objc func rightButtonItemTapped(_ buttonItem : UIBarButtonItem) {
-        self.navigationController?.popViewController(animated: true)
+        do {
+            try EditUserDefaultManager.shared.setEquipments(equipements: self.equipments)
+            self.navigationController?.popViewController(animated: true)
+        } catch {
+            print(error)
+        }
+
+
     }
     
     func registerCell() {
@@ -158,7 +212,7 @@ class EditDislikeViewController : UIViewController, KeyBoardControllerDelegate, 
     }
 }
 
-extension EditDislikeViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+extension EditEquipementViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return equipments.count
     }
@@ -259,7 +313,7 @@ extension EditDislikeViewController : UICollectionViewDelegate, UICollectionView
     
 }
 
-extension EditDislikeViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout, ButtonSideCollectionCellDelegate {
+extension EditEquipementViewController : UITextFieldDelegate, AddButtonHeaderViewDelegate, UICollectionViewDelegateFlowLayout, ButtonSideCollectionCellDelegate {
     func highlight(cell : UICollectionViewCell) {
         detectEquipmentsChanged()
     }

@@ -12,6 +12,10 @@ class SessionManager : NSObject {
     
     static var jwt_token : String?
     
+    static var user_id : String = "uKBgj-m98kPAxOhbI2hA0"
+    
+    static let anonymous_user_id = "uKBgj-m98kPAxOhbI2hA0"
+    
     func initAuthURLRequest(url : URL) throws -> URLRequest {
         guard let jwt_token = SessionManager.jwt_token else {
             throw AuthenticError.LostJWTKey
@@ -24,6 +28,9 @@ class SessionManager : NSObject {
     
     func getJWTTokenFromUserDefaults() -> String? {
         let userDefault = UserDefaults()
+        if let jwt_token = SessionManager.jwt_token {
+            return jwt_token
+        }
         guard let jwt_token = userDefault.value(forKey: "jwt-token") as? String else {
             return nil
         }
@@ -40,7 +47,7 @@ class SessionManager : NSObject {
 }
 class MainServerAPIManager : NSObject, APIManager {
     
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     var serverResourcePrefix : String {
         return Environment.ServerIP
     }

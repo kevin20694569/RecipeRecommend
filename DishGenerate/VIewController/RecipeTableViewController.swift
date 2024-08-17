@@ -11,6 +11,7 @@ enum DisplayRecipeStatus {
  
 
 class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate {
+    
     func reloadRecipe(recipe: Recipe) {
         guard let index = recipes.firstIndex(where: { oldDish in
             recipe.id == oldDish.id
@@ -26,7 +27,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var status : DisplayRecipeStatus = .Liked
     
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     
     var isLoadingNewDishes : Bool = false
     
@@ -64,7 +65,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             reloadRecipe(recipe: dish)
         }
     }
-    
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -96,6 +96,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     init() {
         super.init(nibName: nil, bundle: nil)
+        tableViewSetup()
+        layoutSetup()
+        Task {
+            await reloadTableView()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -109,21 +114,22 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
+        
         generateButtonSetup()
         tabBarSetup()
         registerCells()
         searchBarSetup()
         navSetup()
-        layoutSetup()
-        tableViewSetup()
+        
+        
         if generatedDishes != nil {
             changeButtonStatus(status: .already)
         }
 
-        Task {
-            await reloadTableView()
-        }
+
+
     }
+    
     
 
     
@@ -148,6 +154,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
+            
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -177,11 +186,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.rowHeight = UITableView.automaticDimension
         tableView.delaysContentTouches = false
         
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
+
         tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshControllerTriggered( _: )), for: .valueChanged)
+  
 
     }
     
@@ -266,7 +276,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         searchBarRightButton.addTarget(self, action: #selector(searchBarRightButtonTapped ( _ : )), for: .touchUpInside)
     }
     
-    
     func changeButtonStatus(status : DishGenerateStatus) {
         buttonStatus = status
         
@@ -327,15 +336,15 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         }
         let diffY = scrollView.contentOffset.y - previousOffsetY
         var newConstant: CGFloat = searchBarAnchorConstaint.constant - diffY
-        
         if scrollView.contentOffset.y <= 0 {
-            if scrollView.contentOffset.y <= 0 {
-                UIView.animate(withDuration: 0.1, animations: {
-                    //      self.searchBarAnchorConstaint.constant = 0
-                })
+            
+            UIView.animate(withDuration: 0.1, animations: {
+                self.searchBarAnchorConstaint.constant = 0
                 
-                return
-            }
+            })
+            return
+        }
+            
             var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
             
             if let navigationController = navigationController,
@@ -353,9 +362,10 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             [searchBar, searchBarRightButton].forEach( ) {
                 $0.layer.opacity = persent
             }
+            
             searchBarAnchorConstaint.constant = newConstant
             previousOffsetY = scrollView.contentOffset.y
-        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -379,9 +389,14 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         cell?.isSelected = false
-        let dish = recipes[indexPath.row]
-       // let status = recipe.status
-        showRecipeDetailViewController(recipe: dish)
+        var recipe : Recipe
+        switch self.status {
+        case .Liked:
+            recipe = recipes[indexPath.row]
+        case .Search:
+            recipe = self.searchRecipes[indexPath.row]
+        }
+        showRecipeDetailViewController(recipe: recipe)
     }
     
 

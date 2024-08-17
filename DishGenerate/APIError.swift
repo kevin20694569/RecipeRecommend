@@ -17,8 +17,9 @@ enum AuthenticError : LocalizedError {
     case LostJWTKey
     case InvalidJWTKey
     case DecodeDataFail
+    case LoginFail
     
-    var LostJWTKey: String? {
+    var errorDescription: String? {
         switch self {
         case .LostJWTKey :
             return "Lost Jwt-Key"
@@ -26,10 +27,14 @@ enum AuthenticError : LocalizedError {
             return "Invalid Jwt-Key"
         case .DecodeDataFail :
             return "Decode Data Fail"
+        case .LoginFail :
+            return "LoginFail"
         }
 
     }
 }
+
+
 
 enum DishError : LocalizedError {
     case RespondError

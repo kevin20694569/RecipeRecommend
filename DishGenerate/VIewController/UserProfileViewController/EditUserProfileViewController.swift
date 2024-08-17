@@ -3,7 +3,7 @@ import UIKit
 class EditUserProfileViewController : UIViewController {
     var tableView : UITableView! = UITableView()
     
-    var options : [String]! = ["暱稱", "討厭的食材", "喜好的菜式"]
+    var options : [String]! = ["暱稱", "擁有設備", "喜好菜式"]
     
     var user : User!
     
@@ -164,7 +164,9 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
 }
 
 extension EditUserProfileViewController : EditUserProfileCellDelegate {
-    func reloadUserName() {
+
+    
+    func reloadUser() {
         self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
     }
     

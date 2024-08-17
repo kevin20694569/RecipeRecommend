@@ -5,15 +5,22 @@ class EditUserNameViewController : UIViewController {
 
     var user : User!
     
-    var newName : String?
+    var newName : String?{ didSet {
+        navigationItem.rightBarButtonItem?.isEnabled = newName != initName && newName != nil
+    }}
+    
     
     var tableView : UITableView! = UITableView()
+    
+    var initName : String!
     
     var editUserNameViewControllerDelegate : EditUserNameViewControllerDelegate?
     
     init(user : User) {
         super.init(nibName: nil, bundle: nil)
         self.user = user
+        self.initName = user.name
+        
     }
     
     override func viewDidLoad() {
@@ -30,7 +37,6 @@ class EditUserNameViewController : UIViewController {
         if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableCell {
             cell.textField.becomeFirstResponder()
         }
-        
     }
     
     
@@ -64,17 +70,22 @@ class EditUserNameViewController : UIViewController {
     func navItemSetup() {
         navigationItem.title = "更改名字"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "儲存", style: .plain, target: self, action: #selector(rightButtonItemTapped ( _ : )))
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
     
-    
     @objc func rightButtonItemTapped(_ buttonItem : UIBarButtonItem) {
-        if self.user.name != newName && newName != "" && newName != nil {
-            user.name = newName
+        if newName != "" && newName != nil, let name = newName, self.initName != name {
+            
+            Task {
+                try await UserManager.shared.rename(user_id: self.user.id, newName: name)
+                if let nav = self.navigationController as? UserProfileNavViewController {
+                    
+                    await nav.reloadUser()
+                    user.name = name
+                }
+                self.navigationController?.popViewController(animated: true)
+            }
         }
-        if let nav = self.navigationController as? UserProfileNavViewController {
-            nav.reloadUserName()
-        }
-        self.navigationController?.popViewController(animated: true)
     }
     
     
@@ -97,7 +108,12 @@ extension EditUserNameViewController : UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableCell", for: indexPath) as! TextFieldTableCell
         cell.textFieldDelegate = self
-        cell.configure(title : "名字", value: user.name)
+        if let newName = newName {
+            cell.configure(title : "名字", value: newName)
+        } else {
+            cell.configure(title : "名字", value: user.name)
+        }
+        
         return cell
     }
     

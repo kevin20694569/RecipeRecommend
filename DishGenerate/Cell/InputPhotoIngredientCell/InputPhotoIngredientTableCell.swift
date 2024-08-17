@@ -236,4 +236,17 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         let screenBounds = UIScreen.main.bounds
         collectionView.contentInset = UIEdgeInsets(top: 0, left: screenBounds.width / 2 -  (collectionViewHeightConstant / 1.8 / 2), bottom: 0, right: screenBounds.width / 2 -  (collectionViewHeightConstant / 1.8 / 2) - collectionViewHeightConstant * 0.2 )
     }
+    
+    func refreshCollectionCellPreviewLayer() {
+        guard let image = images.last else {
+            return
+        }
+        if image == nil {
+            let index = images.count - 1
+            if let cell = collectionView.cellForItem(at: IndexPath(row: index, section: 0)) as? InputPhotoIngredientCollectionCell {
+                cell.configurePreviewLayer(previewLayer: cameraController.previewLayer)
+                
+            }
+        }
+    }
 }

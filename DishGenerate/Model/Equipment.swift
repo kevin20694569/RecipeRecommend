@@ -30,7 +30,7 @@ extension SelectedModel {
     }
 }
 
-class Equipment : SelectedModel, NSCopying  {
+class Equipment : SelectedModel, NSCopying, Codable  {
     
     func copy(with zone: NSZone? = nil) -> Any {
         return Equipment(name: name, isSelected: isSelected)
@@ -44,6 +44,7 @@ class Equipment : SelectedModel, NSCopying  {
     var id : UUID = UUID()
     
     var name : String!
+    
     var isSelected : Bool = false
     
     init(name : String, isSelected : Bool) {
@@ -67,6 +68,13 @@ class Equipment : SelectedModel, NSCopying  {
                                          Equipment(name: "瓦斯爐", isSelected: false),
                                          Equipment(name: "氣炸鍋", isSelected: false),
                                          Equipment(name: "電鍋", isSelected: false)]
+    
+    required init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.isSelected = try container.decode(Bool.self, forKey: .isSelected)
+    }
 }
 
 

@@ -1,5 +1,11 @@
 import UIKit
 
 protocol EditUserNameViewControllerDelegate : UIViewController {
-    func reloadUserName()
+    func reloadUser() async
+}
+
+extension EditUserNameViewControllerDelegate {
+    func reloadUser() async {
+        return
+    }
 }

@@ -6,7 +6,16 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     
     weak var editUserProfileCellDelegate : EditUserProfileCellDelegate?
     
-
+    var user : User!
+    
+    func configure(user : User) {
+        self.user = user
+        Task {
+            if let image = await user.getImage() {
+                super.configure(image: image)
+            }
+        }
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -42,7 +51,23 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     }
     
     @objc func cameraButtonTapped( _ button : UIButton) {
-        editUserProfileCellDelegate?.showUserImageSelectedPhotoViewController()
+        editUserProfileCellDelegate?.showEditUserImageViewController()
     }
     
+}
+
+class ChangeUserImageViewTableCell : EditUserProfileUserImageViewTableCell {
+    override func cameraButtonTapped(_ button: UIButton) {
+        editUserProfileCellDelegate?.showImagePicker()
+     //   editUserProfileCellDelegate
+    }
+}
+
+class RegisterUserImageViewTableCell : ChangeUserImageViewTableCell {
+    override func imageViewSetup() {
+        super.imageViewSetup()
+        mainImageView.layer.cornerRadius = 20
+        mainImageView.layer.borderWidth = 0.8
+        mainImageView.layer.borderColor = UIColor.secondaryLabelColor.cgColor
+    }
 }

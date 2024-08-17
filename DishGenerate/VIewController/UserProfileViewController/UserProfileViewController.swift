@@ -14,13 +14,17 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     var isLoadingNewDishes : Bool = false
     
-    func reloadUserName() {
-        
-        self.collectionView.reloadSections([0])
+    func reloadUser() async {
+        Task {
+            let user = try await UserManager.shared.getUser(user_id: SessionManager.user_id)
+            self.user_id  = user.id
+            self.user = user
+            self.collectionView.reloadSections([0])
+        }
         
     }
     
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
@@ -40,7 +44,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         initLayout()
         collectionViewSetup()
         Task {
-            let user = try await UserManager.shared.getUser(user_id: Environment.user_id)
+            let user = try await UserManager.shared.getUser(user_id: SessionManager.user_id)
             self.user_id  = user.id
             self.user = user
             self.collectionView.reloadSections([0])
@@ -206,7 +210,7 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let bounds = view.bounds
         if section == 0 {
-            return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.04, right: 0)
+            return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.02, right: 0)
         }
         return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }

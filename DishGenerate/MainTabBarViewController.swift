@@ -26,6 +26,9 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        childViewControllersSetup()
+
+        
     }
     
     required init?(coder: NSCoder) {
@@ -34,11 +37,14 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        childViewControllersSetup()
         tabBarSetup()
         tabBarLayout()
         layoutSetup()
+        self.view.backgroundColor = .primaryBackground
+        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
     }
+    
+    
     
     lazy var bottomBarViews : [UIView] = [bottomBarView, tabBar]
     
@@ -58,6 +64,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         self.savedDishesNavViewController = savedDishesNavViewController
         
         self.preferenceNavViewController = UINavigationController(rootViewController: DisplayPreferenceViewController())
+       
     }
     
     func tabBarLayout() {
@@ -81,8 +88,13 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
             bottomBarView.topAnchor.constraint(equalTo: tabBar.topAnchor)
         ])
         self.view.layoutIfNeeded()
-        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
+        
         bottomBarView.backgroundColor = .themeColor
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+       
     }
     
     func layoutSetup() {
@@ -141,10 +153,4 @@ extension MainTabBarViewController  {
     }
 }
 
-#Preview {
-    return LoginViewController()
-    if let jwt_token = SessionManager.shared.getJWTTokenFromUserDefaults() {
-        return MainTabBarViewController()
-    }
-    return LoginViewController()
-}
+

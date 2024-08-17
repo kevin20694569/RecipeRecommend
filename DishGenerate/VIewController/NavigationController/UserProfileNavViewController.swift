@@ -2,12 +2,14 @@
 import UIKit
 
 class UserProfileNavViewController : UINavigationController, EditUserNameViewControllerDelegate {
-    func reloadUserName() {
-        self.viewControllers.forEach() { viewController in
-            if let viewController = viewController as? EditUserNameViewControllerDelegate {
-                viewController.reloadUserName()
+    func reloadUser() async {
+        for controller in viewControllers {
+            if let viewController = controller as? EditUserNameViewControllerDelegate {
+                await viewController.reloadUser()
             }
         }
+
+        
     }
     
     

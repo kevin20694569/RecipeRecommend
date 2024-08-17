@@ -1,10 +1,13 @@
 import UIKit
+import PhotosUI
 
 class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
     
     var nextTapButton : ZoomAnimatedButton! = ZoomAnimatedButton()
+    
+    var selectPhotoButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
     var cameraInputTableCell : InputPhotoIngredientTableCell {
         return tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! InputPhotoIngredientTableCell
@@ -39,8 +42,6 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     var tableView : UITableView! = UITableView()
     
     func registerCell() {
-        tableView.register(CollectionViewTableCell.self, forCellReuseIdentifier: "CollectionViewTableCell")
-        tableView.register(StepCollectionViewTableCell.self, forCellReuseIdentifier: "StepCollectionViewTableCell")
         
         tableView.register(IndicatorTableCell.self, forCellReuseIdentifier: "IndicatorTableCell")
         tableView.register(InputPhotoIngredientTableCell.self, forCellReuseIdentifier: "InputPhotoIngredientTableCell")
@@ -108,7 +109,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     func initLayout() {
         self.view.addSubview(tableView)
         self.view.addSubview(nextTapButton)
-        
+        self.view.addSubview(selectPhotoButton)
         view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -132,6 +133,16 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
             nextTapButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
         ])
         
+        NSLayoutConstraint.activate([
+            selectPhotoButton.centerXAnchor.constraint(equalTo: nextTapButton.centerXAnchor),
+            selectPhotoButton.bottomAnchor.constraint(equalTo: nextTapButton.topAnchor, constant: -24),
+            
+            selectPhotoButton.widthAnchor.constraint(equalTo: nextTapButton.widthAnchor),
+            selectPhotoButton.heightAnchor.constraint(equalTo: nextTapButton.heightAnchor),
+        ])
+        
+        
+        
     }
     
     func buttonSetup() {
@@ -146,11 +157,30 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         nextTapButton.layer.cornerRadius = 16
         
         nextTapButton.addTarget(self, action: #selector(nextTapButtonTapped ( _ :)), for: .touchUpInside)
+        
+        var selectPhotoConfig = UIButton.Configuration.filled()
+        let selectPhotoAttributedString = AttributedString("從圖庫選擇", attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)]) )
+        selectPhotoConfig.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset * 2, bottom: inset, trailing: inset * 2)
+        selectPhotoConfig.attributedTitle = selectPhotoAttributedString
+        selectPhotoConfig.baseBackgroundColor = .accent
+        selectPhotoButton.configuration = selectPhotoConfig
+        selectPhotoButton.clipsToBounds = true
+        selectPhotoButton.layer.cornerRadius = 16
+        
+        selectPhotoButton.addTarget(self, action: #selector(selectPhotoButtonTapped ( _ :)), for: .touchUpInside)
+        
+
     }
     
     @objc func nextTapButtonTapped( _ button : UIButton) {
         showCorrectIngredientViewController()
     }
+    
+    @objc func selectPhotoButtonTapped( _ button : UIButton) {
+        showImagePicker()
+    }
+    
+    
     
     func showCorrectIngredientViewController() {
        
@@ -168,5 +198,82 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         show(controller, sender: nil)
         
         
+    }
+}
+
+
+extension InputPhotoIngredientViewController : PHPickerViewControllerDelegate {
+    
+    func showImagePicker() {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = PHPickerFilter.playbackStyle(  .image)
+        configuration.selectionLimit = 20
+      //  configuration.selection = .continuousAndOrdered
+       // configuration.preferredAssetRepresentationMode = .automatic
+        let phppicker = PHPickerViewController(configuration: configuration)
+        phppicker.delegate = self
+        present(phppicker, animated: true)
+    }
+    
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        if results.isEmpty {
+            return
+        }
+        Task {
+            let images = await withTaskGroup(of: (index : Int, image : UIImage?).self, returning: [UIImage].self) { group in
+                
+                for (i, result) in results.enumerated() {
+                    group.addTask() {
+                        do {
+                            return try await withCheckedThrowingContinuation { (continuation : CheckedContinuation<(Int, UIImage), any Error>)  in
+                                result.itemProvider.loadObject(ofClass: UIImage.self)   { (data, error) in
+                                    if let error = error {
+                                        
+                                        continuation.resume(throwing: error)
+                                        print("image失敗 \(error.localizedDescription)" )
+                                        return
+                                    }
+                                    
+                                    if let image = data as? UIImage {
+                                        continuation.resume(returning: (i, image))
+                                    }
+                                }
+                            }
+                        } catch  {
+                            print(error)
+                        }
+                        return (i, nil)
+                    }
+                    
+                }
+                var images : [UIImage] = Array.init(repeating: UIImage(), count: results.count)
+                for await result in group {
+                    guard let image = result.image else {
+                        continue
+                    }
+                    images[result.index] = image
+                }
+                images = images.compactMap() { $0}
+                return images
+            }
+            if let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? InputPhotoIngredientTableCell {
+                var index = cell.images.count
+                var lastImageEqualNil : Bool = false
+                if let lastImage = cell.images.last,
+                   lastImage == nil {
+                    lastImageEqualNil = true
+                    index -= 1
+                }
+                cell.images.insert(contentsOf: images, at: index)
+                cell.collectionView.reloadSections([0])
+                if !lastImageEqualNil {
+                    cell.addButtonEnable(enable: true)
+                }
+               
+                cell.refreshCollectionCellPreviewLayer()
+            }
+        }
     }
 }

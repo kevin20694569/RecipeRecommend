@@ -1,5 +1,6 @@
 
 import UIKit
+import Alamofire
 
 final class UserManager : MainServerAPIManager {
     
@@ -26,28 +27,29 @@ final class UserManager : MainServerAPIManager {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpMethod = "POST"
         
-        let (_, response) = try await URLSession.shared.data(for: req)
+        let (data, response) = try await URLSession.shared.data(for: req)
         guard let httpRes = response as? HTTPURLResponse else {
             throw APIError.BadRequestURL
         }
         guard 200...299  ~= httpRes.statusCode else {
-            throw APIError.BadRequestURL
+            throw AuthenticError.LoginFail
         }
         let headers = httpRes.allHeaderFields
-        if let jwt_token = headers["jwt-token"] as? String {
-            SessionManager.shared.setJWTTokenToUserDefaults(jwt_token: jwt_token)
-            return jwt_token
+        guard let jwt_token = headers["jwt-token"] as? String,
+           let dict = try JSONSerialization.jsonObject(with: data) as? [String : Any],
+              let user = dict["user"] as? [String : Any] else {
+            throw AuthenticError.DecodeDataFail
         }
-        throw AuthenticError.DecodeDataFail
+        SessionManager.user_id = user["id"] as! String
+        SessionManager.shared.setJWTTokenToUserDefaults(jwt_token: jwt_token)
+        return jwt_token
     }
     
     func getUser(user_id : String) async throws -> User {
         guard let url = URL(string: "\(self.serverResourcePrefix)?user_id=\(user_id)") else {
             throw APIError.BadRequestURL
         }
-       // var req = URLRequest(url: url)
-        var req = try SessionManager.shared.initAuthURLRequest(url: url)
-      //  try self.insertJwtTokenToHeadersDefault(req: &req)
+        let req = try SessionManager.shared.initAuthURLRequest(url: url)
         
         
         let (data, response) = try await URLSession.shared.data(for: req)
@@ -64,5 +66,85 @@ final class UserManager : MainServerAPIManager {
       //  throw AuthenticError.DecodeDataFail
     }
     
+    func rename(user_id : String, newName : String) async throws {
+        guard let url = URL(string: "\(self.serverResourcePrefix)?user_id=\(user_id)") else {
+            throw APIError.BadRequestURL
+        }
+        guard let nameData = newName.data(using: .utf8) else {
+            throw APIError.BadRequestURL
+        }
+        
+        let res = try await withUnsafeThrowingContinuation { continuation in
+            AF.upload(multipartFormData: { multipartFormData in
+                multipartFormData.append(Data(user_id.utf8), withName: "user_id")
+                multipartFormData.append(nameData, withName: "name")
+            }, to: url, method : .put, headers: .default).response { response in
+                switch response.result {
+                case .success:
+                    continuation.resume(returning: response)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func changeUserImage(user_id : String, newImage : UIImage) async throws {
+        guard let url = URL(string: "\(self.serverResourcePrefix)?user_id=\(user_id)") else {
+            throw APIError.BadRequestURL
+        }
+        guard let imageData = newImage.jpegData(compressionQuality: 0.7) else {
+            return
+        }
+        
+        let res = try await withUnsafeThrowingContinuation { continuation in
+            AF.upload(multipartFormData: { multipartFormData in
+                multipartFormData.append(Data(user_id.utf8), withName: "user_id")
+                multipartFormData.append(imageData, withName: "userimage", fileName: "\(user_id)_userimage.jpg", mimeType: "image/jpeg")
+
+            }, to: url, method : .put, headers: .default).response { response in
+                switch response.result {
+                case .success:
+                    continuation.resume(returning: response)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func register(name : String, email : String, password : String, image : UIImage?) async throws {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/register") else {
+            throw APIError.BadRequestURL
+        }
+        guard let nameData = name.data(using: .utf8),
+              let emailData = email.data(using: .utf8),
+            let passwordData = password.data(using: .utf8) else {
+            throw APIError.BadRequestURL
+        }
+        
+
+        
+        let res = try await withUnsafeThrowingContinuation { continuation in
+            AF.upload(multipartFormData: { multipartFormData in
+                multipartFormData.append(nameData, withName: "name")
+                multipartFormData.append(emailData, withName: "email")
+                multipartFormData.append(passwordData, withName: "password")
+                if let image = image,
+                   let imageData = image.jpegData(compressionQuality: 0.7){
+                    multipartFormData.append(imageData, withName: "userimage", fileName: "userimage.jpg", mimeType: "image/jpeg")
+                }
+                
+
+            }, to: url, method : .put, headers: .default).response { response in
+                switch response.result {
+                case .success:
+                    continuation.resume(returning: response)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
     
 }

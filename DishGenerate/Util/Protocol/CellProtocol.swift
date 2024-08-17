@@ -198,24 +198,31 @@ extension SummaryRecipeTableCellDelegate {
 
 protocol EditUserProfileCellDelegate : EditUserNameViewControllerDelegate {
     var user : User! { get }
-    func showUserImageSelectedPhotoViewController()
+    func showEditUserImageViewController()
     func showEditNameViewController()
-    func showEditDislikeIngredientViewController()
+    func showEditEquipementViewController()
     func showEditFavoriteCuisineViewController()
+    func showImagePicker()
 }
 
 extension EditUserProfileCellDelegate {
-    func showUserImageSelectedPhotoViewController() {
+    func showEditUserImageViewController() {
+        let controller = EditUserImageViewController(user: user)
+        self.show(controller, sender: nil)
+    }
+    
+    func showImagePicker() {
         
     }
+    
     func showEditNameViewController() {
         let controller = EditUserNameViewController(user: user)
         controller.editUserNameViewControllerDelegate = self
         self.show(controller, sender: nil)
         
     }
-    func showEditDislikeIngredientViewController() {
-        let controller = EditDislikeViewController(equipments: Equipment.examples)
+    func showEditEquipementViewController() {
+        let controller = EditEquipementViewController(equipments: Equipment.examples)
         self.show(controller, sender: nil)
     }
     

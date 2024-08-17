@@ -24,7 +24,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     var recognizeResults : [[RecognizeImageJson]]?
     
-    var user_id : String = Environment.user_id
+    var user_id : String = SessionManager.user_id
     
     let photoInputedIndexPath : IndexPath = IndexPath(row: 0, section: 1)
     

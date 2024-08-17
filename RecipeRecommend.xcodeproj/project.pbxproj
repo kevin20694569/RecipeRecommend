@@ -13,6 +13,7 @@
 		230744CC2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230744CB2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift */; };
 		230CC14D2C6B0FE500D593D9 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC14C2C6B0FE500D593D9 /* UserManager.swift */; };
 		230CC14F2C6BAFE100D593D9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */; };
+		230CC1512C6CA9E100D593D9 /* EditUserImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC1502C6CA9E100D593D9 /* EditUserImageViewController.swift */; };
 		231341982BEB496C0015DFA6 /* InputPhotoIngredientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341972BEB496C0015DFA6 /* InputPhotoIngredientViewController.swift */; };
 		2313419A2BEB4A1E0015DFA6 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231341992BEB4A1E0015DFA6 /* Ingredient.swift */; };
 		2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */; };
@@ -29,9 +30,11 @@
 		232AFC842C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC832C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift */; };
 		232AFC862C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC852C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift */; };
 		232AFC882C4413BD00B8ACB5 /* DisplayPreferenceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */; };
-		233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditDislikeViewController.swift */; };
+		233771A22C0D66A200135497 /* EditEquipementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditEquipementViewController.swift */; };
 		233771A42C0D9AF500135497 /* SavedRecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */; };
 		233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */; };
+		23479F182C70BA970083769B /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F172C70BA970083769B /* RegisterViewController.swift */; };
+		23479F1A2C7112CC0083769B /* TextFieldWithLabelTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* RecipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* RecipeTableViewController.swift */; };
@@ -139,6 +142,7 @@
 		230744CB2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeGeneratedOptionViewController.swift; sourceTree = "<group>"; };
 		230CC14C2C6B0FE500D593D9 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		230CC1502C6CA9E100D593D9 /* EditUserImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserImageViewController.swift; sourceTree = "<group>"; };
 		231341972BEB496C0015DFA6 /* InputPhotoIngredientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPhotoIngredientViewController.swift; sourceTree = "<group>"; };
 		231341992BEB4A1E0015DFA6 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		2313419B2BEB4B240015DFA6 /* CollectionViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTableCell.swift; sourceTree = "<group>"; };
@@ -155,9 +159,11 @@
 		232AFC832C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePreferenceManager.swift; sourceTree = "<group>"; };
 		232AFC852C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferenceViewController.swift; sourceTree = "<group>"; };
 		232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferenceCell.swift; sourceTree = "<group>"; };
-		233771A12C0D66A200135497 /* EditDislikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDislikeViewController.swift; sourceTree = "<group>"; };
+		233771A12C0D66A200135497 /* EditEquipementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEquipementViewController.swift; sourceTree = "<group>"; };
 		233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRecipesViewController.swift; sourceTree = "<group>"; };
 		233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFavoriteCuisineViewController.swift; sourceTree = "<group>"; };
+		23479F172C70BA970083769B /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithLabelTableCell.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -290,6 +296,15 @@
 			path = StepIndicatorCell;
 			sourceTree = "<group>";
 		};
+		23479F162C70BA820083769B /* UserAccountViewController */ = {
+			isa = PBXGroup;
+			children = (
+				230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */,
+				23479F172C70BA970083769B /* RegisterViewController.swift */,
+			);
+			path = UserAccountViewController;
+			sourceTree = "<group>";
+		};
 		234BF5032BDEA4120012CF6A = {
 			isa = PBXGroup;
 			children = (
@@ -315,6 +330,7 @@
 		234BF50E2BDEA4120012CF6A /* DishGenerate */ = {
 			isa = PBXGroup;
 			children = (
+				234BF5522BDEB8340012CF6A /* Delegate */,
 				23C63B812C29F369007F3C23 /* Error */,
 				23C63B7A2C29819B007F3C23 /* APIManager */,
 				234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */,
@@ -381,6 +397,7 @@
 				234BF5452BDEAA1A0012CF6A /* RecipeSnapshotCell.swift */,
 				23B5011F2BF49C2C00EAB2D7 /* IngredientTitleLabelCollectionCell.swift */,
 				232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */,
+				23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -403,6 +420,7 @@
 		234BF5512BDEB82A0012CF6A /* VIewController */ = {
 			isa = PBXGroup;
 			children = (
+				23479F162C70BA820083769B /* UserAccountViewController */,
 				23525E442C1039F50070DD9B /* GenerateRecipeViewController */,
 				23525E432C1039D20070DD9B /* UserProfileViewController */,
 				23525E402C1039AC0070DD9B /* NavigationController */,
@@ -411,7 +429,6 @@
 				23C210292BFCFE1B008F74D0 /* RecipeDetailViewController.swift */,
 				233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */,
 				232AFC852C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift */,
-				230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */,
 			);
 			path = VIewController;
 			sourceTree = "<group>";
@@ -439,7 +456,6 @@
 			children = (
 				23C63B7F2C29AF7B007F3C23 /* Environment.swift */,
 				23B501252BF4E72400EAB2D7 /* KeyBoardController.swift */,
-				234BF5522BDEB8340012CF6A /* Delegate */,
 				234BF5552BDEB8D60012CF6A /* Protocol */,
 				234BF5482BDEACEC0012CF6A /* Extension */,
 				231341A62BEB69950015DFA6 /* CameraController.swift */,
@@ -487,9 +503,10 @@
 			children = (
 				236784352C05CC74006C18A3 /* UserProfileViewController.swift */,
 				236B9EE82C0C9CA70004E15A /* EditUserProfileViewController.swift */,
-				233771A12C0D66A200135497 /* EditDislikeViewController.swift */,
+				233771A12C0D66A200135497 /* EditEquipementViewController.swift */,
 				233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */,
 				23525E3E2C101B930070DD9B /* EditUserNameViewController.swift */,
+				230CC1502C6CA9E100D593D9 /* EditUserImageViewController.swift */,
 			);
 			path = UserProfileViewController;
 			sourceTree = "<group>";
@@ -728,7 +745,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 234BF5072BDEA4120012CF6A /* Build configuration list for PBXProject "DishGenerate" */;
+			buildConfigurationList = 234BF5072BDEA4120012CF6A /* Build configuration list for PBXProject "RecipeRecommend" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -927,9 +944,11 @@
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				236B9EEB2C0CB8760004E15A /* User.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
+				23479F1A2C7112CC0083769B /* TextFieldWithLabelTableCell.swift in Sources */,
 				232AFC822C429B2300B8ACB5 /* Tag.swift in Sources */,
 				232AFC842C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift in Sources */,
-				233771A22C0D66A200135497 /* EditDislikeViewController.swift in Sources */,
+				23479F182C70BA970083769B /* RegisterViewController.swift in Sources */,
+				233771A22C0D66A200135497 /* EditEquipementViewController.swift in Sources */,
 				23C63B8B2C2AB0EE007F3C23 /* ModelProtocol.swift in Sources */,
 				23B5011B2BF4893500EAB2D7 /* IndicatorCollectionCell.swift in Sources */,
 				234BF5502BDEAF250012CF6A /* UIFont.swift in Sources */,
@@ -977,6 +996,7 @@
 				23BA50B42BF3186200E3B85A /* Layer.swift in Sources */,
 				2313419C2BEB4B240015DFA6 /* CollectionViewTableCell.swift in Sources */,
 				236B9EF22C0CC1350004E15A /* GroupCornerBackgroundTableCell.swift in Sources */,
+				230CC1512C6CA9E100D593D9 /* EditUserImageViewController.swift in Sources */,
 				230CC14F2C6BAFE100D593D9 /* LoginViewController.swift in Sources */,
 				232AFC882C4413BD00B8ACB5 /* DisplayPreferenceCell.swift in Sources */,
 				236B9EF62C0CDFA70004E15A /* EditUserProfileOptionCell.swift in Sources */,
@@ -1296,7 +1316,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		234BF5072BDEA4120012CF6A /* Build configuration list for PBXProject "DishGenerate" */ = {
+		234BF5072BDEA4120012CF6A /* Build configuration list for PBXProject "RecipeRecommend" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				234BF5372BDEA4150012CF6A /* Debug */,

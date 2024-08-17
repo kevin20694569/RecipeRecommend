@@ -20,7 +20,6 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         labelSetup()
         buttonSetup()
         initLayout()
-
     }
 
     required init?(coder: NSCoder) {
@@ -34,9 +33,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         }
         let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
-
-            
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bounds.width * 0.08),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bounds.width * 0.12),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
@@ -62,14 +59,13 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     func imageViewSetup() {
         imageView.backgroundColor = .thirdaryBackground
-        imageView.image = UIImage.焗烤玉米濃湯
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
     }
     
     func labelSetup() {
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        nameLabel.text = ""
+        nameLabel.text = " "
         nameLabel.adjustsFontSizeToFitWidth = true
     }
     
@@ -85,5 +81,4 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     @objc func editButtonTapped(_ button : UIButton) {
         userProfileCellDelegate?.showEditUserProfileViewController()
     }
-    
 }

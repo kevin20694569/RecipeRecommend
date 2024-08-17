@@ -102,6 +102,7 @@ class DisplayPreferenceCell : UITableViewCell {
     
     func stackViewSetup() {
         [mainView, ingredientsLabel, cuisineLabel, equipmentsLabel, complexityLabel, timeLimitLabel, created_timeLabel].forEach() {
+            
             labelStackView.addArrangedSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -142,6 +143,7 @@ class DisplayPreferenceCell : UITableViewCell {
         let horConstant : CGFloat = 16
         var horConstaintArray : [NSLayoutConstraint]  = []
         [ingredientsLabel, cuisineLabel, equipmentsLabel, complexityLabel, timeLimitLabel, created_timeLabel].forEach() { label in
+            label.textColor = .black
             horConstaintArray.append( label.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: horConstant))
             horConstaintArray.append( label.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -horConstant))
         }

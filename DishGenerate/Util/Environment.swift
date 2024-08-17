@@ -13,7 +13,7 @@ struct Environment {
         return ""
     }()
     
-    static var user_id : String = "qC3kJ1fgfOGHp0dimxXPn"
+   // static var user_id : String = "qC3kJ1fgfOGHp0dimxXPn"
 }
 
 
