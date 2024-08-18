@@ -20,7 +20,6 @@ class EditUserNameViewController : UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.user = user
         self.initName = user.name
-        
     }
     
     override func viewDidLoad() {

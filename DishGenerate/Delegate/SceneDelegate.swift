@@ -50,6 +50,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
+    
+    static func getLoginControllerWithNav() -> UINavigationController {
+       
+      //  nav.isNavigationBarHidden = true
+        
+        return LoginViewController.navShared
+    }
 }
 
 #Preview {
@@ -58,10 +65,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+
 func initViewController() -> UIViewController {
-    let vc = LoginViewController()
-    let nav = UINavigationController(rootViewController: vc)
-  //  nav.isNavigationBarHidden = true
+    let nav = SceneDelegate.getLoginControllerWithNav()
     return nav
     if let jwt_token = SessionManager.shared.getJWTTokenFromUserDefaults() {
         return MainTabBarViewController.shared

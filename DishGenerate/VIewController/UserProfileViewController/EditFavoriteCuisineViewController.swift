@@ -71,6 +71,11 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
         initLayout()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+    }
+    
     func viewSetup() {
         view.backgroundColor = .primaryBackground
     }

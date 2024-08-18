@@ -4,12 +4,8 @@ import PhotosUI
 class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserProfileCellDelegate {
     var user: User!
     
-
-    
-    
     var mainView : UIView = UIView()
 
-    
     
     var registerButton : ZoomAnimatedButton = ZoomAnimatedButton()
 
@@ -103,20 +99,29 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
          guard !registering else {
              return
          }
-        /*guard let name = tableCellTextTuples[0].1,
+        guard let name = tableCellTextTuples[0].1,
               let email = tableCellTextTuples[1].1,
               let password = tableCellTextTuples[2].1 else {
             return
-        }*/
+        }
         Task {
             var config = registerButton.configuration
             registerButton.configuration?.showsActivityIndicator = true
             registerButton.configuration?.title = nil
             do {
-                try await Task.sleep(nanoseconds: 800000000)
                 registerButton.configuration?.showsActivityIndicator = false
+                config?.title = "成功註冊"
+                config?.attributedTitle = AttributedString("成功註冊！", attributes: self.buttonAttributedTitleContainer)
+                config?.baseBackgroundColor = .systemGreen
                 registerButton.configuration = config
                 //try? await UserManager.shared.register(name: name, email: email, password: password, image: self.userImage)
+
+                try await Task.sleep(nanoseconds: 1000000000)
+                if let loginViewController = navigationController?.viewControllers.first as?  LoginViewController {
+                    loginViewController.emailTextField.text = email
+                    loginViewController.passwordTextField.text = password
+                }
+                self.navigationController?.popViewController(animated: true)
                 
             } catch {
                 registerButton.configuration = config

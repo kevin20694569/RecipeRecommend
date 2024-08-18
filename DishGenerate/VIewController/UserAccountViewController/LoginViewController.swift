@@ -2,6 +2,9 @@ import UIKit
 
 class LoginViewController : UIViewController {
     
+    static var navShared : UINavigationController = UINavigationController(rootViewController: LoginViewController())
+    
+    
     var mainView : UIView = UIView()
     
     var emailLabel : UILabel = UILabel()
@@ -152,11 +155,16 @@ class LoginViewController : UIViewController {
     
     func showRegisterViewController() {
         let vc = RegisterViewController()
-        show(vc, sender: nil)
+        navigationController?.pushViewController(vc, animated: true)
+       // show(vc, sender: nil)
     }
     
+    
+    
     func showMainRecipeTableViewController() {
-        let vc = MainTabBarViewController()
+        guard let vc = MainTabBarViewController.shared else {
+            return
+        }
         let animatedView = UIView()
         animatedView.backgroundColor = mainView.backgroundColor
         animatedView.frame = mainView.frame
@@ -166,7 +174,10 @@ class LoginViewController : UIViewController {
         vc.view.subviews.forEach() {
             $0.alpha = 0
         }
-        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: .curveEaseOut, animations: { [weak self] in
+            guard let self = self else {
+                return
+            }
             self.mainView.subviews.forEach() {
                 $0.alpha = 0
             }
@@ -175,15 +186,34 @@ class LoginViewController : UIViewController {
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
                 animatedView.frame = vc.view.frame
             }) { bool in
+                
+                animatedView.removeFromSuperview()
                 if let window = UIApplication.shared.keyWindow {
                     window.rootViewController = vc
                 }
                 UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
+
                     vc.view.subviews.forEach() {
                         $0.alpha = 1
                     }
-                })
+                    
+                }) { [weak self] bool in
+
+                    guard let self = self else {
+                        return
+                    }
+                    logining = false
+                    let loginAttributedString = AttributedString("登入", attributes: self.buttonAttributedTitleContainer)
+                    var config = UIButton.Configuration.filled()
+                    config.attributedTitle = loginAttributedString
+                    config.baseBackgroundColor = .orangeTheme
+                    config.baseForegroundColor = .white
+                    loginButton.configuration = config
+                    
+                }
+                
             }
+            
         }
     }
     

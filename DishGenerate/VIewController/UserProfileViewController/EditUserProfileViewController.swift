@@ -14,18 +14,110 @@ class EditUserProfileViewController : UIViewController {
         navItemSetup()
         tableViewSetup()
         initLayout()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         navBarSetup()
     }
     
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        let item = UIBarButtonItem(title: "登出", image: nil, target: self, action: #selector(navBarRightButtonTapped ( _ :)))
+        navigationItem.rightBarButtonItem = item
+    }
+    
+    @objc func navBarRightButtonTapped( _ barButtonItem : UIBarButtonItem) {
+        showLogOutAlertController()
+    }
+    
+    func showLogOutAlertController() {
+        
+        let alertController = UIAlertController(title: "確定要登出？", message: nil, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(
+            title: "取消",
+            style: .cancel,
+            handler: nil)
+
+        alertController.addAction(cancelAction)
+        
+        
+        let okAction = UIAlertAction(
+            title: "登出",
+            style: .destructive,
+            handler: { [weak self] action in
+                guard let self = self else {
+                    return
+                }
+                let nav  = SceneDelegate.getLoginControllerWithNav()
+                let loginViewController = nav.viewControllers.first as! LoginViewController
+                
+         //       let nav = LoginViewController.navShared
+           //     var loginViewController = LoginViewController.shared
+                
+                guard var tabBarController = MainTabBarViewController.shared else {
+                    return
+                }
+                guard let window = UIApplication.shared.keyWindow else {
+                    return
+
+                }
+                
+                let animatedView = UIView()
+                animatedView.backgroundColor = view.backgroundColor
+                animatedView.alpha = 0
+                animatedView.frame = tabBarController.view.bounds
+                animatedView.clipsToBounds = true
+                animatedView.layer.cornerRadius = 16
+                
+                window.addSubview(animatedView)
+              
+                window.insertSubview(nav.view, at: 0)
+
+                loginViewController.mainView.subviews.forEach() {
+                    $0.alpha = 0
+                }
+                UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, animations: {
+                    animatedView.alpha = 1
+                }) { bool in
+                    tabBarController.view.removeFromSuperview()
+                    tabBarController.removeFromParent()
+                    window.rootViewController?.removeFromParent()
+                    MainTabBarViewController.shared = MainTabBarViewController()
+
+                    UIView.animate(withDuration: 0.5, animations: {
+                        let targetFrame = loginViewController.view.convert(loginViewController.mainView.frame, to: window)
+                        animatedView.frame = targetFrame
+                        animatedView.layer.cornerRadius = loginViewController.mainView.layer.cornerRadius
+                       
+                    }) { bool in
+                        animatedView.removeFromSuperview()
+
+                        UIView.animate(withDuration: 0.5, animations: {
+
+                                loginViewController.mainView.subviews.forEach() {
+                                    $0.alpha = 1
+                                }
+                                
+                            }) { bool in
+                                
+                            }
+                        
+                        
+    
+                    }
+   
+                }
+                
+            })
+        alertController.addAction(okAction)
+        present(alertController, animated: true)
+    }
+    
+    func logOut() {
+        
     }
     
     init(user: User) {

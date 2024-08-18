@@ -2,7 +2,7 @@ import UIKit
 
 class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
-    static let shared : MainTabBarViewController! = MainTabBarViewController()
+    static var shared : MainTabBarViewController! = MainTabBarViewController()
     
     var mainNavViewController : MainNavgationController!
     
