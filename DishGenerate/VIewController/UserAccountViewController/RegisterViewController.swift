@@ -22,7 +22,27 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     var tableView : UITableView = UITableView()
     
-    var tableCellTextTuples : [(String, String?)] = [("名稱", nil), ("電子郵件", nil), ("密碼", nil), ("確認密碼", nil)]
+    var registerStatus : Bool = false { didSet {
+        registerButton.isEnabled = registerStatus
+    }}
+    
+    var tableCellTextTuples : [(String, String?)] = [("名稱", nil), ("電子郵件", nil), ("密碼", nil), ("確認密碼", nil)] { didSet {
+        guard !registering else {
+            registerButton.isEnabled = false
+            return
+        }
+        guard let name = tableCellTextTuples[0].1,
+              let email = tableCellTextTuples[1].1,
+              let password = tableCellTextTuples[2].1,
+              let checkPassword = tableCellTextTuples[3].1,
+              password == checkPassword
+        else {
+            registerButton.isEnabled = false
+            return
+        }
+        registerStatus = true
+        
+    }}
     
     func tableViewSetup() {
         tableView.isScrollEnabled = false
@@ -52,6 +72,11 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         initLayout()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+        
+    }
 
     
     func buttonSetup() {
@@ -68,6 +93,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         config.baseForegroundColor = .white
         registerButton.configuration = config
         registerButton.addTarget(self, action: #selector(registerButtonTapped ( _ :)), for: .touchUpInside)
+        registerButton.isEnabled = false
 
         
         
@@ -77,6 +103,27 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
          guard !registering else {
              return
          }
+        /*guard let name = tableCellTextTuples[0].1,
+              let email = tableCellTextTuples[1].1,
+              let password = tableCellTextTuples[2].1 else {
+            return
+        }*/
+        Task {
+            var config = registerButton.configuration
+            registerButton.configuration?.showsActivityIndicator = true
+            registerButton.configuration?.title = nil
+            do {
+                try await Task.sleep(nanoseconds: 800000000)
+                registerButton.configuration?.showsActivityIndicator = false
+                registerButton.configuration = config
+                //try? await UserManager.shared.register(name: name, email: email, password: password, image: self.userImage)
+                
+            } catch {
+                registerButton.configuration = config
+                registerButton.configuration?.showsActivityIndicator = false
+                print(error)
+            }
+        }
 
      }
     
@@ -143,7 +190,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     func registerCell() {
         tableView.register(RegisterUserImageViewTableCell.self, forCellReuseIdentifier: "RegisterUserImageViewTableCell")
-        tableView.register(TextFieldWithLabelTableCell.self, forCellReuseIdentifier: "TextFieldWithLabelTableCell")
+        tableView.register(TextFieldWithWarningLabelTableCell.self, forCellReuseIdentifier: "TextFieldWithWarningLabelTableCell")
         
     }
     
@@ -177,7 +224,7 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
             return cell
         }
         let tuple = tableCellTextTuples[row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldWithLabelTableCell", for: indexPath) as! TextFieldWithLabelTableCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldWithWarningLabelTableCell", for: indexPath) as! TextFieldWithWarningLabelTableCell
         cell.textFieldDelegate = self
         cell.textField.tag = row
         cell.configure(title: tuple.0, value: tuple.1, isSecureEntry: isSecureEntry)
@@ -233,11 +280,12 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
                             continuation.resume(throwing: error)
                         }
                     }
-                    
                 }
                 self.userImage = image
-                if let cell = tableView.visibleCells.first as? RegisterUserImageViewTableCell {
-                    cell.configure(image: image)
+                for cell in tableView.visibleCells {
+                    if let cell = cell as? RegisterUserImageViewTableCell {
+                        cell.configure(image: image)
+                    }
                 }
                
             } catch {
@@ -278,10 +326,24 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
             let updatedText = text.replacingCharacters(in: range, with: string)
 
             for cell in tableView.visibleCells {
-                if let cell = cell as? TextFieldWithLabelTableCell {
+                if let cell = cell as? TextFieldWithWarningLabelTableCell {
+                    
                     if cell.textField == textField {
                         let index = cell.textField.tag
+
                         tableCellTextTuples[index].1 = updatedText
+                        
+                        if let inValidStr = textFieldIsInValid(textField: textField, updatedText: updatedText, tag: index) {
+          
+                         //   print("s")
+                            cell.warningLabel.isHidden = false
+                            cell.warningLabel.text = inValidStr
+                        } else {
+                            cell.warningLabel.isHidden = true
+                        }
+                        if index == 2 {
+                            
+                        }
                         break
                     }
                 }
@@ -289,6 +351,38 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
         }
         
         return true
+    }
+    
+    func textFieldIsInValid(textField : UITextField, updatedText : String, tag : Int) -> String? {
+
+        let text = textField.text
+        
+        switch tag {
+        case 0 :
+            return nil
+        case 1 :
+            if let cell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell
+            {
+                
+            }
+            return nil
+        case 2 :
+            if let passwordCell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell,
+               let checkCell = tableView.cellForRow(at: IndexPath(row: tag + 1, section: 0)) as? TextFieldWithWarningLabelTableCell
+            {
+              
+            }
+            return nil
+        case 3 :
+            if let checkCell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell,
+               let passwordCell = tableView.cellForRow(at: IndexPath(row: tag - 1, section: 0)) as? TextFieldWithWarningLabelTableCell
+            {
+                return passwordCell.textField.text == updatedText ? nil : "不相符"
+            }
+            return nil
+        default :
+            return nil
+        }
     }
     
 

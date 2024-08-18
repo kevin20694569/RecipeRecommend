@@ -2,16 +2,18 @@ import UIKit
 
 class TextFieldTableCell : UITableViewCell {
     
-    var titleLabel : UILabel! = UILabel()
+    var titleLabel : CustomTextField! = CustomTextField()
     
     var textField : CustomTextField! = CustomTextField()
     
     weak var textFieldDelegate : UITextFieldDelegate?
     
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         cellSetup()
-        titleLabelSetup()
+        labelSetup()
         textFieldSetup()
         initLayout()
         
@@ -35,31 +37,17 @@ class TextFieldTableCell : UITableViewCell {
             contentView.addSubview($0)
         }
         
-        titleLabelLayout()
+        
+        labelLayout()
         textFieldLayout()
         
     }
+
     
-    func titleLabelLayout() {
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
-            
-        ])
-    }
+
     
-    func textFieldLayout() {
-        
-        NSLayoutConstraint.activate([
-            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
-            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
-        ])
-    }
-    
-    func titleLabelSetup() {
+    func labelSetup() {
+        titleLabel.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         titleLabel.textColor = .secondaryLabel
     }
@@ -69,6 +57,24 @@ class TextFieldTableCell : UITableViewCell {
         textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         textField.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
+    }
+    
+    func labelLayout() {
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+           
+        ])
+    }
+    
+    func textFieldLayout() {
+        
+        NSLayoutConstraint.activate([
+            textField.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 2),
+            textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -2),
+            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
+        ])
     }
     
 

@@ -66,5 +66,5 @@ func initViewController() -> UIViewController {
     if let jwt_token = SessionManager.shared.getJWTTokenFromUserDefaults() {
         return MainTabBarViewController.shared
     }
-    return vc
+    return nav
 }

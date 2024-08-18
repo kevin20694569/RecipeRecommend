@@ -34,7 +34,7 @@
 		233771A42C0D9AF500135497 /* SavedRecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */; };
 		233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */; };
 		23479F182C70BA970083769B /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F172C70BA970083769B /* RegisterViewController.swift */; };
-		23479F1A2C7112CC0083769B /* TextFieldWithLabelTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */; };
+		23479F1A2C7112CC0083769B /* TextFieldWithWarningLabelTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F192C7112CC0083769B /* TextFieldWithWarningLabelTableCell.swift */; };
 		234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF50F2BDEA4120012CF6A /* AppDelegate.swift */; };
 		234BF5122BDEA4120012CF6A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5112BDEA4120012CF6A /* SceneDelegate.swift */; };
 		234BF5142BDEA4120012CF6A /* RecipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234BF5132BDEA4120012CF6A /* RecipeTableViewController.swift */; };
@@ -163,7 +163,7 @@
 		233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRecipesViewController.swift; sourceTree = "<group>"; };
 		233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFavoriteCuisineViewController.swift; sourceTree = "<group>"; };
 		23479F172C70BA970083769B /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithLabelTableCell.swift; sourceTree = "<group>"; };
+		23479F192C7112CC0083769B /* TextFieldWithWarningLabelTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithWarningLabelTableCell.swift; sourceTree = "<group>"; };
 		234BF50C2BDEA4120012CF6A /* DishGenerate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishGenerate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		234BF50F2BDEA4120012CF6A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		234BF5112BDEA4120012CF6A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -397,7 +397,7 @@
 				234BF5452BDEAA1A0012CF6A /* RecipeSnapshotCell.swift */,
 				23B5011F2BF49C2C00EAB2D7 /* IngredientTitleLabelCollectionCell.swift */,
 				232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */,
-				23479F192C7112CC0083769B /* TextFieldWithLabelTableCell.swift */,
+				23479F192C7112CC0083769B /* TextFieldWithWarningLabelTableCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -944,7 +944,7 @@
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				236B9EEB2C0CB8760004E15A /* User.swift in Sources */,
 				234BF5102BDEA4120012CF6A /* AppDelegate.swift in Sources */,
-				23479F1A2C7112CC0083769B /* TextFieldWithLabelTableCell.swift in Sources */,
+				23479F1A2C7112CC0083769B /* TextFieldWithWarningLabelTableCell.swift in Sources */,
 				232AFC822C429B2300B8ACB5 /* Tag.swift in Sources */,
 				232AFC842C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift in Sources */,
 				23479F182C70BA970083769B /* RegisterViewController.swift in Sources */,

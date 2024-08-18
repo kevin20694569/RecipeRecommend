@@ -136,7 +136,7 @@ final class UserManager : MainServerAPIManager {
                 }
                 
 
-            }, to: url, method : .put, headers: .default).response { response in
+            }, to: url, method : .post, headers: .default).response { response in
                 switch response.result {
                 case .success:
                     continuation.resume(returning: response)

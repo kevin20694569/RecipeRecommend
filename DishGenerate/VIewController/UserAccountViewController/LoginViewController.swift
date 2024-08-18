@@ -35,6 +35,12 @@ class LoginViewController : UIViewController {
         initLayout()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+        
+    }
+    
     func labelSetup() {
         [emailLabel, passwordLabel].forEach() {
             $0.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
