@@ -1,13 +1,21 @@
 import UIKit
 
 class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, RecipeDelegate, RecipeStatusControll {
-    func configureRecipeLikedStatus(liked: Bool) {
+
     
+    func configureRecipeLikedStatus(recipe : Recipe) {
+        guard let index = self.recipes.firstIndex(of: recipe) else {
+            return
+        }
+        guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? SummaryRecipeTableCell else {
+            return
+        }
+        cell.configure(recipe: recipe)
     }
     
     
     func reloadRecipe(recipe: Recipe) {
-        guard let index = dishes.firstIndex(where: { oldDish in
+        guard let index = recipes.firstIndex(where: { oldDish in
             recipe.id == oldDish.id
         }) else {
             return
@@ -32,7 +40,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     func getRecipesByPreferencID(preference_id : String) async {
         do {
             let newRecipes = try await RecipeManager.shared.getRecipesByPreferencID(preference_id: preference_id)
-            self.dishes.insert(contentsOf: newRecipes, at: dishes.count)
+            self.recipes.insert(contentsOf: newRecipes, at: recipes.count)
             self.tableView.reloadData()
             if newRecipes.count > 1 {
                 tableView.isScrollEnabled = true
@@ -46,18 +54,18 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
 
     
 
-    var dishes : [Recipe]! = []
+    var recipes : [Recipe]! = []
     
     var preference_id : String!
     
     weak var reloadDishDelegate : RecipeDelegate?
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dishes.count
+        return recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let dish = dishes[indexPath.row]
+        let dish = recipes[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "SummaryRecipeTableCell", for: indexPath) as! SummaryRecipeTableCell
         cell.summaryDishTableCellDelegate = self
         cell.configure(recipe: dish)
@@ -81,12 +89,16 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     
     init(dishes : [Recipe]) {
         super.init(nibName: nil, bundle: nil)
-        self.dishes = dishes
+        self.recipes = dishes
     }
     
-    init(preference_id : String) {
+    init(preference_id : String, showRightBarButtonItem : Bool) {
         super.init(nibName: nil, bundle: nil)
         self.preference_id = preference_id
+        if !showRightBarButtonItem {
+            self.navBarRightButton.isHidden = true
+        }
+        
         Task {
             tableView.refreshControl?.beginRefreshing()
             await getRecipesByPreferencID(preference_id: preference_id)
@@ -159,7 +171,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
         tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
         
-        if self.dishes.count < 2 {
+        if self.recipes.count < 2 {
             self.tableView.isScrollEnabled = false
             tableView.separatorStyle = .none
         }
@@ -190,6 +202,10 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
 }
 
 extension RecipeSummaryDisplayController : SummaryRecipeTableCellDelegate {
+    func configureLikedHeart(recipe : Recipe) {
+        
+    }
+    
 }
 
 

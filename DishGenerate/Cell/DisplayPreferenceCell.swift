@@ -72,7 +72,7 @@ class DisplayPreferenceCell : UITableViewCell {
     }
     
     @objc func mainViewGestureTapped(_ sender : UITapGestureRecognizer) {
-        delegate?.showDishSummaryViewController(preference_id: self.preference.id)
+        delegate?.showDishSummaryViewController(preference_id: self.preference.id, showRightBarButtonItem: false)
     }
     
     required init?(coder: NSCoder) {

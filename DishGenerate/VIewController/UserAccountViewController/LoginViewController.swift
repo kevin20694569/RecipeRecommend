@@ -162,9 +162,11 @@ class LoginViewController : UIViewController {
     
     
     func showMainRecipeTableViewController() {
+        MainTabBarViewController.shared = MainTabBarViewController()
         guard let vc = MainTabBarViewController.shared else {
             return
         }
+        
         let animatedView = UIView()
         animatedView.backgroundColor = mainView.backgroundColor
         animatedView.frame = mainView.frame
@@ -191,6 +193,7 @@ class LoginViewController : UIViewController {
                 if let window = UIApplication.shared.keyWindow {
                     window.rootViewController = vc
                 }
+                vc.view.isHidden = false
                 UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
 
                     vc.view.subviews.forEach() {

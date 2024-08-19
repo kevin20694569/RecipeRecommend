@@ -43,7 +43,8 @@ class CameraController: NSObject {
             let cameras = session.devices.compactMap { $0 }
             
             guard !cameras.isEmpty else {
-                throw CameraControllerError.noCamerasAvailable }
+                throw CameraControllerError.noCamerasAvailable
+            }
             
             for camera in cameras {
                 if camera.position == .front {
@@ -60,10 +61,10 @@ class CameraController: NSObject {
             }
         }
         func configureDeviceInputs() throws {
-            //1
+            
             guard let captureSession = self.captureSession else { throw CameraControllerError.captureSessionIsMissing }
             
-            //2
+            
             if let rearCamera = self.rearCamera {
                 self.rearCameraInput = try AVCaptureDeviceInput(device: rearCamera)
                 
@@ -164,12 +165,33 @@ extension CameraController {
     }
     
     func snapshotView() -> UIImage? {
-        previewLayer
         return self.previewLayer?.snapshot()
+    }
+    
+    func startClickFadeAnimation() {
+        guard let nowPlayingView = nowPlayingView else {
+            return
+        }
+        let view = UIView()
+        view.backgroundColor = .black
+        view.frame = nowPlayingView.bounds
+        view.layer.opacity = 0
+        nowPlayingView.addSubview(view)
+        let duration : TimeInterval = 0.05
+        UIView.animate(withDuration: duration, animations : {
+            view.layer.opacity = 1
+        }) { bool in
+            UIView.animate(withDuration: duration, animations : {
+                view.layer.opacity = 0
+            }) { bool in
+                view.removeFromSuperview()
+            }
+        }
     }
 }
 
 extension CameraController {
+    
     
     func capture(completion: @escaping (UIImage) -> Void) {
         captureCompletionHandler = completion
@@ -256,6 +278,12 @@ extension CameraController: AVCapturePhotoCaptureDelegate {
         }
 
     }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
+        startClickFadeAnimation()
+    }
+    
+    
     
 }
 

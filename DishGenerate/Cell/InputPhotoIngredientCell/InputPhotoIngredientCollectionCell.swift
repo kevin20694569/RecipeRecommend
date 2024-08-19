@@ -172,7 +172,6 @@ extension InputPhotoIngredientCollectionCell {
             delegate.addButtonEnable(enable: false)
             self.changeClickButtonImage(beCaptureTarget: true)
         } else {
-            startClickFadeAnimation()
             Task {
 
 
@@ -191,24 +190,8 @@ extension InputPhotoIngredientCollectionCell {
         toolButtonRefresh(enable: true, animated: false)
     }
     
-    func startClickFadeAnimation() {
-        let view = UIView()
-        view.backgroundColor = .black
-        view.frame = imageView.bounds
-        view.layer.opacity = 0
-        imageView.addSubview(view)
-        let duration : TimeInterval = 0.05
-        UIView.animate(withDuration: duration, animations : {
-            view.layer.opacity = 1
-        }) { bool in
-            UIView.animate(withDuration: duration, animations : {
-                view.layer.opacity = 0
-            }) { bool in
-                view.removeFromSuperview()
-            }
-        }
-    }
-    
+
+
     
     
     @objc func deleteButtonTapped( _ button : UIButton) {

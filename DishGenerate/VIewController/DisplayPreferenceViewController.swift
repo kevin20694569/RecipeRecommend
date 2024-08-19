@@ -5,13 +5,14 @@ class DisplayPreferenceViewController : UIViewController {
     var preferences : [DishPreference]! = [] // DishPreference.examples
     var tableView : UITableView! = UITableView()
     
-    var user_id : String = SessionManager.user_id
+    var user_id : String? {SessionManager.shared.user_id}
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
         tableViewSetup()
         navBarSetup()
+        
         initLayout()
         Task {
             await getHistoryPreferences(dateThreshold: "")
@@ -25,9 +26,13 @@ class DisplayPreferenceViewController : UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     func getHistoryPreferences(dateThreshold : String) async {
         do {
-            let newPreferences =  try await GeneratePreferenceManager.shared.getHistoryPreferences(user_id: self.user_id, dateThreshold: dateThreshold)
+            guard let user_id = user_id else {
+                return
+            }
+            let newPreferences =  try await GeneratePreferenceManager.shared.getHistoryPreferences(user_id: user_id, dateThreshold: dateThreshold)
             guard newPreferences.count > 0 else {
                 return
             }
@@ -64,7 +69,7 @@ class DisplayPreferenceViewController : UIViewController {
     
     func navBarSetup() {
         navigationItem.backButtonTitle = ""
-        
+        navigationItem.title = "過往推薦紀錄"
     }
     
     func initLayout() {
@@ -105,7 +110,7 @@ extension DisplayPreferenceViewController : UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? DisplayPreferenceCell {
             if let preference_id = cell.preference.id {
-                showDishSummaryViewController(preference_id: preference_id)
+                showDishSummaryViewController(preference_id: preference_id, showRightBarButtonItem: false)
             }
         }
     }

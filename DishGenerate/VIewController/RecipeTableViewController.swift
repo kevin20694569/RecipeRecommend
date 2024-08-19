@@ -27,13 +27,16 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var status : DisplayRecipeStatus = .Liked
     
-    var user_id : String = SessionManager.user_id
+    var user_id : String {SessionManager.shared.user_id!}
     
     var isLoadingNewDishes : Bool = false
     
     var searchRecipes : [Recipe] = []
     
+    var searchBarIsEditing : Bool = false
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBarIsEditing = true
         return true
     }
     
@@ -53,11 +56,21 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
                     print(error)
                 }
             }
-        } else {
+        }
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBarIsEditing = false
+        guard status != .Liked else {
+            return
+        }
+        if searchBar.text == nil || searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) == ""  {
             Task {
+                status = .Liked
                 await self.reloadTableView()
             }
         }
+        
     }
     
     @objc func handleReloadDishNotification(_ notification: Notification) {
@@ -69,7 +82,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     func showInputPhotoIngredientViewController() {
         let controller = InputPhotoIngredientViewController()
         self.show(controller, sender: nil)
@@ -86,7 +99,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var generatedRecipesIsAppended : Bool = false
     
-    var recipes : [Recipe] = []//Recipe.realExamples // Dish.examples
+    var recipes : [Recipe] = []
     
     var searchBar : UISearchBar! = UISearchBar()
     
@@ -101,6 +114,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         Task {
             await reloadTableView()
         }
+
     }
     
     required init?(coder: NSCoder) {
@@ -110,9 +124,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     var tableView : UITableView! = UITableView()
     
     var searchBarAnchorConstaint : NSLayoutConstraint!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
         
         generateButtonSetup()
@@ -126,9 +142,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             changeButtonStatus(status: .already)
         }
 
-
-
     }
+
     
     
 
@@ -379,6 +394,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         let cell = tableView.dequeueReusableCell(withIdentifier: "DishSnapshotCell", for: indexPath) as! RecipeSnapshotCell
         cell.configure(recipe: recipe)
         
+        cell.selectionStyle = .none
+        
         return cell
     }
     
@@ -387,6 +404,10 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        guard !searchBarIsEditing else {
+            return
+        }
         let cell = tableView.cellForRow(at: indexPath)
         cell?.isSelected = false
         var recipe : Recipe
@@ -408,7 +429,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
        /* guard let created_time = self.recipes.last?.created_Time else {
             return
         }
-        if self.dishes.count - indexPath.row == 12 {
+        if self.recipes.count - indexPath.row == 12 {
             isLoadingNewDishes = true
             
             Task {

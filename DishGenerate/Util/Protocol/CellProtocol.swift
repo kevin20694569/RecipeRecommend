@@ -4,6 +4,7 @@ protocol RecipeStatusControll : NSObject {
     func markRecipeLike(recipe_id : String, like : Bool) async
     
     func configureRecipeLikedStatus(liked : Bool)
+    func configureRecipeLikedStatus(recipe : Recipe)
 }
 
 protocol RecipeTableCell : UITableViewCell, RecipeStatusControll {
@@ -19,6 +20,12 @@ extension RecipeStatusControll {
         } catch {
             print("markRecipeLikeError", error)
         }
+    }
+    func configureRecipeLikedStatus(liked : Bool) {
+        
+    }
+    func configureRecipeLikedStatus(recipe : Recipe) {
+        
     }
 }
 
@@ -179,7 +186,7 @@ extension GenerateOptionCellDelegate {
     }
 }
 
-protocol SummaryRecipeTableCellDelegate : UIViewController {
+protocol SummaryRecipeTableCellDelegate : UIViewController, RecipeStatusControll {
     func showRecipeDetailViewController(recipe : Recipe)
 }
 
@@ -191,6 +198,7 @@ extension SummaryRecipeTableCellDelegate {
         }
         
         let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
+        controller.recipeStatusDelegate = self
         self.show(controller, sender: nil)
 
     }
@@ -255,7 +263,7 @@ extension UserProfileCellDelegate {
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
-    func showGeneratedDishesDisplayController(newDishes : [Recipe]) {
+    func showRecipeSummaryDisplayController(newDishes : [Recipe]) {
         let controller = RecipeSummaryDisplayController(dishes: newDishes)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
@@ -264,11 +272,11 @@ extension UserProfileCellDelegate {
 }
 
 protocol DisplayPreferenceCellDelegate : UIViewController {
-    func showDishSummaryViewController(preference_id : String)
+    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem: Bool)
 }
 extension DisplayPreferenceCellDelegate {
-    func showDishSummaryViewController(preference_id : String) {
-        let controller = RecipeSummaryDisplayController(preference_id: preference_id)
+    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem : Bool) {
+        let controller = RecipeSummaryDisplayController(preference_id: preference_id, showRightBarButtonItem: showRightBarButtonItem)
         show(controller, sender: nil)
     }
 }

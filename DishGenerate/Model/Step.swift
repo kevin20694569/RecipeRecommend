@@ -2,6 +2,10 @@
 import UIKit
 
 class Step : GetImageModel {
+    static func == (lhs: Step, rhs: Step) -> Bool {
+        lhs.description == rhs.description
+    }
+    
     
     
     

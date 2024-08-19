@@ -1,7 +1,7 @@
 import UIKit
 
 
-protocol GetImageModel : AnyObject {
+protocol GetImageModel : AnyObject, Equatable {
     var image : UIImage? { get set }
     var image_URL : URL? { get set }
     

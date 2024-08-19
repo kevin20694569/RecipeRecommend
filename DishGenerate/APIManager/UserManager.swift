@@ -4,13 +4,17 @@ import Alamofire
 
 final class UserManager : MainServerAPIManager {
     
+    
     static let shared : UserManager = UserManager()
     
     override var serverResourcePrefix: String {
         return super.serverResourcePrefix + "/users"
     }
     
+    
+    
     func login(email : String, password : String) async throws -> String {
+        
         guard let url = URL(string: "\(self.serverResourcePrefix)/login") else {
             throw APIError.BadRequestURL
         }
@@ -36,11 +40,14 @@ final class UserManager : MainServerAPIManager {
         }
         let headers = httpRes.allHeaderFields
         guard let jwt_token = headers["jwt-token"] as? String,
-           let dict = try JSONSerialization.jsonObject(with: data) as? [String : Any],
+              let dict = try JSONSerialization.jsonObject(with: data) as? [String : Any],
               let user = dict["user"] as? [String : Any] else {
+            print("decode fail")
             throw AuthenticError.DecodeDataFail
         }
-        SessionManager.user_id = user["id"] as! String
+        
+        let user_id = user["id"] as! String
+        SessionManager.shared.setUserID(user_id: user_id)
         SessionManager.shared.setJWTTokenToUserDefaults(jwt_token: jwt_token)
         return jwt_token
     }
@@ -63,7 +70,6 @@ final class UserManager : MainServerAPIManager {
         let userJson = try decoder.decode(UserJson.self, from: data)
         let user = User.init(json: userJson)
         return user
-      //  throw AuthenticError.DecodeDataFail
     }
     
     func rename(user_id : String, newName : String) async throws {

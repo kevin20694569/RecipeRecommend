@@ -95,7 +95,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     @objc func rightBarButtonTapped(_ button : UIButton) {
         recipe.liked.toggle()
         configureRecipeLikedStatus(liked: recipe.liked)
-        recipeStatusDelegate?.configureRecipeLikedStatus(liked: recipe.liked)
+        recipeStatusDelegate?.configureRecipeLikedStatus(recipe: recipe)
         Task {
             try await RecipeManager.shared.markAsLiked(recipe_id: self.recipe.id, like: recipe.liked)
         }

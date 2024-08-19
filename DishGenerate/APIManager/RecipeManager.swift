@@ -90,7 +90,6 @@ final class RecipeManager : MainServerAPIManager {
         guard let url = URL(string: "\(self.serverResourcePrefix)/browse?user_id=\(self.user_id)&dateThreshold=\(dateThresold)") else {
             throw APIError.BadRequestURL
         }
-        
         var req = URLRequest(url: url)
         try self.insertJwtTokenToHeadersDefault(req: &req)
         let (data, _) = try await URLSession.shared.data(for: req)

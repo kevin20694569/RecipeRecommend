@@ -51,73 +51,66 @@ class EditUserProfileViewController : UIViewController {
                 guard let self = self else {
                     return
                 }
-                let nav  = SceneDelegate.getLoginControllerWithNav()
-                let loginViewController = nav.viewControllers.first as! LoginViewController
-                
-         //       let nav = LoginViewController.navShared
-           //     var loginViewController = LoginViewController.shared
-                
-                guard var tabBarController = MainTabBarViewController.shared else {
-                    return
-                }
-                guard let window = UIApplication.shared.keyWindow else {
-                    return
-
-                }
-                
-                let animatedView = UIView()
-                animatedView.backgroundColor = view.backgroundColor
-                animatedView.alpha = 0
-                animatedView.frame = tabBarController.view.bounds
-                animatedView.clipsToBounds = true
-                animatedView.layer.cornerRadius = 16
-                
-                window.addSubview(animatedView)
-              
-                window.insertSubview(nav.view, at: 0)
-
-                loginViewController.mainView.subviews.forEach() {
-                    $0.alpha = 0
-                }
-                UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, animations: {
-                    animatedView.alpha = 1
-                }) { bool in
-                    tabBarController.view.removeFromSuperview()
-                    tabBarController.removeFromParent()
-                    window.rootViewController?.removeFromParent()
-                    MainTabBarViewController.shared = MainTabBarViewController()
-
-                    UIView.animate(withDuration: 0.5, animations: {
-                        let targetFrame = loginViewController.view.convert(loginViewController.mainView.frame, to: window)
-                        animatedView.frame = targetFrame
-                        animatedView.layer.cornerRadius = loginViewController.mainView.layer.cornerRadius
-                       
-                    }) { bool in
-                        animatedView.removeFromSuperview()
-
-                        UIView.animate(withDuration: 0.5, animations: {
-
-                                loginViewController.mainView.subviews.forEach() {
-                                    $0.alpha = 1
-                                }
-                                
-                            }) { bool in
-                                
-                            }
-                        
-                        
-    
-                    }
-   
-                }
-                
+                logout()
             })
         alertController.addAction(okAction)
         present(alertController, animated: true)
     }
     
-    func logOut() {
+    func logout() {
+        let nav  = SceneDelegate.getLoginControllerWithNav()
+        let loginViewController = nav.viewControllers.first as! LoginViewController
         
+ //       let nav = LoginViewController.navShared
+   //     var loginViewController = LoginViewController.shared
+        
+        guard var tabBarController = MainTabBarViewController.shared else {
+            return
+        }
+        guard let window = UIApplication.shared.keyWindow else {
+            return
+        }
+        SessionManager.shared.deleteUserID()
+        SessionManager.shared.deleteJWT_Token()
+        
+        
+        let animatedView = UIView()
+        animatedView.backgroundColor = view.backgroundColor
+        animatedView.alpha = 0
+        animatedView.frame = tabBarController.view.bounds
+        animatedView.clipsToBounds = true
+        animatedView.layer.cornerRadius = 16
+        
+        window.addSubview(animatedView)
+        
+        window.insertSubview(nav.view, at: 0)
+        
+        loginViewController.mainView.subviews.forEach() {
+            $0.alpha = 0
+        }
+        loginViewController.mainView.isHidden = true
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.4, animations: {
+                animatedView.alpha = 1
+            }) { bool in
+                MainTabBarViewController.shared.view.isHidden = true
+                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0, animations: {
+                    let targetFrame = loginViewController.view.convert(loginViewController.mainView.frame, to: window)
+                    animatedView.frame = targetFrame
+                    animatedView.layer.cornerRadius = loginViewController.mainView.layer.cornerRadius
+                    
+                }) { bool in
+                    loginViewController.mainView.isHidden = false
+                    animatedView.removeFromSuperview()
+                    
+                    UIView.animate(withDuration: 0.3, animations: {
+                        loginViewController.mainView.subviews.forEach() {
+                            $0.alpha = 1
+                        }
+                    })
+                }
+            }
+        }
     }
     
     init(user: User) {

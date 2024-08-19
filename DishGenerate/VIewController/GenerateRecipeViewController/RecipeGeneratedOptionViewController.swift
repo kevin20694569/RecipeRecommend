@@ -7,7 +7,7 @@ protocol DishPreferenceCell {
 
 class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
 
-    var user_id : String = SessionManager.user_id
+    var user_id : String { SessionManager.shared.user_id! }
     
     lazy var preference : DishPreference = DishPreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature)
     func registerKeyboardNotification() {
@@ -129,7 +129,19 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         }
     }
     
+    
     var complexitySection : Int = 2
+
+    var temperatureSection : Int = 3
+
+    
+    var costTimeSection : Int = 4 - 2
+    
+
+    var cuisineSection : Int = 5 - 2
+    
+    var additionalTextSection : Int = 6 - 2
+    
     var complexity : Complexity {
         let indexPath = IndexPath(row: 0, section: complexitySection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? DifficultSliderCollectionCell {
@@ -139,7 +151,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         return Complexity(rawValue: "簡單")!
         
     }
-    var temperatureSection : Int = 3
+    
     var temperature : Double {
         let indexPath = IndexPath(row: 0, section: complexitySection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TemperatureSliderCollectionCell {
@@ -149,8 +161,6 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         return 0
     }
     
-    var costTimeSection : Int = 4
-    
     var costTime : Int {
         let indexPath = IndexPath(row: 0, section: costTimeSection)
         if let cell = self.collectionView.cellForItem(at: indexPath) as? TimeSliderCollectionCell {
@@ -159,9 +169,6 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         }
         return 30
     }
-    var cuisineSection : Int = 5
-    
-    var additionalTextSection : Int = 6
     
 
     
@@ -170,8 +177,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     var options : [(title : String?, subTitle : String?)] = [(nil, nil),
                                                            //  ("份量人數", nil),
                                                              ("擁有的設備", "(可多選)"),
-                                                             ("難易程度", nil),
-                                                             ("創意程度", nil),
+                                                        //     ("難易程度", nil),
+                                                         //    ("創意程度", nil),
                                                              ("製作時間", nil),
                                                              ("指定菜式", "(可多選)"),
                                                              //(nil, nil),
@@ -336,7 +343,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
 extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 7
+        return 7 - 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -461,7 +468,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
 
         }
         
-        if section == complexitySection {
+      /*  if section == complexitySection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DifficultSliderCollectionCell", for: indexPath) as! DifficultSliderCollectionCell
             let titleArray = ["簡單", "普通", "困難"]
             cell.preference = self.preference
@@ -474,7 +481,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
             cell.preference = self.preference
             cell.configure(titleArray: titleArray)
             return cell
-        }
+        }*/
         
         if section == costTimeSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeSliderCollectionCell", for: indexPath) as! TimeSliderCollectionCell

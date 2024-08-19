@@ -266,10 +266,12 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     
     @objc func heartButtonTapped(_ button : UIButton) {
         recipe.liked.toggle()
+        configureRecipeLikedStatus(liked: recipe.liked)
         Task {
             try await RecipeManager.shared.markAsLiked(recipe_id: self.recipe.id, like: recipe.liked)
         }
-        configureRecipeLikedStatus(liked: recipe.liked)
+        summaryDishTableCellDelegate?.configureRecipeLikedStatus(liked: recipe.liked)
+        
     }
     func configureRecipeLikedStatus(liked : Bool) {
         if liked {

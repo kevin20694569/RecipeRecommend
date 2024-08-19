@@ -132,7 +132,7 @@ class Recipe : GetImageModel {
             let cuisine = cuisines[index]
             let complexity = Complexity.init(rawValue: complexities[index]) ?? .error 
             let indexString = String("番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵番茄義大利麵")
-            let dish = Recipe(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: SessionManager.user_id, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
+            let dish = Recipe(id: indexString, name: title, cuisine: cuisine, preference_id: indexString, user_id: SessionManager.anonymous_user_id, created_Time: indexString, summary: description, costTime: time, complexity: complexity, image_ID: indexString, isGenerateddetail: false, image: image!, steps: Step.examples, ingredients: Ingredient.examples, status: DishGenerateStatus.already)
             return dish
         }
     }()

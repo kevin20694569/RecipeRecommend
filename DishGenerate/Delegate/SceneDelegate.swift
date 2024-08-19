@@ -54,22 +54,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     static func getLoginControllerWithNav() -> UINavigationController {
        
       //  nav.isNavigationBarHidden = true
-        
+
         return LoginViewController.navShared
     }
 }
 
 #Preview {
-    //qC3kJ1fgfOGHp0dimxXPn
     return initViewController()
-
 }
 
 
 func initViewController() -> UIViewController {
     let nav = SceneDelegate.getLoginControllerWithNav()
-    return nav
-    if let jwt_token = SessionManager.shared.getJWTTokenFromUserDefaults() {
+   // return nav
+    if let jwt_token = SessionManager.shared.jwt_token {
         return MainTabBarViewController.shared
     }
     return nav

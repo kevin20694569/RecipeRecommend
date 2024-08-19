@@ -122,7 +122,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         DispatchQueue.main.async { [self] in
             collectionView.scrollToItem(at: addButtonIndexPath, at: .centeredHorizontally, animated: true)
             if let cell = collectionView.cellForItem(at: indexPath) as? InputPhotoIngredientCollectionCell {
-                try? self.cameraController.displayPreview(on: cell.imageView)
+                try? self.cameraController.ChangePreView(on: cell.imageView)
                 cell.toolButtonRefresh(enable: true, animated: true)
             }
             
@@ -157,7 +157,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
     
     func configure() {
         if let cell = collectionView.visibleCells.first as? InputPhotoIngredientCollectionCell {
-            try? self.cameraController.displayPreview(on: cell.imageView)
+            try? self.cameraController.ChangePreView(on: cell.imageView)
         }
     }
     

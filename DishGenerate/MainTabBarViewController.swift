@@ -8,7 +8,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var userProfileNavViewController : UserProfileNavViewController!
     
-    var savedDishesNavViewController : UINavigationController!
+   // var savedDishesNavViewController : UINavigationController!
     
     var preferenceNavViewController : UINavigationController!
     
@@ -27,8 +27,6 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     init() {
         super.init(nibName: nil, bundle: nil)
         childViewControllersSetup()
-
-        
     }
     
     required init?(coder: NSCoder) {
@@ -58,10 +56,10 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         let userProfileNavViewController = UserProfileNavViewController(rootViewController: userProfileViewController)
         self.userProfileNavViewController = userProfileNavViewController
         
-        let savedDishesViewController = SavedRecipesViewController()
+    //    let savedDishesViewController = SavedRecipesViewController()
         
-        let savedDishesNavViewController = UINavigationController(rootViewController: savedDishesViewController)
-        self.savedDishesNavViewController = savedDishesNavViewController
+     //   let savedDishesNavViewController = UINavigationController(rootViewController: savedDishesViewController)
+       // self.savedDishesNavViewController = savedDishesNavViewController
         
         self.preferenceNavViewController = UINavigationController(rootViewController: DisplayPreferenceViewController())
        

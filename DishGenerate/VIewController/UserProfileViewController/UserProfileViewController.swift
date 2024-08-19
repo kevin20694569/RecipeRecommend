@@ -16,15 +16,17 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     func reloadUser() async {
         Task {
-            let user = try await UserManager.shared.getUser(user_id: SessionManager.user_id)
-            self.user_id  = user.id
+            guard let user_id = user_id else {
+                return
+            }
+            let user = try await UserManager.shared.getUser(user_id: user_id)
             self.user = user
             self.collectionView.reloadSections([0])
         }
         
     }
     
-    var user_id : String = SessionManager.user_id
+    var user_id : String? { SessionManager.shared.user_id }
     
     
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
@@ -44,8 +46,11 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         initLayout()
         collectionViewSetup()
         Task {
-            let user = try await UserManager.shared.getUser(user_id: SessionManager.user_id)
-            self.user_id  = user.id
+            guard let user_id = user_id else {
+                return
+            }
+            let user = try await UserManager.shared.getUser(user_id:
+            user_id  )
             self.user = user
             self.collectionView.reloadSections([0])
         }
