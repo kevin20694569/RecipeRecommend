@@ -35,6 +35,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var searchBarIsEditing : Bool = false
     
+    var isKeyboardVisible : Bool = false
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         searchBarIsEditing = true
         return true
@@ -61,6 +63,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBarIsEditing = false
+     
         guard status != .Liked else {
             return
         }
@@ -73,6 +76,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    
     @objc func handleReloadDishNotification(_ notification: Notification) {
         if let userInfo = notification.userInfo, let dish = userInfo["recipe"] as? Recipe  {
             reloadRecipe(recipe: dish)
@@ -81,6 +85,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     func showInputPhotoIngredientViewController() {
@@ -95,7 +101,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var generatedDishes : [Recipe]?//= Dish.examples
     
-    var generatedPreference : DishPreference?
+    var generatedPreference : GenerateRecipePreference?
     
     var generatedRecipesIsAppended : Bool = false
     
@@ -128,22 +134,29 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
         generateButtonSetup()
         tabBarSetup()
         registerCells()
         searchBarSetup()
         navSetup()
-        
-        
         if generatedDishes != nil {
             changeButtonStatus(status: .already)
         }
-
     }
-
+    
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        // 鍵盤顯示時將變數設為 true
+        isKeyboardVisible = true
+    }
+    
+    @objc func keyboardDidHide(_ notification: NSNotification) {
+        // 鍵盤隱藏時將變數設為 false
+        isKeyboardVisible = false
+    }
+    
     
     
 
@@ -153,6 +166,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         let newIndexPaths = (recipes.count...recipes.count + newRecipes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 0)
         }
+        
         if insertFunc == .unshift {
             self.recipes.insert(contentsOf: newRecipes, at: 0)
         } else {
@@ -169,9 +183,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
-            
-        
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -374,12 +388,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             }
             let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
             
-            [searchBar, searchBarRightButton].forEach( ) {
-                $0.layer.opacity = persent
-            }
-            
-            searchBarAnchorConstaint.constant = newConstant
-            previousOffsetY = scrollView.contentOffset.y
+        [searchBar, searchBarRightButton].forEach( ) {
+            $0.layer.opacity = persent
+        }
+        
+        searchBarAnchorConstaint.constant = newConstant
+        previousOffsetY = scrollView.contentOffset.y
         
     }
     
@@ -404,8 +418,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        guard !searchBarIsEditing else {
+        guard !isKeyboardVisible else {
             return
         }
         let cell = tableView.cellForRow(at: indexPath)
@@ -420,25 +433,58 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         showRecipeDetailViewController(recipe: recipe)
     }
     
-
+    
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard !isLoadingNewDishes else {
             return
         }
-       /* guard let created_time = self.recipes.last?.created_Time else {
-            return
-        }
-        if self.recipes.count - indexPath.row == 12 {
-            isLoadingNewDishes = true
+        
+        
+        
+        if self.status == .Search {
+            guard self.searchRecipes.count - indexPath.row == 12 else {
+                return
+            }
+            guard let created_time = self.searchRecipes.last?.created_time else {
+                return
+            }
             
             Task {
-                let newDishes = try await RecipeManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
+                defer {
+                    isLoadingNewDishes = false
+                }
+                isLoadingNewDishes = true
+                let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: created_time)
                 
-                insertNewRecipes(newDishes: newDishes, insertFunc: .push)
-                isLoadingNewDishes = false
+                //   insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
+                
             }
-        }*/
+        } else {
+            
+            guard self.recipes.count - indexPath.row == 7 else {
+                return
+            }
+            guard let created_time = self.recipes.last?.created_time else {
+                return
+            }
+            
+            Task {
+                defer {
+                    isLoadingNewDishes = false
+                }
+                isLoadingNewDishes = true
+                let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: created_time)
+                guard newRecipes.count > 0 else {
+                    return
+                }
+                
+                insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
+                
+            }
+        }
+        
+        
     }
 }
 

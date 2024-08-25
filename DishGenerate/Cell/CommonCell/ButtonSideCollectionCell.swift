@@ -15,11 +15,11 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
 
     var deSelectAttributed = AttributeContainer([
         .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular),
-        .foregroundColor : UIColor.black
+        .foregroundColor : UIColor.secondaryLabel
     ])
     
     var selectAttributed = AttributeContainer([
-        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium),
+        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold),
         .foregroundColor : UIColor.white
     ])
     
@@ -38,7 +38,7 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        let constant : CGFloat = 8
+       
         
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -60,7 +60,7 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
             button.configuration?.baseBackgroundColor = .themeColor
         } else {
             button.configuration?.attributedTitle = AttributedString(title, attributes: deSelectAttributed)
-            button.configuration?.baseForegroundColor = .primaryLabel
+            button.configuration?.baseForegroundColor = .secondaryLabelColor
             button.configuration?.baseBackgroundColor = .thirdaryBackground
         }
     }

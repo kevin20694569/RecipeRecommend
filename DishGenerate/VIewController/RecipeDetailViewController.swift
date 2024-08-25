@@ -1,6 +1,10 @@
 
 import UIKit
 
+enum StepStatus  {
+    case all, text, image
+}
+
 class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     var recipe : Recipe!
@@ -11,6 +15,8 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     var tableView : UITableView! = UITableView()
     
     var rightBarButton : UIButton! = UIButton()
+    
+
     
     weak var recipeStatusDelegate : RecipeStatusControll?
     
@@ -32,6 +38,13 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
         viewSetup()
         tableViewSetup()
         initLayout()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func markAsBrowsed() async {
@@ -128,7 +141,12 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
         tableView.register(RecipeDetailQuantityAdjustCell.self, forCellReuseIdentifier: "RecipeDetailQuantityAdjustCell")
         tableView.register(RecipeDetailSummaryCell.self, forCellReuseIdentifier: "RecipeDetailSummaryCell")
         tableView.register(RecipeDetailIngredientCell.self, forCellReuseIdentifier: "RecipeDetailIngredientCell")
-        tableView.register(RecipeDetailStepCell.self, forCellReuseIdentifier: "RecipeDetailStepCell")
+        tableView.register(RecipeStepCell.self, forCellReuseIdentifier: "RecipeStepCell")
+        
+        tableView.register(RecipeImageStepCell.self, forCellReuseIdentifier: "RecipeImageStepCell")
+        
+        
+        tableView.register(RecipeTextStepCell.self, forCellReuseIdentifier: "RecipeTextStepCell")
     }
     
     required init?(coder: NSCoder) {
@@ -177,15 +195,6 @@ extension RecipeDetailViewController : UITableViewDelegate , UITableViewDataSour
             return cell
         }
 
-     /*   if section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeDetailQuantityAdjustCell", for: indexPath) as! RecipeDetailQuantityAdjustCell
-            cell.deleagate = self
-            cell.configure(quantity: recipe.quantity )
-            
-            return cell
-            
-            
-        }*/
         
         if section == 1 {
             
@@ -207,9 +216,29 @@ extension RecipeDetailViewController : UITableViewDelegate , UITableViewDataSour
 
         }
         
+        
+        
         let step = steps[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeDetailStepCell", for: indexPath) as! RecipeDetailStepCell
-        cell.configure(step : step)
+        
+        var cell : UITableViewCell!
+        
+        switch step.status {
+        case .image :
+            cell = tableView.dequeueReusableCell(withIdentifier: "RecipeImageStepCell", for: indexPath) as! RecipeImageStepCell
+        case .text :
+            cell = tableView.dequeueReusableCell(withIdentifier: "RecipeTextStepCell", for: indexPath) as! RecipeTextStepCell
+
+        default:
+            cell = tableView.dequeueReusableCell(withIdentifier: "RecipeStepCell", for: indexPath) as! RecipeStepCell
+            break
+            
+        }
+        
+
+        if let cell = cell as? RecipeStepCell {
+            cell.configure(step : step)
+        }
+        
         if row == steps.count - 1 {
             let bounds = UIScreen.main.bounds
             cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2 , bottom: 0, right: bounds.width / 2)
@@ -218,8 +247,6 @@ extension RecipeDetailViewController : UITableViewDelegate , UITableViewDataSour
         }
         return cell
     }
-    
-
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return UIView()

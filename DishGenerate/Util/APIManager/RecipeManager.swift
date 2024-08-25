@@ -8,7 +8,7 @@ final class RecipeManager : MainServerAPIManager {
         return super.serverResourcePrefix + "/recipe"
     }
     
-    func getRecommendRecipes(user_id : String, preference : DishPreference) async throws -> (DishPreference,  [Recipe]) {
+    func getRecommendRecipes(user_id : String, preference : GenerateRecipePreference) async throws -> (GenerateRecipePreference,  [Recipe]) {
         guard let url = URL(string: "\(self.serverResourcePrefix)/recommend-recipes") else {
             throw APIError.BadRequestURL
         }
@@ -42,7 +42,7 @@ final class RecipeManager : MainServerAPIManager {
               let recJsons = result.recipes else {
             throw APIError.BadRequestURL
         }
-        guard let preference = DishPreference(json:  preJson),
+        guard let preference = GenerateRecipePreference(json:  preJson),
               let recipes = result.recipes?.compactMap({ json in
                   return Recipe(json: json)
               }) else {
@@ -69,7 +69,7 @@ final class RecipeManager : MainServerAPIManager {
     }
     
     func getLikedRecipesByDateThresold(dateThresold : String) async throws -> [Recipe] {
-        guard let url = URL(string: "\(self.serverResourcePrefix)/like?user_id=\(user_id)&dateThrehsold=\(dateThresold)") else {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/like?user_id=\(user_id)&dateThreshold=\(dateThresold)") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)

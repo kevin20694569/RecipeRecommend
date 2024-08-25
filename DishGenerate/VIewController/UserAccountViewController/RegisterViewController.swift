@@ -339,8 +339,7 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
                         tableCellTextTuples[index].1 = updatedText
                         
                         if let inValidStr = textFieldIsInValid(textField: textField, updatedText: updatedText, tag: index) {
-          
-                         //   print("s")
+
                             cell.warningLabel.isHidden = false
                             cell.warningLabel.text = inValidStr
                         } else {

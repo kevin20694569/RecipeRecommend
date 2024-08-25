@@ -6,6 +6,16 @@ class Step : GetImageModel {
         lhs.description == rhs.description
     }
     
+    var status : StepStatus {
+        if image_URL != nil && description != nil {
+            return .all
+        } else if image_URL != nil {
+            return .image
+        }
+        return .text
+        
+    }
+    
     
     
     
@@ -71,7 +81,7 @@ class Step : GetImageModel {
 
 struct StepJson : Decodable {
     var step_order : Int
-    var description : String
+    var description : String?
     var image_url : String?
     
     enum CodingKeys: String, CodingKey {
@@ -81,12 +91,10 @@ struct StepJson : Decodable {
     }
     
     
-    
-    
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.step_order = try container.decode(Int.self, forKey: .step_order)
-        self.description = try container.decode(String.self, forKey: .description)
+        self.description = try? container.decode(String.self, forKey: .description)
         self.image_url = try? container.decode(String.self, forKey: .image_url)
     }
 

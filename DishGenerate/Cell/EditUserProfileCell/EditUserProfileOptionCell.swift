@@ -43,14 +43,14 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
 
     
     func titleLabelSetup() {
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        titleLabel.textColor = .thirdaryLabel
+        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
+        titleLabel.textColor = .primaryLabel
     }
     
     func valueLabelSetup() {
-        valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         valueLabel.textAlignment = .right
-        valueLabel.textColor = .thirdaryLabel
+        valueLabel.textColor = .primaryLabel
     }
     
     func titleLabelLayout() {

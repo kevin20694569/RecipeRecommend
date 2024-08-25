@@ -56,9 +56,10 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     }
     func customAccessoryImageViewSetup() {
         let checkmarkImage = UIImage(systemName: "chevron.right")?.withTintColor(.thirdaryLabel, renderingMode: .alwaysOriginal).withConfiguration(UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)))
-        customAccessoryImageView.image = checkmarkImage
+        customAccessoryImageView.image = checkmarkImage?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
         customAccessoryImageView.contentMode = .scaleAspectFit
         customAccessoryImageView.isHidden = true
+
     }
     
     func customAccessoryImageViewLayout() {

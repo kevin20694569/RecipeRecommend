@@ -139,7 +139,7 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     
     func buttonSetup() {
         var config = UIButton.Configuration.filled()
-        config.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.tintColor, renderingMode: .alwaysOriginal)
+        config.image = UIImage(systemName: "plus.circle.fill")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
         config.baseForegroundColor = .themeColor
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
         config.baseBackgroundColor = .clear

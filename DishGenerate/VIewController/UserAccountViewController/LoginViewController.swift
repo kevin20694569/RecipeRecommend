@@ -21,22 +21,26 @@ class LoginViewController : UIViewController {
     
     var anonymousLoginButton : ZoomAnimatedButton = ZoomAnimatedButton()
     
-
+    
     var warningLabel : UILabel = UILabel()
-
+    
     var buttonAttributedTitleContainer : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)])
     
     var logining : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         viewSetup()
         mainViewSetup()
         labelSetup()
         textFieldSetup()
         buttonSetup()
         initLayout()
+        configure()
+        
     }
+
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -44,6 +48,15 @@ class LoginViewController : UIViewController {
         
     }
     
+    
+    func configure() {
+        guard let email = UserDefaultManager.shared.getEmail() else {
+            return
+        }
+        if let password = UserDefaultManager.shared.getPassword() {
+            self.passwordTextField.text = password
+        }
+    }
     func labelSetup() {
         [emailLabel, passwordLabel].forEach() {
             $0.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
@@ -72,8 +85,8 @@ class LoginViewController : UIViewController {
         config = UIButton.Configuration.filled()
         let anonymousLoginAttributedString = AttributedString("訪客使用", attributes: self.buttonAttributedTitleContainer)
         config.attributedTitle = anonymousLoginAttributedString
-        config.baseBackgroundColor = .thirdaryBackground
-        config.baseForegroundColor = .black
+        config.baseBackgroundColor = .secondaryBackground
+        config.baseForegroundColor = .primaryLabel
         anonymousLoginButton.configuration = config
         anonymousLoginButton.addTarget(self, action: #selector(anoymousLoginButtonTapped ( _ :)), for: .touchUpInside)
         
@@ -81,12 +94,12 @@ class LoginViewController : UIViewController {
         config = UIButton.Configuration.filled()
         let registerAttributedString = AttributedString("註冊", attributes: self.buttonAttributedTitleContainer)
         config.attributedTitle = registerAttributedString
-        config.baseBackgroundColor = .thirdaryBackground
-        config.baseForegroundColor = .black
+        config.baseBackgroundColor = .secondaryBackground
+        config.baseForegroundColor = .primaryLabel
         registerButton.configuration = config
         registerButton.addTarget(self, action: #selector(registerButtonTapped ( _ :)), for: .touchUpInside)
-
-       // loginButton.addTarget(self, action: #selector(loginButtonTapped ( _ :)), for: .touchUpInside)
+        
+        // loginButton.addTarget(self, action: #selector(loginButtonTapped ( _ :)), for: .touchUpInside)
         
         
     }
@@ -102,7 +115,7 @@ class LoginViewController : UIViewController {
         login(email: email, password: password, realUserLogin: true)
     }
     
-   @objc func anoymousLoginButtonTapped(_ button : UIButton) {
+    @objc func anoymousLoginButtonTapped(_ button : UIButton) {
         guard !logining else {
             return
         }
@@ -112,14 +125,16 @@ class LoginViewController : UIViewController {
     }
     
     @objc func registerButtonTapped(_ button : UIButton) {
-         guard !logining else {
-             return
-         }
+        guard !logining else {
+            return
+        }
         showRegisterViewController()
         
-
-     }
-     
+        
+    }
+    
+    
+    
     func login(email : String, password : String, realUserLogin : Bool) {
         logining = true
         var config = loginButton.configuration
@@ -132,6 +147,8 @@ class LoginViewController : UIViewController {
                 try await UserManager.shared.login(email: email, password: password)
                 //let attributedString = AttributedString("登入成功", attributes: self.buttonAttributedTitleContainer)
                 if realUserLogin {
+                    UserDefaultManager.shared.setEmail(email: email)
+                    UserDefaultManager.shared.setPassword(password: password)
                     config?.attributedTitle = nil
                     config?.image = UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration.init(font: UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium)))
                     config?.baseBackgroundColor = .systemGreen
@@ -155,8 +172,8 @@ class LoginViewController : UIViewController {
     
     func showRegisterViewController() {
         let vc = RegisterViewController()
-        navigationController?.pushViewController(vc, animated: true)
-       // show(vc, sender: nil)
+        // navigationController?.pushViewController(vc, animated: true)
+        show(vc, sender: nil)
     }
     
     
@@ -190,18 +207,21 @@ class LoginViewController : UIViewController {
             }) { bool in
                 
                 animatedView.removeFromSuperview()
+                
+                
                 if let window = UIApplication.shared.keyWindow {
+                    
                     window.rootViewController = vc
                 }
                 vc.view.isHidden = false
                 UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
-
+                    
                     vc.view.subviews.forEach() {
                         $0.alpha = 1
                     }
                     
                 }) { [weak self] bool in
-
+                    
                     guard let self = self else {
                         return
                     }
@@ -237,7 +257,6 @@ class LoginViewController : UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-           // anonymousLoginButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 30),
             registerButton.widthAnchor.constraint(equalTo: anonymousLoginButton.widthAnchor),
             registerButton.heightAnchor.constraint(equalTo: anonymousLoginButton.heightAnchor),
             registerButton.bottomAnchor.constraint(equalTo: anonymousLoginButton.topAnchor, constant: -16),
@@ -255,8 +274,6 @@ class LoginViewController : UIViewController {
             $0.textInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         }
         passwordTextField.isSecureTextEntry = true
-        emailTextField.text = "kevin20694569@gmail.com"
-        passwordTextField.text = "29779499"
     }
     
     func labelLayout() {

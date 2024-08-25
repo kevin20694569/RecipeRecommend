@@ -24,7 +24,6 @@ extension SelectedModel {
             }
             return nil
         }
-        print(titles)
         let result = titles.joined(separator: ",")
         return result
     }

@@ -39,9 +39,13 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBarLayout()
         layoutSetup()
         self.view.backgroundColor = .primaryBackground
-        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
+    }
     
     
     lazy var bottomBarViews : [UIView] = [bottomBarView, tabBar]
@@ -92,7 +96,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-       
+        //MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
     }
     
     func layoutSetup() {
@@ -108,6 +112,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.selectedItem?.isEnabled = true
         tabBar.barStyle = .default
         tabBar.barTintColor = .themeColor
+        //tabBar.barTintColor = .clear
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         
@@ -141,6 +146,16 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
             view.addSubview($0)
         }
         self.tabBar.selectedItem = tabBar.items?[index]
+    }
+    
+    func getTopViewController() -> UIViewController? {
+        var topController : UIViewController = viewControllers[self.currentIndex]
+
+        while let newTopController = topController.presentedViewController {
+            topController = newTopController
+        }
+
+        return topController
     }
 }
 

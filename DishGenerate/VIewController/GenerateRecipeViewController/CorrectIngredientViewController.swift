@@ -56,8 +56,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
         Task {
-            
-           // await recognizeImages()
+            await recognizeImages()
         }
         initLayout()
         registerCell()
@@ -103,6 +102,9 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom + 12
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func initLayout() {
@@ -145,7 +147,9 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         
         let flow = UICollectionViewFlowLayout()
         collectionView.collectionViewLayout = flow
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         
         
     }
@@ -153,11 +157,11 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     func registerCell() {
         collectionView.register(IndicatorCollectionCell.self, forCellWithReuseIdentifier:   "IndicatorCollectionCell")
         collectionView.register(DetectedPhotoCollectionViewCollectionCell.self, forCellWithReuseIdentifier: "DetectedPhotoCollectionViewCollectionCell")
-        collectionView.register(IngredientTitleLabelCollectionCell.self, forCellWithReuseIdentifier: "IngredientTitleLabelCollectionCell")
+
         
         collectionView.register(AddTextIngredientCollectionCell.self, forCellWithReuseIdentifier: "AddTextIngredientCollectionCell")
         
-        collectionView.register(IngredientTextFieldCollectionCell.self, forCellWithReuseIdentifier: "IngredientTextFieldCollectionCell")
+
         
         collectionView.register(IngredientTitleLabelCenterCollectionCell.self, forCellWithReuseIdentifier: "IngredientTitleLabelCenterCollectionCell")
         

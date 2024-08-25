@@ -16,8 +16,6 @@ final class RecognizeImageManager : MainServerAPIManager {
         guard let url = URL(string: "\(self.serverResourcePrefix)") else {
             throw APIError.BadRequestURL
         }
-        var req = URLRequest(url: url)
-        try self.insertJwtTokenToHeadersDefault(req: &req)
         guard let jwt_token = self.jwt_token else {
             throw AuthenticError.LostJWTKey
         }

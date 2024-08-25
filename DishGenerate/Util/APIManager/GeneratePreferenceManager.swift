@@ -8,9 +8,9 @@ final class GeneratePreferenceManager : MainServerAPIManager {
         return super.serverResourcePrefix + "/preferences"
     }
     
-    func getHistoryPreferences(user_id : String, dateThreshold : String? = "") async throws -> [DishPreference] {
+    func getHistoryPreferences(user_id : String, dateThreshold : String? ) async throws -> [GenerateRecipePreference] {
         do {
-            guard let url = URL(string: "\(self.serverResourcePrefix)/\(user_id)?date=\(dateThreshold ?? "")") else {
+            guard let url = URL(string: "\(self.serverResourcePrefix)/\(user_id)?dateThreshold=\(dateThreshold ?? "")") else {
                 throw APIError.BadRequestURL
             }
             var req = URLRequest(url: url)
@@ -21,7 +21,7 @@ final class GeneratePreferenceManager : MainServerAPIManager {
             let decoder = JSONDecoder()
             let results =  try decoder.decode([DishPreferenceJson].self, from: data)
             let preferences = results.compactMap { json in
-                return DishPreference(json : json)
+                return GenerateRecipePreference(json : json)
             }
             return preferences
         } catch {

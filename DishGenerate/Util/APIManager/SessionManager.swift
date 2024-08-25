@@ -1,10 +1,6 @@
 import UIKit
 
-protocol APIManager : NSObject {
-    var serverResourcePrefix : String { get }
-}
-
-class SessionManager : NSObject {
+class SessionManager : NSObject, APIManager {
     
     static let shared : SessionManager = SessionManager()
     
@@ -60,29 +56,43 @@ class SessionManager : NSObject {
         userDefault.removeObject(forKey:  "user_id")
     }
     
-    func deleteJWT_Token(){
+    func deleteJWT_Token() {
         let userDefault = UserDefaults()
         return userDefault.removeObject(forKey: "jwt-token")
     }
+    
+    
+    @MainActor
+    func verifyJwtTokenToLogout(currentViewController : UIViewController, token : String) async throws {
+        do {
+            guard let url = URL(string: self.serverResourcePrefix + "/users/verifyjwttoken") else {
+                return
+            }
+            
+            var req = try initAuthURLRequest(url: url)
+            req.httpMethod = "POST"
+            
+            let (_, res) = try await URLSession.shared.data(for: req)
+            guard let httpRes = res as? HTTPURLResponse,
+                  200...299 ~= httpRes.statusCode else {
+                throw NSError(domain: "verifyJwtToken Fail", code: 404)
+            }
+        } catch {
+            
+            let alertController = UIAlertController(title: "登入逾時", message: "請重新登入", preferredStyle: .alert)
+            let logoutAction = UIAlertAction(title: "重新登入", style: .default) { action in
+                currentViewController.dismiss(animated: true) {
+                    SceneDelegate.logout()
+                }
+                
+            }
+            alertController.addAction(logoutAction)
+            currentViewController.present(alertController, animated: true)
 
-}
-class MainServerAPIManager : NSObject, APIManager {
-    
-    var user_id : String {
-        return SessionManager.shared.user_id
-    }
-    var serverResourcePrefix : String {
-        return Environment.ServerIP
-    }
-    var jwt_token : String? {
-        return SessionManager.shared.jwt_token
-    }
-    
-    
-    func insertJwtTokenToHeadersDefault(req : inout URLRequest) throws {
-        guard let jwt_token = self.jwt_token else {
-            throw AuthenticError.LostJWTKey
+            throw error
         }
-        req.setValue("Bearer \(jwt_token)", forHTTPHeaderField: "Authorization")
+        
+
     }
+    
 }

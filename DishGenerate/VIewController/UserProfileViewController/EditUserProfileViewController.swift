@@ -21,6 +21,14 @@ class EditUserProfileViewController : UIViewController {
         navBarSetup()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+    }
+    
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
@@ -51,67 +59,13 @@ class EditUserProfileViewController : UIViewController {
                 guard let self = self else {
                     return
                 }
-                logout()
+                SceneDelegate.logout()
             })
         alertController.addAction(okAction)
         present(alertController, animated: true)
     }
     
-    func logout() {
-        let nav  = SceneDelegate.getLoginControllerWithNav()
-        let loginViewController = nav.viewControllers.first as! LoginViewController
-        
- //       let nav = LoginViewController.navShared
-   //     var loginViewController = LoginViewController.shared
-        
-        guard var tabBarController = MainTabBarViewController.shared else {
-            return
-        }
-        guard let window = UIApplication.shared.keyWindow else {
-            return
-        }
-        SessionManager.shared.deleteUserID()
-        SessionManager.shared.deleteJWT_Token()
-        
-        
-        let animatedView = UIView()
-        animatedView.backgroundColor = view.backgroundColor
-        animatedView.alpha = 0
-        animatedView.frame = tabBarController.view.bounds
-        animatedView.clipsToBounds = true
-        animatedView.layer.cornerRadius = 16
-        
-        window.addSubview(animatedView)
-        
-        window.insertSubview(nav.view, at: 0)
-        
-        loginViewController.mainView.subviews.forEach() {
-            $0.alpha = 0
-        }
-        loginViewController.mainView.isHidden = true
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 0.4, animations: {
-                animatedView.alpha = 1
-            }) { bool in
-                MainTabBarViewController.shared.view.isHidden = true
-                UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0, animations: {
-                    let targetFrame = loginViewController.view.convert(loginViewController.mainView.frame, to: window)
-                    animatedView.frame = targetFrame
-                    animatedView.layer.cornerRadius = loginViewController.mainView.layer.cornerRadius
-                    
-                }) { bool in
-                    loginViewController.mainView.isHidden = false
-                    animatedView.removeFromSuperview()
-                    
-                    UIView.animate(withDuration: 0.3, animations: {
-                        loginViewController.mainView.subviews.forEach() {
-                            $0.alpha = 1
-                        }
-                    })
-                }
-            }
-        }
-    }
+    
     
     init(user: User) {
         super.init(nibName: nil, bundle: nil)
@@ -186,6 +140,7 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         }
         let row = indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: "EditUserProfileOptionCell", for: indexPath) as! EditUserProfileOptionCell
+        
         
         cell.editUserProfileCellDelegate = self
         let title = options[row]

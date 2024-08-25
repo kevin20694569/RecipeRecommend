@@ -59,6 +59,11 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navBarSetup()
@@ -127,7 +132,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     func buttonLayout() {
         NSLayoutConstraint.activate([
             nextTapButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            nextTapButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24 + -MainTabBarViewController.bottomBarFrame.height),
+            nextTapButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant:  -MainTabBarViewController.bottomBarFrame.height),
             
             nextTapButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
             nextTapButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),

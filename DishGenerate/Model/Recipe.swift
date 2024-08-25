@@ -57,6 +57,8 @@ class Recipe : GetImageModel {
     
     var tags : [Tag]?
     
+    var created_time : String?
+    
     
     
     init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: Int!, complexity: Complexity!, image_ID: String!, image_url : String? = nil, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
@@ -73,7 +75,7 @@ class Recipe : GetImageModel {
         }
     }
     
-    init(id: String!, title: String!, description: String!, costTime: Int!, original_url : String? = nil, image_url : String? = nil, image : UIImage?, quantity : Int, steps : [Step]?, ingredients : [Ingredient]?, tags : [Tag]?, liked : Bool = false) {
+    init(id: String!, title: String!, description: String!, costTime: Int!, original_url : String? = nil, image_url : String? = nil, image : UIImage?, quantity : Int, steps : [Step]?, ingredients : [Ingredient]?, tags : [Tag]?, liked : Bool = false, created_time : String? = nil) {
         self.id = id
         self.name = title
         self.description = description
@@ -84,6 +86,7 @@ class Recipe : GetImageModel {
         self.quantity = quantity
         self.liked = liked
         self.tags = tags
+        self.created_time = created_time
         if let urlString = image_url,
            let url = URL(string: urlString) {
             self.image_URL = url
@@ -138,7 +141,8 @@ class Recipe : GetImageModel {
     }()
     
     convenience init(json : RecipeJson) {
-        self.init(id: json.id, title: json.title, description: json.description, costTime: json.costtime, original_url: json.url, image_url: json.image_url, image: nil, quantity: json.quantity ?? 1, steps: nil, ingredients: nil, tags: nil, liked: json .liked)
+        self.init(id: json.id, title: json.title, description: json.description, costTime: json.costtime, original_url: json.url, image_url: json.image_url, image: nil, quantity: json.quantity ?? 1, steps: nil, ingredients: nil, tags: nil, liked: json .liked, created_time: json.created_time)
+
         self.steps = json.steps?.compactMap({ json in
             return Step(json: json)
         })
@@ -193,6 +197,10 @@ struct RecipeJson : Decodable {
     
     var liked : Bool = false
     
+    var created_time : String?
+    
+    var updated_time : String?
+    
     
     
     enum CodingKeys: String, CodingKey {
@@ -202,6 +210,7 @@ struct RecipeJson : Decodable {
         case preference_id = "preference_id"
         case user_id = "user_id"
         case created_time = "created_time"
+        case updated_time = "updated_time"
         case summary = "description"
         case costtime = "costtime"
         case complexity = "complexity"
@@ -224,8 +233,15 @@ struct RecipeJson : Decodable {
             self.costtime = try container.decodeIfPresent(Int.self, forKey: .costtime)
             self.image_url = try? container.decodeIfPresent(String.self, forKey: .image_url)
             self.ingredients = try? container.decodeIfPresent([IngredientJson].self, forKey: .ingredients)
-            self.steps = try? container.decodeIfPresent([StepJson].self, forKey: .steps)
+
+            self.steps = try container.decodeIfPresent([StepJson].self, forKey: .steps)
+
             self.tags = try? container.decodeIfPresent([TagJson].self, forKey: .tags)
+            if let created_time = try? container.decodeIfPresent(String.self, forKey: .created_time) {
+                self.created_time = created_time
+            } else if let created_time =  try? container.decodeIfPresent(String.self, forKey: .updated_time) {
+                self.created_time = created_time
+            }
             if let liked = try? container.decodeIfPresent(Bool.self, forKey: .liked) {
                 self.liked = liked
             }

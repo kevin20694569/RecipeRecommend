@@ -80,12 +80,12 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
     }
     
     func labelSetup() {
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .medium)
+        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .bold)
         //titleLabel.adjustsFontSizeToFitWidth = true
         titleLabel.numberOfLines = 1
         titleLabel.textAlignment = .center
-        titleLabel.textColor = UIColor.thirdaryLabel
-        costTimeLabel.textColor = UIColor.thirdaryLabel
+        titleLabel.textColor = .primaryLabel
+        costTimeLabel.textColor = .secondaryLabel
         costTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
         costTimeLabel.adjustsFontSizeToFitWidth = true
         costTimeLabel.textAlignment = .center

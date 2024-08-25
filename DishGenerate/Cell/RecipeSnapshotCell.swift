@@ -114,7 +114,9 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
         let timeFont = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .regular)
         timeLabel.textColor = .secondaryLabelColor
         timeLabel.font = timeFont
-        timeLabel.textAlignment = .justified
+        timeLabel.textAlignment = .right
+        timeLabel.adjustsFontSizeToFitWidth = true
+        
     }
     
     @objc func heartButtonToggle() {
@@ -157,12 +159,15 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             titleLabel.leadingAnchor.constraint(equalTo: dishImageView.leadingAnchor, constant: 4),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: timeLabel.leadingAnchor, constant: -8),
+           
             timeLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -12),
             timeLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 2),
-            
+            timeLabel.widthAnchor.constraint(equalTo: dishImageView.widthAnchor, multiplier: 0.18),
             heartButton.topAnchor.constraint(equalTo: dishImageView.topAnchor, constant: 16),
             heartButton.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -16),
         ])
+        
+        
     }
     
     required init?(coder: NSCoder) {

@@ -19,7 +19,6 @@ class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDel
         
     }
     
-    
     var collectionView : UICollectionView! = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     var titleView : UIView! = UIView()
@@ -28,9 +27,9 @@ class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDel
     
     var displayStatus : SaveDishDisplayStatus! = .liked
     
-    var collectedDishes : [Recipe] = Recipe.examples
+    var collectedRecipes : [Recipe] = Recipe.examples
     
-    var likedDishes : [Recipe] = Recipe.examples
+    var likedRecipes : [Recipe] = Recipe.examples
     
     var buttonAttributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium), .foregroundColor : UIColor.primaryLabel])
     
@@ -90,14 +89,12 @@ class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDel
         navItemSetup()
         buttonSetup()
         collectionViewSetup()
-        
         initLayout()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navBarSetup()
-        
     }
     
     func navBarSetup() {
@@ -149,19 +146,19 @@ extension SavedRecipesViewController : UICollectionViewDelegate, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch displayStatus {
         case .liked :
-            return likedDishes.count
+            return likedRecipes.count
         case .collect :
-            return collectedDishes.count
+            return collectedRecipes.count
         default :
             break
         }
-        return likedDishes.count
+        return likedRecipes.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var dishes = self.likedDishes
+        var dishes = self.likedRecipes
         if displayStatus == .collect {
-            dishes = collectedDishes
+            dishes = collectedRecipes
         }
         let dish = dishes[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as! HistoryRecipeCell
@@ -187,9 +184,9 @@ extension SavedRecipesViewController : UICollectionViewDelegate, UICollectionVie
         collectionView.visibleCells.forEach() {
             $0.isSelected = false
         }
-        var dishes = self.likedDishes
+        var dishes = self.likedRecipes
         if displayStatus == .collect {
-            dishes = collectedDishes
+            dishes = collectedRecipes
         }
         let dish = dishes[indexPath.row]
         showRecipeDetailViewController(recipe: dish)

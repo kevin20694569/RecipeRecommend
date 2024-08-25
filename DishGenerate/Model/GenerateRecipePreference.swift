@@ -1,7 +1,7 @@
 import UIKit
 
-class DishPreference : Equatable {
-    static func == (lhs: DishPreference, rhs: DishPreference) -> Bool {
+class GenerateRecipePreference : Equatable {
+    static func == (lhs: GenerateRecipePreference, rhs: GenerateRecipePreference) -> Bool {
         lhs.id == rhs.id
     }
     
@@ -40,7 +40,7 @@ class DishPreference : Equatable {
                 continue
             }
             if let name = cuisine.name {
-                text += (", " + name)
+                text += ("、" + name)
             }
         }
         return text
@@ -53,7 +53,7 @@ class DishPreference : Equatable {
                 continue
             }
             if let name = equipment.name {
-                text += (", " + name)
+                text += ("、" + name)
             }
         }
         return text
@@ -85,7 +85,8 @@ class DishPreference : Equatable {
         guard let id = json.id,
               let user_id = json.user_id,
               let timeLimit = json.timelimit,
-              let temperature = json.temperature else {
+              let temperature = json.temperature,
+        let created_time = json.created_time else {
             return nil
         }
         let ingredients = json.ingredients?.split(separator: ",").compactMap() { name in
@@ -101,11 +102,11 @@ class DishPreference : Equatable {
         let cuisine = json.cuisine?.split(separator: ",").compactMap() { name in
             return Cuisine(name: String(name), isSelected: true)
         }
-              
-        self.init(id: id, user_id: user_id, ingredients: ingredients ?? [], cuisine: cuisine ?? [], complexity: complexity, timeLimit: timeLimit, equipments: equipments ?? [], temperature: temperature)
+        
+        self.init(id: id, user_id: user_id, ingredients: ingredients ?? [], cuisine: cuisine ?? [], complexity: complexity, timeLimit: timeLimit, equipments: equipments ?? [], temperature: temperature, additional_text: json.additional_text, created_time: created_time)
     }
     
-    static var examples : [DishPreference] = [DishPreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5), DishPreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5), DishPreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5)]
+    static var examples : [GenerateRecipePreference] = [GenerateRecipePreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5), GenerateRecipePreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5), GenerateRecipePreference(id: UUID().uuidString, user_id: UUID().uuidString, ingredients: Ingredient.examples, cuisine: Cuisine.examples, complexity: .easy, timeLimit: 50, equipments: Equipment.examples, temperature: 0.5)]
     
     
 }

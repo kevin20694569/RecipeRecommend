@@ -46,10 +46,10 @@ class RecipeDetailIngredientCell : GroupCornerBackgroundTableCell {
         quantityLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         quantityLabel.numberOfLines = 0
         quantityLabel.adjustsFontSizeToFitWidth = true
-        quantityLabel.textColor = .thirdaryLabel
+        quantityLabel.textColor = .primaryLabel
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         nameLabel.clipsToBounds = true
-        nameLabel.textColor = .thirdaryLabel
+        nameLabel.textColor = .primaryLabel
     
     }
     

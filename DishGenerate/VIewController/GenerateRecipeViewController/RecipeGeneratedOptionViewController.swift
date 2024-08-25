@@ -1,7 +1,7 @@
 import UIKit
 
 protocol DishPreferenceCell {
-    var preference : DishPreference! { get set }
+    var preference : GenerateRecipePreference! { get set }
 }
 
 
@@ -9,7 +9,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
 
     var user_id : String { SessionManager.shared.user_id! }
     
-    lazy var preference : DishPreference = DishPreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature)
+    lazy var preference : GenerateRecipePreference = GenerateRecipePreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature)
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -213,9 +213,17 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func initLayout() {
@@ -244,8 +252,6 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
-        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
     }
     
     func generateRecommendRecipes()  {

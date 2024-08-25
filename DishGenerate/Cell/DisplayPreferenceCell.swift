@@ -2,7 +2,7 @@ import UIKit
 
 class DisplayPreferenceCell : UITableViewCell {
     
-    var preference : DishPreference!
+    var preference : GenerateRecipePreference!
     
     var mainView : UIView! = UIView()
     
@@ -15,43 +15,59 @@ class DisplayPreferenceCell : UITableViewCell {
 
     var complexityLabel : UILabel = UILabel()
     var timeLimitLabel : UILabel = UILabel()
-
+    
+    var addtionalTextLabel : UILabel = UILabel()
+    
+    
     var created_timeLabel : UILabel = UILabel()
+    
+    
     
     var mainViewTapGesture : UITapGestureRecognizer!
     
     weak var delegate : DisplayPreferenceCellDelegate?
     
     
-    func configure(preference : DishPreference) {
+    func configure(preference : GenerateRecipePreference) {
         
         self.preference = preference
         func getAttributedString(text : String) -> NSAttributedString {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 4
-            let attString = AttributedString(text, attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium),
+            let attString = AttributedString(text, attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold),
                                                                                    .paragraphStyle : paragraphStyle]))
             let ns = NSAttributedString(attString)
             return ns
         }
-
-
-
+        
+        
+        
         ingredientsLabel.attributedText = getAttributedString(text: "食材：" + preference.ingredientsDescription)
         cuisineLabel.attributedText = getAttributedString(text: "菜式：" + preference.cuisinesDescription)
         equipmentsLabel.attributedText = getAttributedString(text: "設備：" + preference.equipementsDescription)
         complexityLabel.attributedText = getAttributedString(text: "難度：" + preference.complexity.description)
         timeLimitLabel.attributedText = getAttributedString(text: "時間：" + preference.timeLimitDescription)
         
+        if let text = preference.addictionalText {
+            addtionalTextLabel.attributedText = getAttributedString(text: "ex：" + text)
+            labelStackView.addArrangedSubview(addtionalTextLabel)
+        } else {
+            addtionalTextLabel.removeFromSuperview()
+        }
+        
+        if let created_time = preference.created_time,
+           let formattedStr = Formatter.timeAgoOrDate(from: created_time) {
+            created_timeLabel.attributedText = getAttributedString(text: formattedStr)
+        }
+        
+
+        
+        
     }
     
     func labelSetup() {
         ingredientsLabel.numberOfLines = 2
-        
-        
-        // 將 attributedString 設置為 UILabel 的 attributedText
-      //  label.attributedText = attributedString
-    
+        equipmentsLabel.numberOfLines = 2
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -61,8 +77,11 @@ class DisplayPreferenceCell : UITableViewCell {
         stackViewSetup()
         gestureSetup()
         initLayout()
-        mainViewLayout()
-        labelLayout()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        //addtionalTextLabel.removeFromSuperview()
     }
     
     
@@ -87,22 +106,21 @@ class DisplayPreferenceCell : UITableViewCell {
     }
     
     func initLayout() {
-        /*[mainView, ingredientsLabel, cuisineLabel, equipmentsLabel, costTimeLabel, timeLimitLabel, created_timeLabel].forEach() { view in
-            contentView.addSubview(view)
-            view.translatesAutoresizingMaskIntoConstraints = false
-        }*/
         contentView.addSubview(mainView)
         contentView.addSubview(labelStackView)
+        contentView.addSubview(created_timeLabel)
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+        mainViewLayout()
+        labelLayout()
 
-        
     }
     
     func stackViewSetup() {
-        [mainView, ingredientsLabel, cuisineLabel, equipmentsLabel, complexityLabel, timeLimitLabel, created_timeLabel].forEach() {
+        [ingredientsLabel, cuisineLabel, equipmentsLabel, /*complexityLabel,*/ timeLimitLabel, addtionalTextLabel ].forEach() {
             
+            $0.textColor = .primaryLabel
             labelStackView.addArrangedSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -122,7 +140,6 @@ class DisplayPreferenceCell : UITableViewCell {
             mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -verConstant),
             mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horConstant),
             mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -horConstant),
-          //  mainView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
         ])
     }
     
@@ -130,24 +147,15 @@ class DisplayPreferenceCell : UITableViewCell {
         let verConstant : CGFloat = 16
 
         NSLayoutConstraint.activate([
-           /* ingredientsLabel.topAnchor.constraint(equalTo: mainView.topAnchor, constant: verConstant),
-            cuisineLabel.topAnchor.constraint(equalTo: ingredientsLabel.bottomAnchor, constant: verConstant),
-            equipmentsLabel.topAnchor.constraint(equalTo: cuisineLabel.bottomAnchor, constant: verConstant),
-            costTimeLabel.topAnchor.constraint(equalTo: equipmentsLabel.bottomAnchor, constant: verConstant),
-            timeLimitLabel.topAnchor.constraint(equalTo: costTimeLabel.bottomAnchor, constant: verConstant),
-            created_timeLabel.topAnchor.constraint(equalTo: timeLimitLabel.bottomAnchor, constant: verConstant),
-            created_timeLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -verConstant)*/
+
             labelStackView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: verConstant),
-            labelStackView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -verConstant)
+            labelStackView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -verConstant),
+            created_timeLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -16),
+            created_timeLabel.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -16)
+        
         ])
         let horConstant : CGFloat = 16
         var horConstaintArray : [NSLayoutConstraint]  = []
-        [ingredientsLabel, cuisineLabel, equipmentsLabel, complexityLabel, timeLimitLabel, created_timeLabel].forEach() { label in
-            label.textColor = .black
-            horConstaintArray.append( label.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: horConstant))
-            horConstaintArray.append( label.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -horConstant))
-        }
-       // NSLayoutConstraint.activate(horConstaintArray)
         NSLayoutConstraint.activate([
             labelStackView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: horConstant),
             labelStackView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -horConstant)

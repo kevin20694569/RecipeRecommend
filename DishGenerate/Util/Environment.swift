@@ -8,6 +8,7 @@ struct Environment {
                ip != "" {
                 return ip
             }
+
             return NSDictionary(contentsOfFile: path)?["ServerIP"] as? String ?? ""
         }
         return ""

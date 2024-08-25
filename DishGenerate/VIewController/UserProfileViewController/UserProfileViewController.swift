@@ -52,7 +52,10 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
             let user = try await UserManager.shared.getUser(user_id:
             user_id  )
             self.user = user
-            self.collectionView.reloadSections([0])
+            guard let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0 )) as? UserDetailCollectionCell else  {
+                return
+            }
+            cell.configure(user: user)
         }
         Task {
             await reloadCollectionView()
@@ -77,16 +80,16 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         }
     }
     
-    func insertNewDishes(newDishes : [Recipe], insertFunc: insertFuncToArray ) {
+    func insertNewRecipes(newRecipes : [Recipe], insertFunc: insertFuncToArray ) {
         
-        let newIndexPaths = (historyBrowsedRecipes.count...historyBrowsedRecipes.count + newDishes.count - 1).compactMap { index in
+        let newIndexPaths = (historyBrowsedRecipes.count...historyBrowsedRecipes.count + newRecipes.count - 1).compactMap { index in
             return IndexPath(row: index, section: 1)
         }
         collectionView.performBatchUpdates {
             if insertFunc == .unshift {
-                self.historyBrowsedRecipes.insert(contentsOf: newDishes, at: 0)
+                self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: 0)
             } else {
-                self.historyBrowsedRecipes.insert(contentsOf: newDishes, at: self.historyBrowsedRecipes.count)
+                self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: self.historyBrowsedRecipes.count)
             }
             collectionView.insertItems(at: newIndexPaths)
         }
@@ -127,8 +130,15 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 16, right: 0)
-        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let screenBounds = UIScreen.main.bounds
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset , right: 0)
+        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom:  bottomInset, right: 0)
     }
     
     func collectionViewFlowSetup() {
@@ -270,19 +280,24 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         guard !isLoadingNewDishes else {
             return
         }
-        /* guard let created_time = self.historyDishes.last?.created_Time else {
-         return
-         }
-         if self.historyDishes.count - indexPath.row == 5 {
-         isLoadingNewDishes = true
-         
-         Task {
-         let newDishes = try await RecipeManager.shared.getDishesOrderByCreatedTime(user_id: self.user_id, beforeTime: created_time)
-         
-         insertNewRecipes(newDishes: newDishes, insertFunc: .push)
-         isLoadingNewDishes = false
-         }
-         }*/
+       
+        guard let created_time = self.historyBrowsedRecipes.last?.created_time else {
+            return
+        }
+
+        if self.historyBrowsedRecipes.count - indexPath.row == 5 {
+            Task {
+                defer {
+                    isLoadingNewDishes = false
+                }
+                isLoadingNewDishes = true
+                let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(dateThresold: created_time)
+                guard newRecipes.count > 0 else {
+                    return
+                }
+                insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
+            }
+        }
     }
 }
 

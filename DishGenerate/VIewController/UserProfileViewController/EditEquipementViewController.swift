@@ -109,6 +109,9 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
+        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
+        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func viewSetup() {
@@ -133,8 +136,7 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow
-        collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 20, right: 0)
-        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height , right: 0)
+
     }
     
     func deleteEquipment(equipment: Equipment) {

@@ -273,6 +273,7 @@ extension UserProfileCellDelegate {
 
 protocol DisplayPreferenceCellDelegate : UIViewController {
     func showDishSummaryViewController(preference_id : String, showRightBarButtonItem: Bool)
+    var tableView : UITableView { get }
 }
 extension DisplayPreferenceCellDelegate {
     func showDishSummaryViewController(preference_id : String, showRightBarButtonItem : Bool) {

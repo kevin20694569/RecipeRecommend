@@ -92,7 +92,7 @@ class SliderCollectionCell : UICollectionViewCell {
 
 
 class DifficultSliderCollectionCell : SliderCollectionCell, DishPreferenceCell  {
-    var preference: DishPreference!
+    var preference: GenerateRecipePreference!
     
     
     override var minimumValue : Float { 0 }
@@ -147,7 +147,7 @@ class DifficultSliderCollectionCell : SliderCollectionCell, DishPreferenceCell  
 }
 
 class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
-    var preference: DishPreference!
+    var preference: GenerateRecipePreference!
     
     
     override var minimumValue : Float { 0 }
@@ -193,7 +193,7 @@ class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell
 }
 
 class TimeSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
-    var preference: DishPreference!
+    var preference: GenerateRecipePreference!
     
     override var minimumValue : Float { 20 }
     override var maximumValue : Float { 60 }
