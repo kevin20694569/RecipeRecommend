@@ -47,6 +47,9 @@ class GenerateRecipePreference : Equatable {
     }
     
     var equipementsDescription : String {
+        guard !equipments.isEmpty else {
+            return ""
+        }
         var text = equipments[0].name ?? ""
         for (index, equipment) in equipments.enumerated() {
             if index == 0 {

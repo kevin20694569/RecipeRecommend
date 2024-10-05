@@ -10,7 +10,7 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     
     func configure(user : User) {
         self.user = user
-        Task {
+        Task(priority : .background) {
             if let image = await user.getImage() {
                 super.configure(image: image)
             }

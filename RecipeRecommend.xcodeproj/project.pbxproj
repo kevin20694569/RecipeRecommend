@@ -33,6 +33,7 @@
 		233771A22C0D66A200135497 /* EditEquipementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditEquipementViewController.swift */; };
 		233771A42C0D9AF500135497 /* SavedRecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */; };
 		233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */; };
+		233A84472CB1C64200915245 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233A84462CB1C64200915245 /* UIImageView.swift */; };
 		2343914E2C7980FF002A3F39 /* PresentBottomBarErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2343914D2C7980FF002A3F39 /* PresentBottomBarErrorManager.swift */; };
 		234391502C79818B002A3F39 /* UIVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2343914F2C79818B002A3F39 /* UIVisualEffectView.swift */; };
 		23479F182C70BA970083769B /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23479F172C70BA970083769B /* RegisterViewController.swift */; };
@@ -167,6 +168,7 @@
 		233771A12C0D66A200135497 /* EditEquipementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEquipementViewController.swift; sourceTree = "<group>"; };
 		233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRecipesViewController.swift; sourceTree = "<group>"; };
 		233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFavoriteCuisineViewController.swift; sourceTree = "<group>"; };
+		233A84462CB1C64200915245 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		2343914D2C7980FF002A3F39 /* PresentBottomBarErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentBottomBarErrorManager.swift; sourceTree = "<group>"; };
 		2343914F2C79818B002A3F39 /* UIVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVisualEffectView.swift; sourceTree = "<group>"; };
 		23479F172C70BA970083769B /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 				23C2102B2BFDBA40008F74D0 /* UIImage.swift */,
 				23C63B882C2AAC02007F3C23 /* URL.swift */,
 				23C63B8C2C2D389A007F3C23 /* Other.swift */,
+				233A84462CB1C64200915245 /* UIImageView.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -976,6 +979,7 @@
 				2313419E2BEB4C120015DFA6 /* InputPhotoIngredientCollectionCell.swift in Sources */,
 				23C210242BFB8F06008F74D0 /* RecipeSummaryDisplayController.swift in Sources */,
 				23C210162BF8AF77008F74D0 /* SliderCollectionCell.swift in Sources */,
+				233A84472CB1C64200915245 /* UIImageView.swift in Sources */,
 				231341A72BEB69950015DFA6 /* CameraController.swift in Sources */,
 				23B5011D2BF497AE00EAB2D7 /* LabelHeaderView.swift in Sources */,
 				23BA50BA2BF36AD300E3B85A /* CameraControllerDelegate.swift in Sources */,
@@ -1207,6 +1211,8 @@
 				DEVELOPMENT_TEAM = 2A542MXRY2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DishGenerate/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "使用相機";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "使用圖庫";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -1236,6 +1242,8 @@
 				DEVELOPMENT_TEAM = 2A542MXRY2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DishGenerate/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "使用相機";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "使用圖庫";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

@@ -51,9 +51,9 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     func configure(user : User) {
         self.user = user
         nameLabel.text = user.name
-        Task {
+        Task(priority : .background) {
             let image = await user.getImage()
-            self.imageView.image = image
+            self.imageView.setImageWithAnimation(image: image)
         }
     }
     

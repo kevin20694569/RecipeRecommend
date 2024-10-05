@@ -72,7 +72,7 @@ class Step : GetImageModel {
     static var realExamplesArray : [[Step]] = [[Step(order: 0, description: "1. 將雞胸肉燙熟、放涼之後，剝成絲備用。\n2. 酸高麗菜切絲，川燙過後放入冰開水冷卻。", image_URL: "https://imageproxy.icook.network/resize?background=255%2C255%2C255&height=300&nocrop=false&stripmeta=true&type=auto&url=http%3A%2F%2Ftokyo-kitchen.icook.tw.s3.amazonaws.com%2Fuploads%2Fstep%2Fcover%2F467114%2F72395a7292db1db4.jpg&width=400"), Step(order: 1, description: "將雞肉絲、小黃瓜絲、紅蘿蔔絲、洋蔥絲、辣椒絲放入碗中，將調味料放入(蠔油、開水、白胡椒粉、鹽、少許糖)充分混合。", image_URL: "https://imageproxy.icook.network/resize?background=255%2C255%2C255&height=300&nocrop=false&stripmeta=true&type=auto&url=http%3A%2F%2Ftokyo-kitchen.icook.tw.s3.amazonaws.com%2Fuploads%2Fstep%2Fcover%2F467115%2F1161581db000575b.jpg&width=400"), Step(order: 2, description: "上桌前再加入少許香油、白芝麻，即可擺盤上菜囉!", image_URL: "https://imageproxy.icook.network/resize?background=255%2C255%2C255&height=300&nocrop=false&stripmeta=true&type=auto&url=http%3A%2F%2Ftokyo-kitchen.icook.tw.s3.amazonaws.com%2Fuploads%2Fstep%2Fcover%2F467116%2F36b7dbe05e66b7e6.jpg&width=400")]]
     
     convenience init(json : StepJson) {
-        self.init(order: json.step_order, description: json.description, image_URL: json.image_url)
+        self.init(order: json.order, description: json.description, image_URL: json.image_url)
     }
     
     
@@ -80,12 +80,12 @@ class Step : GetImageModel {
 
 
 struct StepJson : Decodable {
-    var step_order : Int
+    var order : Int
     var description : String?
     var image_url : String?
     
     enum CodingKeys: String, CodingKey {
-        case step_order = "step_order"
+        case order = "order"
         case description = "description"
         case image_url = "image_url"
     }
@@ -93,7 +93,7 @@ struct StepJson : Decodable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.step_order = try container.decode(Int.self, forKey: .step_order)
+        self.order = try container.decode(Int.self, forKey: .order)
         self.description = try? container.decode(String.self, forKey: .description)
         self.image_url = try? container.decode(String.self, forKey: .image_url)
     }

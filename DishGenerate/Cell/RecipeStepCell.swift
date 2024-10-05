@@ -15,8 +15,10 @@ class RecipeStepCell : UITableViewCell {
         self.step = step
         stepOrderLabel.text = String(step.order + 1)
         updateDescriptionLabel(text: step.description)
-        Task {
-            stepImageView.image = await step.getImage()
+        Task(priority : .background) {
+            let image =  await step.getImage()
+            stepImageView.setImageWithAnimation(image: image)
+                
         }
     }
     

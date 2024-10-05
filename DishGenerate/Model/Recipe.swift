@@ -35,10 +35,11 @@ class Recipe : GetImageModel {
     var id : String!
     var name : String!
     var description : String
-    var costTime : Int!
+    var costTime : Int?
     
     var costTimeDescription : String {
-        return String(costTime) + "分鐘"
+        return ""
+      //  return String(costTime) + "分鐘"
     }
     
     var original_URL : URL?

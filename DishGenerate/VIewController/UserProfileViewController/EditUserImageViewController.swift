@@ -17,7 +17,7 @@ class EditUserImageViewController : UIViewController, EditUserProfileCellDelegat
     init(user : User) {
         super.init(nibName: nil, bundle: nil)
         self.user = user
-        Task {
+        Task(priority : .background) {
             initImage = await user.getImage()
         }
     }

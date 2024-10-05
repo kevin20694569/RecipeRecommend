@@ -61,15 +61,15 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     
     func configure(recipe : Recipe) {
         self.recipe = recipe
-        recipeImageView.image = recipe.image
         summaryLabel.text = recipe.description
         titleLabel.text = recipe.name
         timeLabel.text = recipe.costTimeDescription
        // difficultLabel.text = recipe.complexity.description
         configureRecipeLikedStatus(liked: recipe.liked)
         updateBottomButtonStatus(animated: false)
-        Task {
-            recipeImageView.image = await recipe.getImage()
+        Task(priority : .background) {
+            let image = await recipe.getImage()
+            recipeImageView.setImageWithAnimation(image: image)
         }
     }
     

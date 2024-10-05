@@ -31,15 +31,15 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
     func configure(recipe : Recipe) {
         self.recipe = recipe
         self.titleLabel.text = recipe.name
-        costTimeLabel.text = recipe.costTimeDescription
-        self.imageView.image = recipe.image
-        Task {
-            self.imageView.image = await recipe.getImage()
+       // costTimeLabel.text = recipe.costTimeDescription
+        Task(priority : .background) {
+            let image = await recipe.getImage()
+            self.imageView.setImageWithAnimation(image: image)
         }
     }
     
     func initLayout() {
-        [background, imageView, titleLabel, costTimeLabel].forEach() {
+        [background, imageView, titleLabel].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
@@ -59,12 +59,14 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
             titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 4),
             titleLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
-            
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            /*
             costTimeLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             costTimeLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
             costTimeLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
             costTimeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
             costTimeLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+             */
         ])
     }
     
@@ -80,15 +82,15 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
     }
     
     func labelSetup() {
-        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote, weight: .bold)
-        //titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.numberOfLines = 1
+        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .bold)
+        titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.numberOfLines = 2
         titleLabel.textAlignment = .center
         titleLabel.textColor = .primaryLabel
         costTimeLabel.textColor = .secondaryLabel
         costTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
-        costTimeLabel.adjustsFontSizeToFitWidth = true
-        costTimeLabel.textAlignment = .center
+      //  costTimeLabel.adjustsFontSizeToFitWidth = true
+      //  costTimeLabel.textAlignment = .center
     }
     
     func backgroundSetup() {

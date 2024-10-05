@@ -67,7 +67,7 @@ extension GetImageModel {
         if let image = self.image {
             return image
         }
-        return nil
+     //  return nil
         if let image = await image_URL?.getImage() {
             self.image = image
         }

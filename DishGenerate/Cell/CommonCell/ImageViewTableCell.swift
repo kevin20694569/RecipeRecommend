@@ -17,8 +17,7 @@ class ImageViewTableCell : UITableViewCell {
     }
     
     func configure(image : UIImage) {
-        self.image = image
-        self.mainImageView.image = image
+        self.mainImageView.setImageWithAnimation(image: image)
     }
     
     required init?(coder: NSCoder) {

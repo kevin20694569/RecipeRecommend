@@ -55,8 +55,9 @@ class RecipeDetailSummaryCell : UITableViewCell {
         costTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         costTimeLabel.numberOfLines = 0
         
-        [quantityLabel, costTimeLabel].forEach() { _ in
+        [quantityLabel, costTimeLabel].forEach() { label in
 
+            
 
         }
         //costTimeLabel.backgroundColor = .gray
@@ -152,6 +153,7 @@ class RecipeDetailSummaryCell : UITableViewCell {
     
     func stackViewLayout() {
         let bounds = UIScreen.main.bounds
+        return
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: summaryLabel.leadingAnchor, constant: bounds.width * 0.05),
             stackView.topAnchor.constraint(equalTo: tagCollectionView.bottomAnchor, constant: 24),
@@ -178,7 +180,7 @@ class RecipeDetailSummaryCell : UITableViewCell {
             tagCollectionView.leadingAnchor.constraint(equalTo: summaryLabel.leadingAnchor),
             tagCollectionView.trailingAnchor.constraint(equalTo: summaryLabel.trailingAnchor),
             tagCollectionView.topAnchor.constraint(equalTo: summaryLabel.bottomAnchor, constant: 20),
-            //tagCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            tagCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             // tagCollectionView.widthAnchor.constraint(greaterThanOrEqualTo: contentView.widthAnchor, multiplier: 0.5),
             tagCollectionView.heightAnchor.constraint(equalToConstant: bounds.height * 0.05),
         ])
@@ -191,8 +193,9 @@ class RecipeDetailSummaryCell : UITableViewCell {
         costTimeLabel.text = dish.costTimeDescription
         quantityLabel.text = String(dish.quantity) + "人份"
         //costTimeLabel.text = recipe.complexity.description
-        Task {
-            dishImageView.image = await dish.getImage()
+        Task(priority : .background) {
+            let image = await dish.getImage()
+            dishImageView.setImageWithAnimation(image: image)
         }
     }
 }

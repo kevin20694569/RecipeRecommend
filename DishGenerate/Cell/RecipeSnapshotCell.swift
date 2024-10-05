@@ -33,8 +33,9 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
         self.dishImageView.image = recipe.image
         configureRecipeLikedStatus(liked: recipe.liked)
         configureDetailStatus()
-        Task {
-            self.dishImageView.image = await recipe.getImage()
+        Task(priority : .background) {
+            let image = await recipe.getImage()
+            self.dishImageView.setImageWithAnimation(image: image)
         }
     }
     

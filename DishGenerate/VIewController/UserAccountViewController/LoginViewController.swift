@@ -51,8 +51,10 @@ class LoginViewController : UIViewController {
     
     func configure() {
         guard let email = UserDefaultManager.shared.getEmail() else {
+            
             return
         }
+        self.emailTextField.text = email
         if let password = UserDefaultManager.shared.getPassword() {
             self.passwordTextField.text = password
         }

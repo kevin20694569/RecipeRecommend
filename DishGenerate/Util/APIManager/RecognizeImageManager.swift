@@ -19,9 +19,11 @@ final class RecognizeImageManager : MainServerAPIManager {
         guard let jwt_token = self.jwt_token else {
             throw AuthenticError.LostJWTKey
         }
+
+        
         let headers: HTTPHeaders = [
             "Content-Type": "multipart/form-data",
-            "jwt_token" : jwt_token
+            "authorization" : "Bearer \(jwt_token)"
         ]
 
         let res = try await withUnsafeThrowingContinuation { continuation in

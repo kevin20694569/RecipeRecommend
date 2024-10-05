@@ -8,7 +8,61 @@ enum DisplayRecipeStatus {
     case Liked
     case Search
 }
+
+class EmptyView : UIView {
+    
+    var logoImageView : UIImageView = UIImageView()
+    var mainLabel : UILabel  = UILabel()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        imageViewSetup()
+        initLayout()
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func initLayout() {
+        [logoImageView, mainLabel].forEach() {
+            self.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        imageViewLayout()
+        labelLayout()
+    }
+    
+    func imageViewLayout() {
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            logoImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.3),
+            logoImageView.heightAnchor.constraint(equalTo: logoImageView.widthAnchor, multiplier: 1),
+        ])
+    }
+    
+    func labelLayout() {
+        NSLayoutConstraint.activate([
+            mainLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            mainLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            mainLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 12),
+            mainLabel.heightAnchor.constraint(equalTo: logoImageView.widthAnchor, multiplier: 1),
+        
+        ])
+    }
+    
+    func imageViewSetup() {
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.image = UIImage(systemName: "frying.pan.fill")
+    }
+    
+    func labelSetup() {
+        mainLabel.text = "你還沒按讚任何食譜喔！"
+    }
+}
  
+
 
 class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate {
     
@@ -213,6 +267,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         self.tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 75
         tableView.delaysContentTouches = false
         
 
@@ -224,25 +279,38 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     }
     
+    
+    
     @objc func refreshControllerTriggered(_ refreshController : UIRefreshControl) {
-
+        guard !isLoadingNewDishes else {
+            return
+        }
         Task {
+            isLoadingNewDishes = true
             await reloadTableView()
         }
     }
     
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 75
+    }
+    
     func reloadTableView() async {
         defer {
-            tableView.refreshControl?.endRefreshing()
+         //   tableView.refreshControl?.endRefreshing()
+            isLoadingNewDishes = false
         }
         do {
             let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: "")
-            tableView.beginUpdates()
+
+            tableView.refreshControl?.endRefreshing()
+
+            tableView.endUpdates()
             self.recipes.removeAll()
             self.recipes.append(contentsOf: newRecipes)
-            tableView.refreshControl?.endRefreshing()
-            tableView.reloadSections([0], with: .automatic)
-            tableView.endUpdates()
+            tableView.reloadSections([0], with: .fade)
+            
+
         } catch {
             print("reloadTableViewError", error)
         }
@@ -367,28 +435,33 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         var newConstant: CGFloat = searchBarAnchorConstaint.constant - diffY
         if scrollView.contentOffset.y <= 0 {
             
-            UIView.animate(withDuration: 0.1, animations: {
+            UIView.animate(withDuration: 0.1, animations: { [self] in
                 self.searchBarAnchorConstaint.constant = 0
+                [searchBar, searchBarRightButton].forEach( ) {
+                    $0.layer.opacity = 1
+                }
                 
             })
             return
         }
-            
-            var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
-            
-            if let navigationController = navigationController,
-               let navBarFrame = navigationController.navigationBar.superview?.convert(navigationController.navigationBar.frame, to: self.view) {
-                frame = navBarFrame
-            }
-            
-            if diffY < 0 {
-                newConstant = min( 0  ,newConstant)
-            } else if diffY > 0 {
-                newConstant = max( -frame.maxY ,newConstant)
-            }
-            let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
-            
+        var frame =  CGRect(x: 0, y: view.frame.minY , width: 0, height: searchBar.bounds.height)
+
+        
+        if let navigationController = navigationController,
+           let navBarFrame = navigationController.navigationBar.superview?.convert(navigationController.navigationBar.frame, to: self.view) {
+            frame = navBarFrame
+        }
+        
+        if diffY < 0 {
+            newConstant = min( 0  ,newConstant)
+        } else if diffY > 0 {
+            newConstant = max( -frame.maxY ,newConstant)
+        }
+        let persent : Float =  Float(1 - abs(newConstant / frame.maxY))
+        
+        
         [searchBar, searchBarRightButton].forEach( ) {
+            
             $0.layer.opacity = persent
         }
         
