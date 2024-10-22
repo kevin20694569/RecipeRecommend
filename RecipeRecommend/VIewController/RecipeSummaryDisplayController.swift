@@ -125,9 +125,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+
     }
 
     
@@ -144,7 +142,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", image: nil, target: nil, action: nil)
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navBarRightButton)
     }
 
@@ -156,7 +154,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
         ])
     }
     
@@ -176,8 +174,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
         tableView.delaysContentTouches = false
         tableView.allowsSelection = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
-        tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
+
         
         if self.recipes.count < 2 {
             self.tableView.isScrollEnabled = false

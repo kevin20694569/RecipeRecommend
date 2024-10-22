@@ -35,6 +35,10 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     var user : User! = User.default
     
+    var emptyView : EmptyView = EmptyView()
+    
+    var userRecipesIsEmpty : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
@@ -74,11 +78,15 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
             let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(user_id: user_id, dateThresold: "")
             self.historyBrowsedRecipes.removeAll()
             self.historyBrowsedRecipes.append(contentsOf: newRecipes)
+            if historyBrowsedRecipes.isEmpty {
+                userRecipesIsEmpty = true
+            }
             collectionView.performBatchUpdates ({
                 self.collectionView.reloadSections([1])
             }) { bool in
                 
             }
+            
         } catch {
             print("reloadCollectionViewError", error)
         }
@@ -139,10 +147,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let screenBounds = UIScreen.main.bounds
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset , right: 0)
-        collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom:  bottomInset, right: 0)
+       
     }
     
     func collectionViewFlowSetup() {
@@ -154,6 +159,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         self.collectionView.register(HistoryRecipeCell.self, forCellWithReuseIdentifier: "SavedDishCell")
         
         self.collectionView.register(UserProfileDishDateCell.self, forCellWithReuseIdentifier: "UserProfileDishDateCell")
+        collectionView.register(EmptyCollectionCell.self, forCellWithReuseIdentifier: "EmptyCollectionCell")
     }
     
     func registerReuseHeaderView() {
@@ -171,7 +177,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     func initLayout() {
         
-        [collectionView].forEach() {
+        [collectionView, emptyView].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -179,9 +185,14 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.bottomBarFrame.height),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+
+            
         ])
+        
+        
     }
     
     
@@ -193,6 +204,9 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
+            return 1
+        }
+        if historyBrowsedRecipes.isEmpty && userRecipesIsEmpty {
             return 1
         }
         return historyBrowsedRecipes.count
@@ -207,6 +221,12 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
             cell.userProfileCellDelegate = self
             cell.configure(user: user)
             return cell
+        }
+        if historyBrowsedRecipes.isEmpty {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyCollectionCell", for: indexPath) as!  EmptyCollectionCell
+            cell.configure(text: "尚未有食譜瀏覽紀錄！")
+            return cell
+            
         }
         let dish = historyBrowsedRecipes[row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as!  HistoryRecipeCell
@@ -231,6 +251,8 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if section == 0 {
             return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.02, right: 0)
         }
+
+        
         return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }
     
@@ -240,6 +262,10 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if indexPath.section == 0 {
             return CGSize(width: bounds.width, height: bounds.height * 0.15)
         }
+        if historyBrowsedRecipes.isEmpty {
+            return CGSize(width: bounds.width, height: bounds.height * 0.1)
+        }
+        
         let spacing : CGFloat = 4
         return CGSize(width: (bounds.width - spacing * 3)  / 3, height: bounds.height * 0.2)
     }
@@ -311,6 +337,8 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
 extension UserProfileViewController : UserProfileCellDelegate {
     
 }
+
+
 
 
 

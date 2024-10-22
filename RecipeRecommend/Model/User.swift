@@ -39,6 +39,21 @@ class User : Equatable, GetImageModel {
     
     static let Nologin : User = User(id: "", name: "", email: "", image: nil)
     
+    func getImage() async -> UIImage? {
+
+        
+        if let image = self.image {
+            return image
+        }
+        if let image = await image_URL?.getImage() {
+            self.image = image
+        } else {
+            self.image = UIImage(named: "app_icon")
+        }
+        return image
+        
+    }
+    
     
 }
 

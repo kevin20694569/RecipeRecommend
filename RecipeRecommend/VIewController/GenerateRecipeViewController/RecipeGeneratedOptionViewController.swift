@@ -195,7 +195,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         fatalError("init(coder:) has not been implemented")
     }
     
-    lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "生成", image: nil, target: self, action: #selector(rightButtonItemTapped ( _ : )))
+    lazy var rightButtonItem : UIBarButtonItem! = UIBarButtonItem(title: "生成", style: .done, target: self, action: #selector(rightButtonItemTapped ( _ : )))
+    
     
     @objc func rightButtonItemTapped( _ barButtonItem : UIBarButtonItem) {
         generateRecommendRecipes()
@@ -221,9 +222,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+   
+
     }
     
     func initLayout() {
@@ -235,7 +235,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
         ])
         self.view.backgroundColor = .primaryBackground
         
@@ -259,26 +259,38 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         preference.equipments = self.equipments
         preference.cuisine = self.cuisines
         preference.ingredients = self.ingrdients
-        
-        if let nav = navigationController as? MainNavgationController,
-           let mainTableController = nav.mainDishViewController {
-            mainTableController.changeButtonStatus(status: .isGenerating)
-            Task {
-                do {
+        if let nav = navigationController as? MainNavgationController {
+            if let mainTableController = nav.mainRecipeViewController {
+                mainTableController.generatedPreference = preference
+                mainTableController.changeButtonStatus(status: .isGenerating)
+                
+                
+                Task {
+                    let viewControllers = nav.popToRootViewController(animated: true)
+                    mainTableController.lastGeneratedViewControllers = viewControllers
+                    do {
+                        
+                        let (preference, recipes) = try await RecipeManager.shared.getRecommendRecipes(user_id: self.user_id, preference: preference)
+                        mainTableController.generatedDishes = recipes
+                        mainTableController.generatedPreference = preference
+                        mainTableController.changeButtonStatus(status: .already)
+                        
+                    } catch {
+                       // try? await Task.sleep(nanoseconds: 1000000000)
+                        mainTableController.changeButtonStatus(status: .error)
+                        print("getRecommendRecipesError", error)
+                    }
                     
-                    let (preference, recipes) = try await RecipeManager.shared.getRecommendRecipes(user_id: self.user_id, preference: preference)
-                    mainTableController.generatedDishes = recipes
-                    mainTableController.generatedPreference = preference
-                    mainTableController.changeButtonStatus(status: .already)
-                    
-                } catch {
-                    mainTableController.changeButtonStatus(status: .none)
-                    print("getRecommendRecipesError", error)
+
                 }
+                
+                
             }
         }
         
-        navigationController?.popToRootViewController(animated: true)
+        
+        
+        
         
         
     }

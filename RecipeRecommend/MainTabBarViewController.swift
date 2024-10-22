@@ -20,13 +20,14 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     var bottomBarView : UIView! = UIView()
     
-    lazy var viewControllers : [UINavigationController] = [preferenceNavViewController, mainNavViewController , userProfileNavViewController]
+    lazy var viewControllers : [UINavigationController] = []
     
     var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        childViewControllersSetup()
+        
+        
     }
     
     required init?(coder: NSCoder) {
@@ -35,37 +36,43 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tabBarSetup()
+
+       
+        
         tabBarLayout()
+        childViewControllersSetup()
         layoutSetup()
+        
+       
+        tabBarSetup()
+        
+       
+        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
         self.view.backgroundColor = .primaryBackground
+
+        
+
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
-    }
+    static var tabBarFrame : CGRect = .zero
     
     
     lazy var bottomBarViews : [UIView] = [bottomBarView, tabBar]
     
     func childViewControllersSetup() {
+        self.preferenceNavViewController = UINavigationController(rootViewController: DisplayPreferenceViewController())
         let mainTableViewController = RecipeTableViewController()
+        
 
         self.mainNavViewController = MainNavgationController(rootViewController: mainTableViewController)
-        mainNavViewController.mainDishViewController = mainTableViewController
+        mainNavViewController.mainRecipeViewController = mainTableViewController
         
         let userProfileViewController = UserProfileViewController()
         let userProfileNavViewController = UserProfileNavViewController(rootViewController: userProfileViewController)
         self.userProfileNavViewController = userProfileNavViewController
+        viewControllers.insert(contentsOf: [preferenceNavViewController, mainNavViewController, userProfileNavViewController], at: 0)
         
-    //    let savedDishesViewController = SavedRecipesViewController()
-        
-     //   let savedDishesNavViewController = UINavigationController(rootViewController: savedDishesViewController)
-       // self.savedDishesNavViewController = savedDishesNavViewController
-        
-        self.preferenceNavViewController = UINavigationController(rootViewController: DisplayPreferenceViewController())
+
        
     }
     
@@ -92,17 +99,21 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         self.view.layoutIfNeeded()
         
         bottomBarView.backgroundColor = .themeColor
+
+        
+        MainTabBarViewController.tabBarFrame = self.view.convert(tabBar.frame, to: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
+        
     }
     
     func layoutSetup() {
         showViewController(at: 1)
         self.view.addSubview(bottomBarView)
         self.view.addSubview(tabBar)
+        
     }
     
     func tabBarSetup() {
@@ -110,8 +121,10 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.standardAppearance.configureWithOpaqueBackground()
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         tabBar.selectedItem?.isEnabled = true
-        tabBar.barStyle = .default
+        tabBar.barStyle = .black
+
         tabBar.barTintColor = .themeColor
+
         //tabBar.barTintColor = .clear
         let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
         let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
@@ -125,6 +138,8 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.setItems(items, animated: false)
         tabBar.selectedItem = tabBar.items?[1]
         tabBar.delegate = self
+ 
+        MainTabBarViewController.tabBarFrame = self.view.convert(tabBar.frame, to: nil)
     }
     
     func showViewController(at index: Int) {
@@ -149,6 +164,9 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     }
     
     func getTopViewController() -> UIViewController? {
+        guard !viewControllers.isEmpty else {
+            return nil
+        }
         var topController : UIViewController = viewControllers[self.currentIndex]
 
         while let newTopController = topController.presentedViewController {

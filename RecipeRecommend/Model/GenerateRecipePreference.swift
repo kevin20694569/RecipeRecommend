@@ -21,6 +21,9 @@ class GenerateRecipePreference : Equatable {
     var cuisine : [Cuisine]!
     
     var ingredientsDescription : String {
+        guard !ingredients.isEmpty else {
+            return "無"
+        }
         var text = ingredients[0].name ?? ""
         for (index, ingredient) in ingredients.enumerated() {
             if index == 0 {
@@ -34,6 +37,9 @@ class GenerateRecipePreference : Equatable {
     }
     
     var cuisinesDescription : String {
+        guard !cuisine.isEmpty else {
+            return "無"
+        }
         var text = cuisine[0].name ?? ""
         for (index, cuisine) in cuisine.enumerated() {
             if index == 0 {
@@ -48,7 +54,7 @@ class GenerateRecipePreference : Equatable {
     
     var equipementsDescription : String {
         guard !equipments.isEmpty else {
-            return ""
+            return "無"
         }
         var text = equipments[0].name ?? ""
         for (index, equipment) in equipments.enumerated() {

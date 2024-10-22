@@ -92,7 +92,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+
 
     }
     
@@ -123,7 +123,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
             
         ])
         self.view.backgroundColor = .systemBackground
@@ -132,7 +132,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     func buttonLayout() {
         NSLayoutConstraint.activate([
             nextTapButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            nextTapButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant:  -MainTabBarViewController.bottomBarFrame.height),
+            nextTapButton.bottomAnchor.constraint(equalTo: tableView.bottomAnchor, constant:  -24),
             
             nextTapButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
             nextTapButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),

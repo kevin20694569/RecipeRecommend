@@ -42,9 +42,6 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func markAsBrowsed() async {
@@ -64,8 +61,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
         tableView.allowsSelection = false
         tableView.delaysContentTouches = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
-        tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0 )
+
         tableView.rowHeight = UITableView.automaticDimension
     }
     
@@ -84,8 +80,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
         ])
     }
 

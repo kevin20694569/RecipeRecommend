@@ -55,6 +55,7 @@ class CollectionViewCollectionCell : UICollectionViewCell, UICollectionViewDeleg
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
         ])
     }
 }

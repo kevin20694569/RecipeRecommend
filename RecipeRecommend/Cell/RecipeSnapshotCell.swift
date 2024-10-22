@@ -66,21 +66,6 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
         var image : UIImage?
         var backgroundColor : UIColor = .themeColor
         var showsActivityIndicator : Bool = false
-      /*  switch self.currentDish.status {
-        case .none :
-            image = UIImage(systemName: "frying.pan.fill")
-            backgroundColor = .themeColor
-            
-        case .already :
-            image = UIImage(systemName: "checkmark")
-            backgroundColor = .orangeTheme
-            
-        case .isGenerating :
-            showsActivityIndicator = true
-        default :
-            image = nil
-            showsActivityIndicator = false
-        }*/
         dishDetailStatusLogoButton.configuration?.image = image?.withConfiguration(detailButtonConfig)
         dishDetailStatusLogoButton.configuration?.baseBackgroundColor = backgroundColor
         dishDetailStatusLogoButton.configuration?.showsActivityIndicator = showsActivityIndicator
@@ -159,7 +144,7 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
             titleLabel.topAnchor.constraint(equalTo: dishImageView.bottomAnchor, constant: 10),
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             titleLabel.leadingAnchor.constraint(equalTo: dishImageView.leadingAnchor, constant: 4),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            titleLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -4),
            
           //  timeLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -12),
            // timeLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 2),

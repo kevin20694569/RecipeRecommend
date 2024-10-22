@@ -114,9 +114,9 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
                 config?.attributedTitle = AttributedString("成功註冊！", attributes: self.buttonAttributedTitleContainer)
                 config?.baseBackgroundColor = .systemGreen
                 registerButton.configuration = config
-                //try? await UserManager.shared.register(name: name, email: email, password: password, image: self.userImage)
+                try await UserManager.shared.register(name: name, email: email, password: password, image: self.userImage)
 
-                try await Task.sleep(nanoseconds: 1000000000)
+               // try await Task.sleep(nanoseconds: 1000000000)
                 if let loginViewController = navigationController?.viewControllers.first as?  LoginViewController {
                     loginViewController.emailTextField.text = email
                     loginViewController.passwordTextField.text = password

@@ -2,7 +2,7 @@ import UIKit
 
 class MainNavgationController: UINavigationController {
     
-    weak var mainDishViewController : RecipeTableViewController?
+    weak var mainRecipeViewController : RecipeTableViewController?
 
     override func viewDidLoad() {
         super.viewDidLoad()

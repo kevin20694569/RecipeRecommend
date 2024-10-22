@@ -12,38 +12,46 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     var editButtonTitleAttributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)])
     
+    var horStackView : UIStackView = UIStackView()
+    var verStackView : UIStackView = UIStackView()
+    
     weak var userProfileCellDelegate : UserProfileCellDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         imageViewSetup()
+        stackViewSetup()
         labelSetup()
         buttonSetup()
         initLayout()
     }
+    
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func initLayout() {
-        [imageView, nameLabel, editButton].forEach() {
+        [horStackView].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
-        let bounds = UIScreen.main.bounds
+        
         NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: bounds.width * 0.12),
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            horStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor    ),
+            horStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            horStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
-
-            nameLabel.topAnchor.constraint(equalTo: imageView.centerYAnchor, constant: -32),
-            nameLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 16),
-            nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            nameLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.3),
+            nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -contentView.bounds.height * 0.2),
             
-            editButton.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
-            editButton.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+
+            editButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: contentView.bounds.height * 0.2),
+            
+            
+           // editButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant : -8),
+            editButton.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.3)
+
         ])
         imageView.layoutIfNeeded()
         imageView.layer.cornerRadius = imageView.bounds.height / 2
@@ -64,9 +72,29 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     }
     
     func labelSetup() {
-        nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         nameLabel.text = " "
         nameLabel.adjustsFontSizeToFitWidth = true
+        
+    }
+    
+    func stackViewSetup() {
+
+
+        [nameLabel, editButton].forEach() {
+            verStackView.addArrangedSubview($0)
+        }
+        verStackView.axis = .vertical
+        verStackView.distribution = .fillProportionally
+        
+        
+        [imageView, verStackView].forEach { view in
+            horStackView.addArrangedSubview(view)
+        }
+        horStackView.axis = .horizontal
+        horStackView.spacing = 16
+
+        
     }
     
     func buttonSetup() {

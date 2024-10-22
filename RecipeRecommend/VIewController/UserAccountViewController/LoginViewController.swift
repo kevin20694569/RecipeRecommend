@@ -204,8 +204,12 @@ class LoginViewController : UIViewController {
             }
             //  animatedView.frame = vc.view.frame
         }) { bool in
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseOut, animations: {
                 animatedView.frame = vc.view.frame
+                let bounds = UIScreen.main.bounds
+                if bounds.width <= 375 {
+                    animatedView.layer.cornerRadius = 0
+                }
             }) { bool in
                 
                 animatedView.removeFromSuperview()
@@ -338,7 +342,7 @@ class LoginViewController : UIViewController {
             mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             mainView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.6)
+            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
         ])
     }
     

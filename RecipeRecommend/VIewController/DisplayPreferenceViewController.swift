@@ -9,24 +9,26 @@ class DisplayPreferenceViewController : UIViewController {
     
     var isLoadingNewPreferences : Bool = false
     
+    var emptyView : EmptyView = EmptyView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
         tableViewSetup()
         navBarSetup()
-        
+        emptyView.configure(text: "尚未有任何推薦食譜紀錄！")
+        emptyView.isHidden = true
         initLayout()
+        
         Task {
             await reloadTableView()
         }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -50,10 +52,14 @@ class DisplayPreferenceViewController : UIViewController {
             tableView.refreshControl?.endRefreshing()
            // tableView.beginUpdates()
             tableView.endUpdates()
+    
             self.preferences.removeAll()
             self.preferences.append(contentsOf: newPreferences)
+            emptyView.isHidden = preferences.count > 0
             
             tableView.reloadSections([0], with: .automatic)
+            
+            
             
         } catch {
             print("reloadTableViewError", error)
@@ -83,10 +89,7 @@ class DisplayPreferenceViewController : UIViewController {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.delaysContentTouches = false
-    
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height + 24, right: 0)
-        tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
-        tableView.estimatedRowHeight = 100
+
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshControllerTriggered( _: )), for: .valueChanged)
@@ -107,15 +110,22 @@ class DisplayPreferenceViewController : UIViewController {
     
     func initLayout() {
         view.addSubview(tableView)
+        view.addSubview(emptyView)
         view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            emptyView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -(navigationController?.navigationBar.bounds.height)!),
+            emptyView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
+
     }
     
     

@@ -51,6 +51,10 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     }
     
     @objc func cameraButtonTapped( _ button : UIButton) {
+        guard self.user.id != SessionManager.anonymous_user_id else {
+            return
+        }
+
         editUserProfileCellDelegate?.showEditUserImageViewController()
     }
     
@@ -58,6 +62,7 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
 
 class ChangeUserImageViewTableCell : EditUserProfileUserImageViewTableCell {
     override func cameraButtonTapped(_ button: UIButton) {
+        
         editUserProfileCellDelegate?.showImagePicker()
      //   editUserProfileCellDelegate
     }

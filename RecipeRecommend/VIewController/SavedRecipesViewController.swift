@@ -64,7 +64,7 @@ class SavedRecipesViewController : UIViewController, ShowRecipeViewControllerDel
         
         ])
         
-        menu.preferredElementSize = .large
+        //menu.preferredElementSize = .large
 
         titleButton.showsMenuAsPrimaryAction = true
         titleButton.menu = menu

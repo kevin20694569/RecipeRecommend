@@ -35,6 +35,14 @@ class CameraController: NSObject {
     
     var isCapturing : Bool = false
     
+    var focusGesture : UITapGestureRecognizer!
+    
+    override init() {
+        super.init()
+        focusGesture = UITapGestureRecognizer(target: self, action: #selector(focusGesture( _ : )))
+        
+    }
+    
     func prepare(completionHandler: @escaping (Error?) -> Void) {
         func createCaptureSession()  {
             self.captureSession = AVCaptureSession()
@@ -131,7 +139,6 @@ class CameraController: NSObject {
 }
 extension CameraController {
     func displayPreview(on view: UIView) throws {
-        print("display")
         guard let previewLayer = previewLayer else {
             return
         }
@@ -139,12 +146,13 @@ extension CameraController {
         view.layer.insertSublayer(previewLayer, at: 0)
         self.previewLayer!.frame = view.bounds
         nowPlayingView = view
+        nowPlayingView?.isUserInteractionEnabled = true
+        nowPlayingView?.addGestureRecognizer(focusGesture)
     }
     
    
     
     func previewLayerRemoveFromSuperLayer() {
-        print("remove")
         self.previewLayer?.removeFromSuperlayer()
     }
     
@@ -160,6 +168,8 @@ extension CameraController {
         }
         
         nowPlayingView = view
+        nowPlayingView?.isUserInteractionEnabled = true 
+        nowPlayingView?.addGestureRecognizer(focusGesture)
     }
     
     func toggleFlash() -> Bool {
@@ -200,8 +210,9 @@ extension CameraController {
     
     func capture(completion: @escaping (UIImage) -> Void) {
         guard !isCapturing else {
-            return
+            return 
         }
+        isCapturing = true
         captureCompletionHandler = completion
         
         let photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
@@ -270,6 +281,7 @@ extension CameraController {
 
 extension CameraController: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+
         if let error = error {
             print(error.localizedDescription)
             return
@@ -281,13 +293,47 @@ extension CameraController: AVCapturePhotoCaptureDelegate {
         if let image = UIImage(data: imageData) {
             captureCompletionHandler(image)
             CurrentImage = image
-        } 
-
+        }
+        defer {
+            isCapturing = false
+        }
+        
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         startClickFadeAnimation()
     }
+    
+    @objc func focusGesture(_ gesture: UITapGestureRecognizer?) {
+        guard let device = currentDevice else {
+            return
+        }
+        let focusPoint = (gesture?.location(in: gesture?.view))!
+        let screenSize = nowPlayingView?.bounds.size
+        
+        
+        do {
+            try device.lockForConfiguration()
+            
+            device.focusPointOfInterest = focusPoint
+            //device.focusMode = .continuousAutoFocus
+            device.focusMode = .autoFocus
+            //device.focusMode = .locked
+            device.exposurePointOfInterest = focusPoint
+            device.exposureMode = .continuousAutoExposure
+            device.unlockForConfiguration()
+        }
+        catch {
+            
+        }
+    }
+    
+    
+    
+        
+    
+    
+
     
     
     

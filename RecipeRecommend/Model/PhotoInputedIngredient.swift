@@ -144,7 +144,7 @@ class PhotoInputedIngredient : Equatable {
         "brisket": "牛胸肉",
         "brittle": "脆糖",
         "broad beans": "蠶豆",
-        "broccoli": "青花菜",
+        "broccoli": "花椰菜",
         "broccolini": "芽芯菜",
         "broil": "烤",
         "broth": "湯",

@@ -24,6 +24,17 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
         initLayout()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.imageView.image = nil
+    }
+
+    
+    
+    
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -37,6 +48,10 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
             self.imageView.setImageWithAnimation(image: image)
         }
     }
+    
+    //override func
+    
+    
     
     func initLayout() {
         [background, imageView, titleLabel].forEach() {

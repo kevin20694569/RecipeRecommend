@@ -41,12 +41,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             
            
         }
-     //   try? self.cameraController.ChangePreView(on: cell.imageView)
-      //  for
-      //  cameraControllerDisplayOn(view: <#T##UIView#>)
-        
 
-        
     }
     
     func captureImage() async throws -> UIImage {
@@ -229,9 +224,10 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-       /* if indexPath.row == images.count - 1 {
+        if indexPath.row == images.count - 1 && images[indexPath.row] != nil {
+            print(indexPath.row)
             cameraController.previewLayer?.removeFromSuperlayer()
-        }*/
+        }
     }
     
     

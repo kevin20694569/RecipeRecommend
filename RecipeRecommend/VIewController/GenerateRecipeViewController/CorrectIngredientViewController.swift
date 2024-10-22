@@ -28,7 +28,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     let photoInputedIndexPath : IndexPath = IndexPath(row: 0, section: 1)
     
-    lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "下一步", image: nil, target: self, action: #selector(rightButtonItemTapped ( _ : )))
+    lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "下一步", style: .done , target: self, action: #selector(rightButtonItemTapped ( _ : )))
     
     @objc func rightButtonItemTapped( _ barButtonItem : UIBarButtonItem) {
         showDishGeneratedOptionViewController()
@@ -103,14 +103,13 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navBarSetup()
+        let ingredients = outputCurrentValidIngredients()
+        rightButtonItem.isEnabled = ingredients.count > 0
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom + 12
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     }
     
     func initLayout() {
@@ -120,7 +119,8 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         }
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
@@ -152,9 +152,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         
         let flow = UICollectionViewFlowLayout()
         collectionView.collectionViewLayout = flow
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 32, right: 0)
         
         
     }
@@ -417,12 +415,12 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         
         if section == 2 , let ingredients = photoInputedIngredients   {
             if ingredients.count > 0 {
-                return CGSize(width: view.bounds.width, height: view.bounds.height * 0.08)
+                return CGSize(width: view.bounds.width, height: view.bounds.height * 0.1)
             }
         }
         if section == 3 {
             
-            return CGSize(width: view.bounds.width, height: view.bounds.height * 0.08)
+            return CGSize(width: view.bounds.width, height: view.bounds.height * 0.1)
         }
         
         return CGSize(width: 0, height: 0)

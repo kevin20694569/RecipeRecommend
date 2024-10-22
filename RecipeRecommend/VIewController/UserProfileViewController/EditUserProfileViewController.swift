@@ -24,15 +24,13 @@ class EditUserProfileViewController : UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+
     }
     
     func navBarSetup() {
         self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
         self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
-        let item = UIBarButtonItem(title: "登出", image: nil, target: self, action: #selector(navBarRightButtonTapped ( _ :)))
+        let item = UIBarButtonItem(title: "登出", style: .done, target: self, action: #selector(navBarRightButtonTapped ( _ :)))
         navigationItem.rightBarButtonItem = item
     }
     
@@ -133,9 +131,8 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
         if section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "EditUserProfileUserImageViewTableCell", for: indexPath) as! EditUserProfileUserImageViewTableCell
             cell.editUserProfileCellDelegate = self
-            if let image = user.image {
-                cell.configure(image: image)
-            }
+            cell.configure(user: user)
+
             return cell
         }
         let row = indexPath.row

@@ -109,9 +109,7 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.collectionView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+
     }
     
     func viewSetup() {
@@ -125,7 +123,7 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
         ])
     }
     
@@ -133,6 +131,7 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
+        collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow

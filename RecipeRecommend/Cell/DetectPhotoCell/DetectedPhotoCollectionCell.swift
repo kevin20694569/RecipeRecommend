@@ -16,9 +16,9 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     
     weak var delegate : DetectedPhotoCollectionCellDelegate?
     
-    var attributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title1,
+    var attributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title3,
                                                                                                   weight: .medium),
-                                                              .foregroundColor : UIColor.white])
+                                                              .foregroundColor : UIColor.white,])
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -127,17 +127,21 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         leftConfig.baseBackgroundColor = .secondaryBackground
         
         leftButton.configuration = leftConfig
+        leftButton.titleLabel?.numberOfLines = 1
+        leftButton.titleLabel?.adjustsFontSizeToFitWidth = true
         leftButton.addTarget(self, action: #selector(selectButtonTapped ( _ :)), for: .touchUpInside)
         
         var rightConfig = UIButton.Configuration.filled()
         let rigthAttString = AttributedString("", attributes: attributes)
+        rightConfig.titleLineBreakMode = .byWordWrapping
         rightConfig.contentInsets = insets
         rightConfig.showsActivityIndicator = true
         rightConfig.attributedTitle = rigthAttString
         rightConfig.baseBackgroundColor = .secondaryBackground
         rightButton.configuration = rightConfig
+        rightButton.titleLabel?.numberOfLines = 1
         
-        
+        rightButton.titleLabel?.adjustsFontSizeToFitWidth = true
         rightButton.addTarget(self, action: #selector(selectButtonTapped ( _ :)), for: .touchUpInside)
     }
     

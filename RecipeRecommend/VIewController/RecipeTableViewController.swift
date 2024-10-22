@@ -9,63 +9,13 @@ enum DisplayRecipeStatus {
     case Search
 }
 
-class EmptyView : UIView {
-    
-    var logoImageView : UIImageView = UIImageView()
-    var mainLabel : UILabel  = UILabel()
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        imageViewSetup()
-        initLayout()
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func initLayout() {
-        [logoImageView, mainLabel].forEach() {
-            self.addSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
-        imageViewLayout()
-        labelLayout()
-    }
-    
-    func imageViewLayout() {
-        NSLayoutConstraint.activate([
-            logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            logoImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            logoImageView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.3),
-            logoImageView.heightAnchor.constraint(equalTo: logoImageView.widthAnchor, multiplier: 1),
-        ])
-    }
-    
-    func labelLayout() {
-        NSLayoutConstraint.activate([
-            mainLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            mainLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            mainLabel.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 12),
-            mainLabel.heightAnchor.constraint(equalTo: logoImageView.widthAnchor, multiplier: 1),
-        
-        ])
-    }
-    
-    func imageViewSetup() {
-        logoImageView.contentMode = .scaleAspectFit
-        logoImageView.image = UIImage(systemName: "frying.pan.fill")
-    }
-    
-    func labelSetup() {
-        mainLabel.text = "你還沒按讚任何食譜喔！"
-    }
-}
+
  
 
 
-class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate {
-    
+class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate, AdvertiseViewDelegate {
+
+
     func reloadRecipe(recipe: Recipe) {
         guard let index = recipes.firstIndex(where: { oldDish in
             recipe.id == oldDish.id
@@ -91,6 +41,14 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var isKeyboardVisible : Bool = false
     
+    var emptyView : EmptyView = EmptyView()
+    
+    var advertiseView : AdvertiseView = AdvertiseView()
+    
+    var lastGeneratedViewControllers : [UIViewController]?
+    
+
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         searchBarIsEditing = true
         return true
@@ -98,21 +56,33 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let query = searchBar.text,
+           
            query.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
+            self.view.endEditing(true)
             Task {
                 do {
                     let newRecipes = try await RecipeManager.shared.searchRecipesInLikedByQuery(query: query)
-                    tableView.beginUpdates()
                     searchRecipes.removeAll()
                     searchRecipes.insert(contentsOf: newRecipes, at: searchRecipes.count)
                     status = .Search
                     tableView.reloadSections([0], with: .automatic)
-                    tableView.endUpdates()
+                    
+                   
+                    emptyView.configure(text: "無相關食譜")
+                    emptyView.isHidden = !self.searchRecipes.isEmpty
+                    
+                    
+
                 } catch {
                     print(error)
                 }
             }
         }
+        status = .Liked
+        Task {
+            await self.reloadTableView()
+        }
+        
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -146,6 +116,17 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     func showInputPhotoIngredientViewController() {
         let controller = InputPhotoIngredientViewController()
         self.show(controller, sender: nil)
+        navigationController?.isNavigationBarHidden = false
+    }
+    
+    func showLastGeneratedViewControllers() {
+        guard let lastGeneratedViewControllers = lastGeneratedViewControllers else {
+            return
+        }
+        for (i, vc) in lastGeneratedViewControllers.enumerated() {
+            navigationController?.pushViewController(vc, animated: i == lastGeneratedViewControllers.count - 1)
+        }
+    
         navigationController?.isNavigationBarHidden = false
     }
     
@@ -196,9 +177,37 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         registerCells()
         searchBarSetup()
         navSetup()
-        if generatedDishes != nil {
-            changeButtonStatus(status: .already)
+        emptyView.configure(text: "你還沒按讚任何食譜喔！")
+        emptyView.isHidden = true
+        advertiseView.isHidden = true
+        advertiseView.advertiseViewDelegate = self
+        advertiseView.configure(advertises: Advertise.wonderfulfood_examples)
+        showAdvertiseView()
+    }
+    
+    func showAdvertiseView() {
+        advertiseView.layer.opacity = 0
+        advertiseView.isHidden = false
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            advertiseView.layer.opacity = 1
         }
+    }
+    
+    func dismissAdvertiseView() {
+
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            advertiseView.layer.opacity = 0
+        }){ bool in
+            self.advertiseView.isHidden = true
+        }
+        
+        
     }
     
     @objc func keyboardWillShow(_ notification: NSNotification) {
@@ -237,9 +246,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view: self.view)
-        let bottomInset = MainTabBarViewController.bottomBarFrame.height - self.view.safeAreaInsets.bottom
-        self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        self.tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -271,7 +278,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.delaysContentTouches = false
         
 
-        tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
+      //  tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshControllerTriggered( _: )), for: .valueChanged)
@@ -305,10 +312,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
             tableView.refreshControl?.endRefreshing()
 
-            tableView.endUpdates()
             self.recipes.removeAll()
             self.recipes.append(contentsOf: newRecipes)
             tableView.reloadSections([0], with: .fade)
+            emptyView.configure(text: "你還沒按讚任何食譜喔！")
+            emptyView.isHidden = !self.recipes.isEmpty
+            
             
 
         } catch {
@@ -337,13 +346,16 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         self.view.addSubview(searchBar)
         self.view.addSubview(searchBarRightButton)
         self.view.addSubview(tableView)
+        view.addSubview(emptyView)
+        view.addSubview(advertiseView)
         self.view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+
         searchBarAnchorConstaint = searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+
         NSLayoutConstraint.activate([
             
-           
             
             searchBarAnchorConstaint,
             
@@ -352,14 +364,33 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             searchBarRightButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor),
             searchBarRightButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12),
             searchBarRightButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
+
             
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-           
+            
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
+            
+            
+
+            emptyView.topAnchor.constraint(equalTo: searchBar.topAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor),
+
+            emptyView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            advertiseView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            advertiseView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            advertiseView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            advertiseView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
+
+            
 
         ])
+        
+
+        
 
     }
     
@@ -376,41 +407,57 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     func changeButtonStatus(status : DishGenerateStatus) {
         buttonStatus = status
         
-        switch status {
-        case .none :
-            var config = UIButton.Configuration.filled()
-            config.image = UIImage(systemName: "menucard")
-            config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
-            searchBarRightButton.configuration = config
-        case .isGenerating :
-            searchBarRightButton.configuration?.image = UIImage(systemName: "arrow.down.circle.dotted")
-            searchBarRightButton.configuration?.baseBackgroundColor = .orangeTheme
-            let imageView = searchBarRightButton.imageView
-            imageView?.translatesAutoresizingMaskIntoConstraints = true
-            let rotation = CABasicAnimation(keyPath: "transform.rotation")
-            rotation.fromValue = 0
-            rotation.toValue = CGFloat.pi * 2
-            rotation.duration = 1
-            rotation.repeatCount = Float.infinity
-            imageView?.layer.add(rotation, forKey: "rotate")
-        case .already :
-            searchBarRightButton.imageView?.layer.removeAllAnimations()
-            searchBarRightButton.configuration?.baseBackgroundColor = .systemGreen
-            searchBarRightButton.configuration?.image = UIImage(systemName: "checkmark")
-        case .error :
-            searchBarRightButton.imageView?.layer.removeAllAnimations()
-            searchBarRightButton.configuration?.baseBackgroundColor = .systemRed
-            searchBarRightButton.configuration?.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            switch status {
+            case .none :
+                var config = UIButton.Configuration.filled()
+                config.image = UIImage(named: "menucard")
+                config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
+                searchBarRightButton.configuration = config
+            case .isGenerating :
+                self.generatedDishes = nil
+                searchBarRightButton.configuration?.image = UIImage(systemName: "rectangle.and.pencil.and.ellipsis")
+                searchBarRightButton.configuration?.baseBackgroundColor = .orangeTheme
+                let imageView = searchBarRightButton.imageView
+                imageView?.translatesAutoresizingMaskIntoConstraints = true
+                let rotation = CABasicAnimation(keyPath: "transform.rotation")
+                rotation.fromValue = 0
+                rotation.toValue = CGFloat.pi * 2
+                rotation.duration = 1
+                rotation.repeatCount = Float.infinity
+               // imageView?.layer.add(rotation, forKey: "rotate")
+            case .already :
+                searchBarRightButton.imageView?.layer.removeAllAnimations()
+                searchBarRightButton.imageView?.layer.removeAnimation(forKey: "rotate")
+                searchBarRightButton.configuration?.baseBackgroundColor = .systemGreen
+                searchBarRightButton.configuration?.image = UIImage(systemName: "checkmark")
+            case .error :
+                searchBarRightButton.imageView?.layer.removeAllAnimations()
+                searchBarRightButton.imageView?.layer.removeAnimation(forKey: "rotate")
+                searchBarRightButton.configuration?.baseBackgroundColor = .systemRed
+                searchBarRightButton.configuration?.image = UIImage(systemName: "exclamationmark.triangle.fill")
+            }
         }
         
     }
+    
+    
     
     @objc func searchBarRightButtonTapped( _ sender : UIButton) {
         guard buttonStatus != .isGenerating else {
             return
         }
+        guard advertiseView.isHidden else {
+            return
+        }
         if let dishes = generatedDishes  {
             showRecipeSummaryDisplayController(recipes: dishes)
+        } else if buttonStatus == .error {
+            showLastGeneratedViewControllers()
         } else {
             showInputPhotoIngredientViewController()
         }
@@ -470,11 +517,15 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
         var recipe : Recipe
         let row = indexPath.row
         if status == .Liked {
             recipe = recipes[row]
+            
         } else {
             recipe = searchRecipes[row]
         }
@@ -492,6 +543,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard !isKeyboardVisible else {
+            return
+        }
+        guard advertiseView.isHidden else {
             return
         }
         let cell = tableView.cellForRow(at: indexPath)
