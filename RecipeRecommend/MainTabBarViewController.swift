@@ -36,22 +36,12 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-       
-        
         tabBarLayout()
         childViewControllersSetup()
         layoutSetup()
-        
-       
         tabBarSetup()
-        
-       
         MainTabBarViewController.bottomBarFrame = self.view.convert(bottomBarView.frame, to: nil)
         self.view.backgroundColor = .primaryBackground
-
-        
-
     }
     
     static var tabBarFrame : CGRect = .zero
@@ -121,17 +111,18 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.standardAppearance.configureWithOpaqueBackground()
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         tabBar.selectedItem?.isEnabled = true
+
         tabBar.barStyle = .black
 
         tabBar.barTintColor = .themeColor
 
         //tabBar.barTintColor = .clear
-        let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
-        let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
+        let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .bold))
+        let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .bold))
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
-            let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.secondaryLabelColor, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.white, renderingMode: .alwaysOriginal))
+            let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.color950, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.color50, renderingMode: .alwaysOriginal))
             item.tag = index
             return item
         } 

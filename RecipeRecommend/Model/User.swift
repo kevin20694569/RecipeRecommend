@@ -17,6 +17,7 @@ class User : Equatable, GetImageModel {
     
     var created_time : String?
     
+    
     var dislikeIngredient : [String] = ["茄子", "苦瓜", "薑", "小白菜"]
     
     init(id: String!, name: String!, email : String,  image : UIImage? , image_URLString : String? = nil, created_time : String? = nil) {

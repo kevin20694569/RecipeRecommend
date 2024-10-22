@@ -18,6 +18,10 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     var tableView : UITableView = UITableView()
     
+    var registerLabel : UILabel = UILabel()
+    
+    var password : String?
+    
     var registerStatus : Bool = false { didSet {
         registerButton.isEnabled = registerStatus
     }}
@@ -62,6 +66,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         registerCell()
         viewSetup()
         tableViewSetup()
+        labelSetup()
         mainViewSetup()
         buttonSetup()
         
@@ -74,6 +79,11 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         
     }
 
+    func labelSetup() {
+        registerLabel.font =  UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .bold)
+        registerLabel.textColor = .primaryLabel
+        registerLabel.text = "註冊"
+    }
     
     func buttonSetup() {
         [registerButton].forEach() {
@@ -83,9 +93,11 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
 
         var config = UIButton.Configuration.filled()
 
-        let registerAttributedString = AttributedString("註冊", attributes: self.buttonAttributedTitleContainer)
+        var registerAttributedString = AttributedString("下一步", attributes: self.buttonAttributedTitleContainer)
+        registerAttributedString.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium)
         config.attributedTitle = registerAttributedString
         config.baseBackgroundColor = .orangeTheme
+        
         config.baseForegroundColor = .white
         registerButton.configuration = config
         registerButton.addTarget(self, action: #selector(registerButtonTapped ( _ :)), for: .touchUpInside)
@@ -94,51 +106,39 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         
         
     }
-
+    
+    func showEditUserImageViewController() {
+        guard let password = password else {
+            return
+        }
+        let controller = RegisterEditUserImageViewController(user: user, password: password)
+        self.show(controller, sender: nil)
+    }
+    
     @objc func registerButtonTapped(_ button : UIButton) {
          guard !registering else {
              return
          }
+
         guard let name = tableCellTextTuples[0].1,
               let email = tableCellTextTuples[1].1,
               let password = tableCellTextTuples[2].1 else {
             return
         }
-        Task {
-            var config = registerButton.configuration
-            registerButton.configuration?.showsActivityIndicator = true
-            registerButton.configuration?.title = nil
-            do {
-                registerButton.configuration?.showsActivityIndicator = false
-                config?.title = "成功註冊"
-                config?.attributedTitle = AttributedString("成功註冊！", attributes: self.buttonAttributedTitleContainer)
-                config?.baseBackgroundColor = .systemGreen
-                registerButton.configuration = config
-                try await UserManager.shared.register(name: name, email: email, password: password, image: self.userImage)
-
-               // try await Task.sleep(nanoseconds: 1000000000)
-                if let loginViewController = navigationController?.viewControllers.first as?  LoginViewController {
-                    loginViewController.emailTextField.text = email
-                    loginViewController.passwordTextField.text = password
-                }
-                self.navigationController?.popViewController(animated: true)
-                
-            } catch {
-                registerButton.configuration = config
-                registerButton.configuration?.showsActivityIndicator = false
-                print(error)
-            }
-        }
+        self.user = User(id: "", name: name, email: email, image: nil)
+        self.password = password
+        self.showEditUserImageViewController()
 
      }
     
     
     
     func buttonLayout() {
+        let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
             registerButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
             registerButton.heightAnchor.constraint(equalTo:  view.heightAnchor,multiplier: 0.06),
-            registerButton.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -24),
+            registerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bounds.height * 0.1),
             registerButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
         ])
     }
@@ -153,7 +153,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     }
     
     func initLayout() {
-        [mainView].forEach() {
+        [registerLabel, mainView].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -167,28 +167,45 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         }
 
         mainViewLayout()
-       // labelLayout()
+        labelLayout()
        // textFieldLayout()
         buttonLayout()
         tableViewLayout()
+        
     }
+    
+    
+    func labelLayout() {
+        let bounds = view.bounds
+        
+        NSLayoutConstraint.activate([
+            registerLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: bounds.width * 0.05),
+            
+            registerLabel.bottomAnchor.constraint(equalTo: mainView.topAnchor, constant: -bounds.height * 0.02)
+        ])
+    }
+    
     
     func mainViewLayout() {
         NSLayoutConstraint.activate([
             mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            mainView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.75)
+
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8),
+            mainView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
     }
     
     func tableViewLayout() {
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: mainView.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: registerButton.bottomAnchor, constant: -24),
+          //  tableView.topAnchor.constraint(equalTo: mainView.topAnchor),
+            //tableView.bottomAnchor.constraint(equalTo: registerButton.bottomAnchor, constant: -24),
 
             tableView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor),
+            tableView.centerYAnchor.constraint(equalTo: mainView.centerYAnchor),
+            tableView.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 0.8)
+            
 
         ])
     }
@@ -238,7 +255,7 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
 
     

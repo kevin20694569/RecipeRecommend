@@ -28,9 +28,15 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     
     override func initLayout() {
         super.initLayout()
+
+        contentView.addSubview(cameraButton)
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
-        mainImageView.addSubview(cameraButton)
+        buttonLayout()
         
+
+    }
+    
+    func buttonLayout() {
         NSLayoutConstraint.activate([
             cameraButton.centerXAnchor.constraint(equalTo: mainImageView.centerXAnchor),
             cameraButton.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor),
@@ -41,14 +47,16 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     }
     
     func buttonSetup() {
+
         var cameraConfig = UIButton.Configuration.filled()
         cameraConfig.baseBackgroundColor = .secondaryBackground
         cameraConfig.image = UIImage(systemName: "camera")
         cameraConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
         cameraButton.configuration = cameraConfig
         cameraButton.addTarget(self, action: #selector(cameraButtonTapped ( _ : )), for: .touchUpInside)
-       
+        
     }
+
     
     @objc func cameraButtonTapped( _ button : UIButton) {
         guard self.user.id != SessionManager.anonymous_user_id else {
@@ -74,5 +82,93 @@ class RegisterUserImageViewTableCell : ChangeUserImageViewTableCell {
         mainImageView.layer.cornerRadius = 20
         mainImageView.layer.borderWidth = 0.8
         mainImageView.layer.borderColor = UIColor.secondaryLabelColor.cgColor
+    }
+}
+
+
+class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCell {
+    
+
+    
+    
+    var photoLibraryButton : ZoomAnimatedButton = ZoomAnimatedButton()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = .clear
+        backgroundColor = .clear
+    }
+    
+    override func buttonSetup() {
+        super.buttonSetup()
+        
+        cameraButton.isHidden = true
+
+       // self.isUserInteractionEnabled = false
+       // self.contentView.isUserInteractionEnabled = false
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .clear
+        config.image = UIImage(systemName: "photo.on.rectangle.angled.fill")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .medium))
+        photoLibraryButton.configuration = config
+        photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonTapped ( _ : )), for: .touchUpInside)
+        
+
+        
+
+        
+    }
+    
+    
+   override func imageViewLayout() {
+        let bounds = UIScreen.main.bounds
+        
+        NSLayoutConstraint.activate([
+            mainImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+           // mainImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            mainImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+           // mainImageView.bottomAnchor.constraint(equalTo: photoLibraryButton.topAnchor),
+            
+            mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.4),
+            mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.4),
+            mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 1)
+        ])
+        
+    }
+    
+    @objc func photoLibraryButtonTapped( _ button : UIButton) {
+        editUserProfileCellDelegate?.showImagePicker()
+    }
+
+    
+    
+    override func initLayout() {
+
+        super.initLayout()
+        [photoLibraryButton].forEach(){
+            contentView.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        NSLayoutConstraint.activate([
+            
+            photoLibraryButton.topAnchor.constraint(equalTo: mainImageView.bottomAnchor),
+            photoLibraryButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
+            
+         //   photoLibraryButton.centerXAnchor.constraint(equalTo: mainImageView.centerXAnchor),
+         //   photoLibraryButton.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor),
+         //   photoLibraryButton.leadingAnchor.constraint(equalTo: mainImageView.leadingAnchor),
+         //   photoLibraryButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
+            photoLibraryButton.heightAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 0.2),
+            photoLibraryButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            
+            
+            
+        ])
+
+    }
+    
+    @MainActor required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

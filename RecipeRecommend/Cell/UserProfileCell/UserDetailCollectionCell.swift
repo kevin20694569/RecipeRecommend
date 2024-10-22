@@ -74,6 +74,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     func labelSetup() {
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         nameLabel.text = " "
+        nameLabel.textColor = .color950
         nameLabel.adjustsFontSizeToFitWidth = true
         
     }
@@ -99,7 +100,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
     
     func buttonSetup() {
         var editConfig = UIButton.Configuration.filled()
-        let title = AttributedString("編輯檔案", attributes: editButtonTitleAttributes)
+        let title = AttributedString("編輯個人檔案", attributes: editButtonTitleAttributes)
         editConfig.attributedTitle = title
         
         editButton.configuration = editConfig

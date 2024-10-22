@@ -101,7 +101,7 @@ class HistoryRecipeCell : UICollectionViewCell, RecipeDelegate {
         titleLabel.adjustsFontSizeToFitWidth = true
         titleLabel.numberOfLines = 2
         titleLabel.textAlignment = .center
-        titleLabel.textColor = .primaryLabel
+        titleLabel.textColor = .color950
         costTimeLabel.textColor = .secondaryLabel
         costTimeLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
       //  costTimeLabel.adjustsFontSizeToFitWidth = true

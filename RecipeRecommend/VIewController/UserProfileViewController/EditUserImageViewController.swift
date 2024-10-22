@@ -49,6 +49,7 @@ class EditUserImageViewController : UIViewController, EditUserProfileCellDelegat
         tableView.sectionHeaderHeight = 0
         tableView.isScrollEnabled = false
         tableView.allowsSelection = false
+        tableView.rowHeight = UITableView.automaticDimension
     }
         
     func initLayout() {

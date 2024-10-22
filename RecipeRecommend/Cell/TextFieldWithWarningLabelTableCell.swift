@@ -55,7 +55,7 @@ class TextFieldWithWarningLabelTableCell : TextFieldTableCell {
     override func textFieldSetup() {
         textField.layer.cornerRadius = 12
         textField.backgroundColor = .secondaryBackground
-        textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium)
         textField.textInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
     }
     

@@ -172,6 +172,13 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     func navItemSetup() {
         self.navigationItem.title = "個人檔案"
+        let titleLabel =  UILabel(frame: .zero)
+        titleLabel.textColor = .color950
+        titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight:  .bold)
+        titleLabel.text = "個人檔案"
+        navigationItem.titleView = titleLabel
+        
+        
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
     }
     
@@ -242,6 +249,7 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if indexPath.section == 1 {
             headerView.imageViewTrigger = reloadCollectionView
             headerView.configure(logoImage: UIImage(systemName: "clock")!, title: "瀏覽紀錄")
+            headerView.titleLabel.textColor = .color950
         }
         return headerView
     }

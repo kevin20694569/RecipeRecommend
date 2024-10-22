@@ -136,10 +136,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 }
-/*
+
 #Preview {
     return initViewController()
-}*/
+}
 
 @MainActor
 func initViewController() -> UIViewController {

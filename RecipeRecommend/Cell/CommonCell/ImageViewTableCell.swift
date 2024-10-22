@@ -13,11 +13,11 @@ class ImageViewTableCell : UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         imageViewSetup()
         initLayout()
-        imageViewLayout()
+
     }
     
     func configure(image : UIImage) {
-        self.mainImageView.setImageWithAnimation(image: image)
+        self.mainImageView.setImageWithAnimation(image: image, duration: 0.2)
     }
     
     required init?(coder: NSCoder) {
@@ -29,6 +29,7 @@ class ImageViewTableCell : UITableViewCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
+        imageViewLayout()
     }
     
     func imageViewLayout() {

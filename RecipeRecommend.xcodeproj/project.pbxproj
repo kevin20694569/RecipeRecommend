@@ -28,6 +28,7 @@
 		232AFC842C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC832C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift */; };
 		232AFC862C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC852C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift */; };
 		232AFC882C4413BD00B8ACB5 /* DisplayPreferenceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */; };
+		23332B582CC7EDED00A8F8AB /* RegisterEditUserImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23332B572CC7EDDD00A8F8AB /* RegisterEditUserImageViewController.swift */; };
 		233771A22C0D66A200135497 /* EditEquipementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A12C0D66A200135497 /* EditEquipementViewController.swift */; };
 		233771A42C0D9AF500135497 /* SavedRecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */; };
 		233771A62C0E01BB00135497 /* EditFavoriteCuisineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */; };
@@ -149,6 +150,7 @@
 		232AFC832C43C0CE00B8ACB5 /* GeneratePreferenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePreferenceManager.swift; sourceTree = "<group>"; };
 		232AFC852C43D12A00B8ACB5 /* DisplayPreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferenceViewController.swift; sourceTree = "<group>"; };
 		232AFC872C4413BD00B8ACB5 /* DisplayPreferenceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPreferenceCell.swift; sourceTree = "<group>"; };
+		23332B572CC7EDDD00A8F8AB /* RegisterEditUserImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEditUserImageViewController.swift; sourceTree = "<group>"; };
 		233771A12C0D66A200135497 /* EditEquipementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEquipementViewController.swift; sourceTree = "<group>"; };
 		233771A32C0D9AF500135497 /* SavedRecipesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRecipesViewController.swift; sourceTree = "<group>"; };
 		233771A52C0E01BB00135497 /* EditFavoriteCuisineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFavoriteCuisineViewController.swift; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 		23479F162C70BA820083769B /* UserAccountViewController */ = {
 			isa = PBXGroup;
 			children = (
+				23332B572CC7EDDD00A8F8AB /* RegisterEditUserImageViewController.swift */,
 				230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */,
 				23479F172C70BA970083769B /* RegisterViewController.swift */,
 			);
@@ -309,10 +312,10 @@
 			children = (
 				234BF5522BDEB8340012CF6A /* AppOriginalDelegate */,
 				234BF55B2BDEC65E0012CF6A /* MainTabBarViewController.swift */,
+				234BF5512BDEB82A0012CF6A /* VIewController */,
 				234BF5582BDEB9A60012CF6A /* View */,
 				234BF5472BDEAA1E0012CF6A /* Cell */,
 				234BF5542BDEB8680012CF6A /* Util */,
-				234BF5512BDEB82A0012CF6A /* VIewController */,
 				234BF5422BDEA7BD0012CF6A /* Model */,
 				234BF51B2BDEA4140012CF6A /* Assets.xcassets */,
 				234BF5202BDEA4140012CF6A /* Info.plist */,
@@ -794,6 +797,7 @@
 				23C63B852C29F398007F3C23 /* APIManager.swift in Sources */,
 				23C210122BF8934B008F74D0 /* QuantityCollectionCell.swift in Sources */,
 				23C2102E2BFE14E4008F74D0 /* IngredientTextFieldCollectionCell.swift in Sources */,
+				23332B582CC7EDED00A8F8AB /* RegisterEditUserImageViewController.swift in Sources */,
 				2367843B2C05E820006C18A3 /* LeadingLogoHeaderView.swift in Sources */,
 				23BA50C42BF391C200E3B85A /* DetectedPhotoCollectionCell.swift in Sources */,
 				236B9EEB2C0CB8760004E15A /* User.swift in Sources */,
@@ -1025,7 +1029,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1058,7 +1062,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -21,6 +21,8 @@ class LoginViewController : UIViewController {
     
     var anonymousLoginButton : ZoomAnimatedButton = ZoomAnimatedButton()
     
+    var loginLabel : UILabel = UILabel()
+    
     
     var warningLabel : UILabel = UILabel()
     
@@ -63,11 +65,16 @@ class LoginViewController : UIViewController {
         [emailLabel, passwordLabel].forEach() {
             $0.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         }
+        
         warningLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .regular)
         warningLabel.textColor = .systemRed
         warningLabel.isHidden = true
         emailLabel.text = "電子郵件"
         passwordLabel.text = "密碼"
+         
+        loginLabel.font =  UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .bold)
+        loginLabel.textColor = .primaryLabel
+        loginLabel.text = "登入"
     }
     
     func buttonSetup() {
@@ -75,8 +82,9 @@ class LoginViewController : UIViewController {
             $0.clipsToBounds = true
             $0.layer.cornerRadius = 14
         }
-        
-        let loginAttributedString = AttributedString("登入", attributes: self.buttonAttributedTitleContainer)
+
+        var loginAttributedString = AttributedString("登入", attributes: self.buttonAttributedTitleContainer)
+        loginAttributedString.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .bold)
         var config = UIButton.Configuration.filled()
         config.attributedTitle = loginAttributedString
         config.baseBackgroundColor = .orangeTheme
@@ -85,19 +93,26 @@ class LoginViewController : UIViewController {
         loginButton.addTarget(self, action: #selector(loginButtonTapped ( _ :)), for: .touchUpInside)
         
         config = UIButton.Configuration.filled()
-        let anonymousLoginAttributedString = AttributedString("訪客使用", attributes: self.buttonAttributedTitleContainer)
+        var anonymousLoginAttributedString = AttributedString("不想註冊？ ", attributes: AttributeContainer([.foregroundColor : UIColor.primaryLabel, .font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)]))
+        anonymousLoginAttributedString.append(AttributedString("訪客登入", attributes: AttributeContainer([.foregroundColor : UIColor.accent, .font : UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)])))
+        anonymousLoginAttributedString.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         config.attributedTitle = anonymousLoginAttributedString
-        config.baseBackgroundColor = .secondaryBackground
-        config.baseForegroundColor = .primaryLabel
+
+        
+        
+        
+        config.baseBackgroundColor = .clear
+
         anonymousLoginButton.configuration = config
         anonymousLoginButton.addTarget(self, action: #selector(anoymousLoginButtonTapped ( _ :)), for: .touchUpInside)
         
         
         config = UIButton.Configuration.filled()
-        let registerAttributedString = AttributedString("註冊", attributes: self.buttonAttributedTitleContainer)
+        var registerAttributedString = AttributedString("註冊", attributes: self.buttonAttributedTitleContainer)
+        registerAttributedString.font = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium)
         config.attributedTitle = registerAttributedString
-        config.baseBackgroundColor = .secondaryBackground
-        config.baseForegroundColor = .primaryLabel
+        config.baseBackgroundColor = .clear
+        config.baseForegroundColor = .accent
         registerButton.configuration = config
         registerButton.addTarget(self, action: #selector(registerButtonTapped ( _ :)), for: .touchUpInside)
         
@@ -247,27 +262,42 @@ class LoginViewController : UIViewController {
     }
     
     func buttonLayout() {
-        NSLayoutConstraint.activate([
+        let bounds = view.bounds
+        /*NSLayoutConstraint.activate([
             loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 30),
             loginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
             loginButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.06),
             loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 36),
             loginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+        ])*/
+        
+        
+        NSLayoutConstraint.activate([
+            loginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
+            loginButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.06),
+            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bounds.height * 0.1),
+            loginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
         ])
         
         NSLayoutConstraint.activate([
-            anonymousLoginButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
+           // anonymousLoginButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
             anonymousLoginButton.heightAnchor.constraint(equalTo: view.heightAnchor,multiplier: 0.06),
-            anonymousLoginButton.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -24),
-            anonymousLoginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+            anonymousLoginButton.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor, constant: bounds.width * 0.04),
+            anonymousLoginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant:  bounds.width * 0.01),
+          //  anonymousLoginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
         ])
         
         NSLayoutConstraint.activate([
-            registerButton.widthAnchor.constraint(equalTo: anonymousLoginButton.widthAnchor),
+           // registerButton.widthAnchor.constraint(equalTo: anonymousLoginButton.widthAnchor),
             registerButton.heightAnchor.constraint(equalTo: anonymousLoginButton.heightAnchor),
-            registerButton.bottomAnchor.constraint(equalTo: anonymousLoginButton.topAnchor, constant: -16),
-            registerButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+
+            registerButton.topAnchor.constraint(equalTo: anonymousLoginButton.topAnchor),
+            registerButton.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: -bounds.width * 0.04),
         ])
+        
+        
+        
+        
     }
     
     func textFieldSetup() {
@@ -283,8 +313,16 @@ class LoginViewController : UIViewController {
     }
     
     func labelLayout() {
+        let bounds = view.bounds
+        
         NSLayoutConstraint.activate([
-            emailLabel.topAnchor.constraint(equalTo: mainView.topAnchor, constant: 24),
+            loginLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: bounds.width * 0.05),
+            
+            loginLabel.bottomAnchor.constraint(equalTo: mainView.topAnchor, constant: -bounds.height * 0.02)
+        ])
+        
+        NSLayoutConstraint.activate([
+            emailLabel.topAnchor.constraint(equalTo: mainView.topAnchor, constant: bounds.height * 0.08),
             emailLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 24),
             emailLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -24),
         ])
@@ -298,6 +336,8 @@ class LoginViewController : UIViewController {
             warningLabel.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 16),
             warningLabel.centerXAnchor.constraint(equalTo: loginButton.centerXAnchor),
         ])
+        
+        
     }
     
     func textFieldLayout() {
@@ -322,8 +362,9 @@ class LoginViewController : UIViewController {
         mainView.layer.cornerRadius = 32
     }
     
+    
     func initLayout() {
-        [mainView].forEach() {
+        [loginLabel, mainView].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -337,12 +378,15 @@ class LoginViewController : UIViewController {
         buttonLayout()
     }
     
+    
     func mainViewLayout() {
         NSLayoutConstraint.activate([
             mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            mainView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
-            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7)
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            mainView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8)
+            
+            
         ])
     }
     
