@@ -13,6 +13,7 @@ class ImageViewTableCell : UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         imageViewSetup()
         initLayout()
+        self.backgroundColor = .clear
 
     }
     

@@ -96,6 +96,7 @@ class EditFavoriteCuisineViewController : UIViewController, KeyBoardControllerDe
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
         collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        collectionView.backgroundColor = .primaryBackground
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow

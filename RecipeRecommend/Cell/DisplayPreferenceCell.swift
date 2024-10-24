@@ -31,7 +31,7 @@ class DisplayPreferenceCell : UITableViewCell {
     func configure(preference : GenerateRecipePreference) {
         
         self.preference = preference
-        func getAttributedString(text : String, color : UIColor = .primaryLabel, font : UIFont = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)) -> NSAttributedString {
+        func getAttributedString(text : String, color : UIColor = .color950, font : UIFont = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)) -> NSAttributedString {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 4
             let attString = AttributedString(text, attributes: AttributeContainer([.font : font,
@@ -66,8 +66,22 @@ class DisplayPreferenceCell : UITableViewCell {
     }
     
     func labelSetup() {
-        ingredientsLabel.numberOfLines = 2
-        equipmentsLabel.numberOfLines = 2
+        ingredientsLabel.numberOfLines = 0
+        equipmentsLabel.numberOfLines = 0
+        [ingredientsLabel, cuisineLabel, equipmentsLabel, /*complexityLabel, timeLimitLabel,*/ addtionalTextLabel ].forEach() {
+            let attributedString = NSMutableAttributedString(string: "", attributes: [.foregroundColor : UIColor.color950])
+
+            // 设置行间距
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 6
+
+
+
+            $0.attributedText = attributedString
+            $0.textColor = .color950
+            labelStackView.addArrangedSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -77,6 +91,7 @@ class DisplayPreferenceCell : UITableViewCell {
         stackViewSetup()
         gestureSetup()
         initLayout()
+        backgroundColor = .clear
     }
     
     override func prepareForReuse() {
@@ -118,20 +133,7 @@ class DisplayPreferenceCell : UITableViewCell {
     }
     
     func stackViewSetup() {
-        [ingredientsLabel, cuisineLabel, equipmentsLabel, /*complexityLabel, timeLimitLabel,*/ addtionalTextLabel ].forEach() {
-            let attributedString = NSMutableAttributedString(string: "")
 
-            // 设置行间距
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 6
-
-
-
-            $0.attributedText = attributedString
-            $0.textColor = .primaryLabel
-            labelStackView.addArrangedSubview($0)
-            $0.translatesAutoresizingMaskIntoConstraints = false
-        }
         labelStackView.axis = .vertical
         labelStackView.spacing = 6
         labelStackView.distribution = .equalSpacing

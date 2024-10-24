@@ -9,6 +9,10 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     
     var selectPhotoButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
+    var catchButton : ZoomAnimatedButton = ZoomAnimatedButton()
+    var catchButtonSubView : UIView = UIView()
+    var flashLightButton : ZoomAnimatedButton = ZoomAnimatedButton()
+    
     var cameraInputTableCell : InputPhotoIngredientTableCell {
         return tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! InputPhotoIngredientTableCell
     }
@@ -31,7 +35,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
             return cell
         }
         if section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "InputPhotoIngredientTableCell", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "InputPhotoIngredientTableCell", for: indexPath) as! InputPhotoIngredientTableCell
             cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2, bottom: 0, right: bounds.width / 2)
             return cell
         }
@@ -51,11 +55,12 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         super.viewDidLoad()
         buttonSetup()
         initLayout()
-        buttonLayout()
+        
         registerCell()
         navItemSetup()
         
         tableViewSetup()
+        view.backgroundColor = .primaryBackground
         
     }
     
@@ -77,11 +82,14 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         self.navigationItem.backButtonTitle = ""
         let barButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
         navigationItem.backBarButtonItem = barButtonItem
+        var rightBarButtonItem = UIBarButtonItem(title: "下一步", style: .plain, target: self, action: #selector(nextTapButtonTapped (_ : )))
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+        
     }
     
     func navBarSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         
     }
     
@@ -92,6 +100,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        tableView.backgroundColor = .primaryBackground
 
 
     }
@@ -115,6 +124,9 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         self.view.addSubview(tableView)
         self.view.addSubview(nextTapButton)
         self.view.addSubview(selectPhotoButton)
+        view.addSubview(flashLightButton)
+        view.addSubview(catchButton)
+        view.addSubview(catchButtonSubView)
         view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -126,10 +138,12 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
             
         ])
-        self.view.backgroundColor = .systemBackground
+        buttonLayout()
+        self.view.backgroundColor = .primaryBackground
     }
     
     func buttonLayout() {
+        
         NSLayoutConstraint.activate([
             nextTapButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             nextTapButton.bottomAnchor.constraint(equalTo: tableView.bottomAnchor, constant:  -24),
@@ -139,11 +153,37 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         ])
         
         NSLayoutConstraint.activate([
-            selectPhotoButton.centerXAnchor.constraint(equalTo: nextTapButton.centerXAnchor),
-            selectPhotoButton.bottomAnchor.constraint(equalTo: nextTapButton.topAnchor, constant: -24),
+  
+            selectPhotoButton.bottomAnchor.constraint(equalTo: tableView.bottomAnchor, constant: -view.bounds.width * 0.05),
             
-            selectPhotoButton.widthAnchor.constraint(equalTo: nextTapButton.widthAnchor),
-            selectPhotoButton.heightAnchor.constraint(equalTo: nextTapButton.heightAnchor),
+            selectPhotoButton.trailingAnchor.constraint(equalTo: tableView.trailingAnchor, constant: -view.bounds.width * 0.02),
+            
+          //  selectPhotoButton.widthAnchor.constraint(equalTo: nextTapButton.widthAnchor),
+          //  selectPhotoButton.heightAnchor.constraint(equalTo: nextTapButton.heightAnchor),
+            
+            catchButton.centerYAnchor.constraint(equalTo: selectPhotoButton.centerYAnchor),
+            catchButton.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
+            catchButton.heightAnchor.constraint(equalTo: selectPhotoButton.heightAnchor),
+            catchButton.widthAnchor.constraint(equalTo: catchButton.heightAnchor),
+            
+            catchButtonSubView.centerYAnchor.constraint(equalTo: catchButton.centerYAnchor),
+            catchButtonSubView.centerXAnchor.constraint(equalTo: catchButton.centerXAnchor),
+            catchButtonSubView.heightAnchor.constraint(equalTo: catchButton.heightAnchor, multiplier: 0.8),
+            catchButtonSubView.widthAnchor.constraint(equalTo: catchButtonSubView.heightAnchor),
+            
+            
+            
+        ])
+        view.layoutIfNeeded()
+        
+        catchButton.layer.cornerRadius = catchButton.bounds.height / 2
+        catchButtonSubView.layer.cornerRadius = catchButtonSubView.bounds.height / 2
+        
+        
+        NSLayoutConstraint.activate([
+            
+            flashLightButton.centerYAnchor.constraint(equalTo: catchButton.centerYAnchor),
+            flashLightButton.centerXAnchor.constraint(equalTo: tableView.leadingAnchor, constant: tableView.frame.maxX - selectPhotoButton.center.x)
         ])
         
         
@@ -162,13 +202,44 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         nextTapButton.layer.cornerRadius = 16
         
         nextTapButton.addTarget(self, action: #selector(nextTapButtonTapped ( _ :)), for: .touchUpInside)
+        nextTapButton.isHidden = true
         
-        var selectPhotoConfig = UIButton.Configuration.filled()
-        let selectPhotoAttributedString = AttributedString("從圖庫選擇", attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)]) )
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = .color950
+        config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8)
+        catchButton.configuration = config
+ 
+        catchButton.clipsToBounds = true
+        catchButton.configuration = config
+        catchButton.scaleTargets?.append(catchButtonSubView)
+        catchButton.addTarget(self, action: #selector( catchButtonTapped( _ :)), for: .touchUpInside)
+        
+        catchButtonSubView.clipsToBounds = true
+        catchButtonSubView.backgroundColor = .primaryBackground
+        catchButtonSubView.isUserInteractionEnabled = false
+        
+        var flashConfig = UIButton.Configuration.filled()
+        flashConfig.baseBackgroundColor = .clear
+        flashConfig.image = UIImage(systemName: "flashlight.slash")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
+        flashConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
+        flashLightButton.configuration = flashConfig
+        flashLightButton.addTarget(self, action: #selector( flashLightButtonTapped( _ :)), for: .touchUpInside)
+        
+
+        
+        
+
+        
+
+        /*let selectPhotoAttributedString = AttributedString("從圖庫選擇", attributes: AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)]) )
         selectPhotoConfig.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset * 2, bottom: inset, trailing: inset * 2)
-        selectPhotoConfig.attributedTitle = selectPhotoAttributedString
-        selectPhotoConfig.baseBackgroundColor = .accent
+        selectPhotoConfig.attributedTitle = selectPhotoAttributedString*/
+        var selectPhotoConfig = UIButton.Configuration.filled()
+        selectPhotoConfig.baseBackgroundColor = .clear
+        selectPhotoConfig.image = UIImage(systemName: "photo.on.rectangle.angled.fill")?.withTintColor(.color950, renderingMode: .alwaysOriginal)
+        selectPhotoConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .medium))
         selectPhotoButton.configuration = selectPhotoConfig
+   
         selectPhotoButton.clipsToBounds = true
         selectPhotoButton.layer.cornerRadius = 16
         
@@ -177,8 +248,16 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
 
     }
     
-    @objc func nextTapButtonTapped( _ button : UIButton) {
+    @objc func nextTapButtonTapped( _ button : UIView) {
         showCorrectIngredientViewController()
+    }
+    
+    @objc func catchButtonTapped( _ button : UIButton) {
+        
+    }
+    
+    @objc func flashLightButtonTapped( _ button : UIButton) {
+        
     }
     
     @objc func selectPhotoButtonTapped( _ button : UIButton) {

@@ -15,13 +15,14 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
 
     var deSelectAttributed = AttributeContainer([
         .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular),
-        .foregroundColor : UIColor.secondaryLabel
+        .foregroundColor : UIColor.primaryLabel
     ])
     
     var selectAttributed = AttributeContainer([
         .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold),
-        .foregroundColor : UIColor.white
+        .foregroundColor : UIColor.backgroundPrimary
     ])
+    
     
     
     
@@ -56,11 +57,9 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
     func highlight(title : String ,selected : Bool) {
         if selected {
             button.configuration?.attributedTitle = AttributedString(title, attributes: selectAttributed)
-            button.configuration?.baseForegroundColor = .primaryBackground
-            button.configuration?.baseBackgroundColor = .themeColor
+            button.configuration?.baseBackgroundColor = .primaryLabel
         } else {
             button.configuration?.attributedTitle = AttributedString(title, attributes: deSelectAttributed)
-            button.configuration?.baseForegroundColor = .secondaryLabelColor
             button.configuration?.baseBackgroundColor = .thirdaryBackground
         }
     }
@@ -76,8 +75,10 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
     func buttonSetup() {
         var config = UIButton.Configuration.filled()
         let attrString = AttributedString("", attributes: deSelectAttributed)
+        config.baseBackgroundColor = .color950
         config.attributedTitle = attrString
         button.configuration = config
+
         button.clipsToBounds = true
         button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(buttonTapped ( _ : )), for: .touchUpInside)

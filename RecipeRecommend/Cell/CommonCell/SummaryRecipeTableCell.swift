@@ -147,9 +147,7 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     }
     
     func backgroundSetup() {
-       // background.backgroundColor = .secondaryBackgroundColor
-      //  background.clipsToBounds = true
-      //  background.layer.cornerRadius = 20
+        backgroundColor = .clear
     }
     
     func imageViewSetup() {

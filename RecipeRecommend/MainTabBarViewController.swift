@@ -22,7 +22,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     lazy var viewControllers : [UINavigationController] = []
     
-    var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName: "house")!, UIImage(systemName: "person.circle.fill")!]
+    var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName: "house")!,  UIImage(systemName: "person.circle")!]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -112,7 +112,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         tabBar.selectedItem?.isEnabled = true
 
-        tabBar.barStyle = .black
+        tabBar.barStyle = .default
 
         tabBar.barTintColor = .themeColor
 
@@ -122,16 +122,20 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
-            let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.color950, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.color50, renderingMode: .alwaysOriginal))
+            print(UIColor.color950)
+            let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.primaryLabel, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.primaryBackground, renderingMode: .alwaysOriginal))
             item.tag = index
             return item
-        } 
+        }
         tabBar.setItems(items, animated: false)
         tabBar.selectedItem = tabBar.items?[1]
         tabBar.delegate = self
+
  
         MainTabBarViewController.tabBarFrame = self.view.convert(tabBar.frame, to: nil)
     }
+    
+    
     
     func showViewController(at index: Int) {
         let selectedViewController = viewControllers[index]
@@ -172,6 +176,26 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
 extension MainTabBarViewController  {
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         showViewController(at: item.tag)
+    }
+}
+
+extension UIColor {
+    // 初始化方法，接受 HEX 色碼（格式: #RRGGBB 或 RRGGBB）
+    convenience init(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        
+        if hexSanitized.hasPrefix("#") {
+            hexSanitized.remove(at: hexSanitized.startIndex)
+        }
+        
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+        
+        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(rgb & 0x0000FF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
 

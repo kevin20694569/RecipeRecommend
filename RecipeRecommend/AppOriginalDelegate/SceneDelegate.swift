@@ -138,11 +138,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 #Preview {
+    
     return initViewController()
 }
 
 @MainActor
 func initViewController() -> UIViewController {
+  
+    
+    
     let nav = LoginViewController.navShared
     guard let tabBarViewController = MainTabBarViewController.shared else {
         return nav
@@ -156,4 +160,20 @@ func initViewController() -> UIViewController {
         
     }
     return nav
+}
+
+extension UIColor {
+    func toHex() -> String? {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        guard self.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+            return nil
+        }
+        
+        let rgb: Int = (Int(red * 255) << 16) | (Int(green * 255) << 8) | Int(blue * 255)
+        return String(format: "#%06x", rgb)
+    }
 }

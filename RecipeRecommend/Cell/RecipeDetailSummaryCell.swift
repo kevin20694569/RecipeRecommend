@@ -3,14 +3,18 @@ import UIKit
 class RecipeDetailSummaryCell : UITableViewCell {
     
     var recipe : Recipe!
+    
+    weak var recipeStatusDelegate : RecipeStatusControll?
 
-    var dishImageView : UIImageView! = UIImageView()
+    var recipeImageView : UIImageView! = UIImageView()
     
     var titleLabel : UILabel = UILabel()
     
     var stackView : UIStackView! = UIStackView()
     
     var costTimeLabel : UILabel = UILabel()
+    
+    var heartButton : ZoomAnimatedButton = ZoomAnimatedButton()
     
     //var costTimeLabel : UILabel = UILabel()
     
@@ -25,9 +29,9 @@ class RecipeDetailSummaryCell : UITableViewCell {
         registerCell()
         tagCollectionViewSetup()
         imageViewSetup()
+        buttonSetup()
         labeltSetup()
         stackViewSetup()
-        
         initLayout()
         cellSetup()
     }
@@ -38,10 +42,10 @@ class RecipeDetailSummaryCell : UITableViewCell {
     }
     
     func imageViewSetup() {
-        dishImageView.contentMode = .scaleAspectFill
-        dishImageView.clipsToBounds = true
-        dishImageView.layer.cornerRadius = 16
-        dishImageView.backgroundColor = .secondaryBackground
+        recipeImageView.contentMode = .scaleAspectFill
+        recipeImageView.clipsToBounds = true
+        recipeImageView.layer.cornerRadius = 16
+        recipeImageView.backgroundColor = .secondaryBackground
     }
     
     func labeltSetup() {
@@ -61,6 +65,36 @@ class RecipeDetailSummaryCell : UITableViewCell {
 
         }
         //costTimeLabel.backgroundColor = .gray
+    }
+    
+    func buttonSetup() {
+        var config = UIButton.Configuration.filled()
+       config.baseBackgroundColor = .clear
+        config.baseForegroundColor = .primaryLabel
+        config.image = UIImage(systemName: "heart")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
+        heartButton.configuration = config
+        heartButton.addTarget(self, action: #selector(heartButtonTapped ( _ : )), for: .touchUpInside)
+    }
+    @objc func heartButtonTapped(_ button : UIButton) {
+        recipe.liked.toggle()
+        configureRecipeLikedStatus(liked: recipe.liked)
+        recipeStatusDelegate?.configureRecipeLikedStatus(recipe: recipe)
+        Task {
+            try await RecipeManager.shared.markAsLiked(recipe_id: self.recipe.id, like: recipe.liked)
+        }
+    }
+    
+    func configureRecipeLikedStatus(liked : Bool) {
+        if liked {
+            heartButton.configuration?.baseForegroundColor = .systemRed
+            heartButton.configuration?.image = UIImage(systemName: "heart.fill")
+        
+        } else {
+            heartButton.configuration?.baseForegroundColor = .primaryLabel
+            heartButton.configuration?.image = UIImage(systemName: "heart")
+        }
+
     }
     func stackViewSetup() {
         stackView.axis = .horizontal
@@ -98,12 +132,13 @@ class RecipeDetailSummaryCell : UITableViewCell {
     
     func initLayout() {
         
-        contentView.addSubview(dishImageView)
+        contentView.addSubview(recipeImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(summaryLabel)
         contentView.addSubview(stackView)
         //contentView.addSubview(costTimeLabel)
         contentView.addSubview(tagCollectionView)
+        contentView.addSubview(heartButton)
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -130,17 +165,24 @@ class RecipeDetailSummaryCell : UITableViewCell {
     func cellSetup() {
         let screenBounds = UIScreen.main.bounds
         self.separatorInset = UIEdgeInsets(top: 0, left: screenBounds.width / 2, bottom: 0, right: screenBounds.width / 2)
+        backgroundColor = .clear
     }
     
     func labelLayout() {
+      
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: dishImageView.bottomAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: dishImageView.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: dishImageView.trailingAnchor, constant: -20),
+            titleLabel.topAnchor.constraint(equalTo: recipeImageView.bottomAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: recipeImageView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: heartButton.leadingAnchor, constant: -20),
+            
+            heartButton.trailingAnchor.constraint(equalTo: recipeImageView.trailingAnchor, constant: -20),
+            heartButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            heartButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.08),
+           
             
             summaryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             summaryLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            summaryLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            summaryLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             
             //costTimeLabel.centerYAnchor.constraint(equalTo: tagCollectionView.centerYAnchor),
             //costTimeLabel.topAnchor.constraint(equalTo: tagCollectionView.bottomAnchor, constant: 20),
@@ -166,11 +208,11 @@ class RecipeDetailSummaryCell : UITableViewCell {
     func imageViewLayout() {
         let screenBounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
-            dishImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            dishImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            dishImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            recipeImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            recipeImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            recipeImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             //recipeImageView.bottomAnchor.constraint(equalTo:  contentView.bottomAnchor, constant: -20),
-            dishImageView.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.3)
+            recipeImageView.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.3)
         ])
     }
     
@@ -192,10 +234,11 @@ class RecipeDetailSummaryCell : UITableViewCell {
         summaryLabel.text = dish.description
         costTimeLabel.text = dish.costTimeDescription
         quantityLabel.text = String(dish.quantity) + "人份"
+        configureRecipeLikedStatus(liked: recipe.liked)
         //costTimeLabel.text = recipe.complexity.description
         Task(priority : .background) {
             let image = await dish.getImage()
-            dishImageView.setImageWithAnimation(image: image)
+            recipeImageView.setImageWithAnimation(image: image)
         }
     }
 }

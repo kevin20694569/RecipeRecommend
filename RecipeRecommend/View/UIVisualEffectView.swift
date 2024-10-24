@@ -14,6 +14,7 @@ extension UIVisualEffectView  {
 
 extension UIBlurEffect.Style {
     static var userInterfaceStyle : UIBlurEffect.Style {
+        
         if UITraitCollection.current.userInterfaceStyle == .dark {
             return .systemUltraThinMaterialDark
         }

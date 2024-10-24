@@ -80,21 +80,22 @@ protocol RecipeDelegate : NSObject {
 }
 
 protocol ShowRecipeViewControllerDelegate : UIViewController, RecipeDelegate {
-    func showRecipeDetailViewController(recipe : Recipe)
+    func showRecipeDetailViewController(recipe : Recipe) -> RecipeDetailViewController?
     func showRecipeSummaryDisplayController(recipes : [Recipe])
 }
 
 extension ShowRecipeViewControllerDelegate  {
-    func showRecipeDetailViewController(recipe : Recipe) {
+    func showRecipeDetailViewController(recipe : Recipe) -> RecipeDetailViewController? {
         guard let steps = recipe.steps,
               let ingredients = recipe.ingredients else {
          //   print(recipe.steps)
-            return
+            return nil
         }
         let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
         controller.recipeStatusDelegate = self as? any RecipeStatusControll
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
+        return controller
     }
     
     func showRecipeSummaryDisplayController(recipes : [Recipe]) {

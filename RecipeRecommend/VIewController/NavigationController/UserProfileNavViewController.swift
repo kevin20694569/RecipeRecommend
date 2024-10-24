@@ -8,7 +8,15 @@ class UserProfileNavViewController : UINavigationController, EditUserNameViewCon
                 await viewController.reloadUser()
             }
         }
-
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.navigationBar.backgroundColor = .clear
+        navigationBar.barTintColor = .clear
+        navigationBar.standardAppearance.configureWithTransparentBackground()
+        navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
+        
         
     }
     

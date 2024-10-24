@@ -68,7 +68,7 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
             
         } else {
             UIView.animate(withDuration: 0.2) {
-                self.background.backgroundColor = .themeColor
+                self.background.backgroundColor = .color950
             }
         }
     }
@@ -82,12 +82,13 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
         background.backgroundColor = .themeColor
         background.clipsToBounds = true
         background.layer.cornerRadius = 12
+        backgroundColor = .clear
     }
 
     
     func textFieldSetup() {
         textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        textField.textColor = .white
+        textField.textColor = .primaryBackground
         textField.textAlignment = .center
         textField.adjustsFontSizeToFitWidth = true
         

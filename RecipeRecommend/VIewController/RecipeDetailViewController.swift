@@ -14,7 +14,9 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     var tableView : UITableView! = UITableView()
     
-    var rightBarButton : UIButton! = UIButton()
+    var heartButton : UIButton! = UIButton()
+    
+    var rightBarButton : UIButton = UIButton()
     
 
     
@@ -60,6 +62,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
         tableView.dataSource = self
         tableView.allowsSelection = false
         tableView.delaysContentTouches = false
+        tableView.backgroundColor = .primaryBackground
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
 
         tableView.rowHeight = UITableView.automaticDimension
@@ -81,50 +84,43 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -MainTabBarViewController.tabBarFrame.height),
+            
+            
         ])
     }
 
     func buttonSetup() {
-        /*var config = UIButton.Configuration.filled()
+        var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .themeColor
         config.image = UIImage(systemName: "waterbottle")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
-        rightBarButton.configuration = config*/
-        var config = UIButton.Configuration.filled()
+        rightBarButton.configuration = config
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightBarButton)
+        
+        rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
+        
+      /*  config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
         config.baseForegroundColor = .primaryLabel
         config.image = UIImage(systemName: "heart")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
-        rightBarButton.configuration = config
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.rightBarButton)
-        rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
+        heartButton.configuration = config*/
+       
+        
     }
+
     
     @objc func rightBarButtonTapped(_ button : UIButton) {
-        recipe.liked.toggle()
-        configureRecipeLikedStatus(liked: recipe.liked)
-        recipeStatusDelegate?.configureRecipeLikedStatus(recipe: recipe)
-        Task {
-            try await RecipeManager.shared.markAsLiked(recipe_id: self.recipe.id, like: recipe.liked)
-        }
+        
     }
     
-    
-    func configureRecipeLikedStatus(liked : Bool) {
-        if liked {
-            rightBarButton.configuration?.baseForegroundColor = .systemRed
-            rightBarButton.configuration?.image = UIImage(systemName: "heart.fill")
-        
-        } else {
-            rightBarButton.configuration?.baseForegroundColor = .primaryLabel
-            rightBarButton.configuration?.image = UIImage(systemName: "heart")
-        }
-
+    func configureRecipeLikedStatus(recipe: Recipe) {
+        recipeStatusDelegate?.configureRecipeLikedStatus(recipe: recipe)
     }
     
     func navBarStyleSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
     }
     
     func collectDish(_ bool : Bool) {
@@ -186,6 +182,7 @@ extension RecipeDetailViewController : UITableViewDelegate , UITableViewDataSour
         if section == 0 {
 
             let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeDetailSummaryCell", for: indexPath) as! RecipeDetailSummaryCell
+            cell.recipeStatusDelegate = self
             cell.configure(dish : self.recipe)
             return cell
         }

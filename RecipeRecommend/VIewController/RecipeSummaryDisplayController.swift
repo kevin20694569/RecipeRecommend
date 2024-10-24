@@ -140,8 +140,8 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     
     
     func navBarSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.navBarRightButton)
     }
@@ -174,7 +174,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
         tableView.delaysContentTouches = false
         tableView.allowsSelection = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-
+        tableView.backgroundColor = .primaryBackground
         
         if self.recipes.count < 2 {
             self.tableView.isScrollEnabled = false

@@ -37,6 +37,8 @@ class InputPhotoIngredientCollectionCell : UICollectionViewCell {
         labelSetup()
         buttonSetup()
         initLayout()
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
     }
     
     func configurePreviewLayer( previewLayer : AVCaptureVideoPreviewLayer?) {
@@ -81,18 +83,21 @@ extension InputPhotoIngredientCollectionCell {
         }
 
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            imageView.topAnchor.constraint(equalTo: deleteSelfButton.centerYAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: mainViewHorConstant),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -mainViewHorConstant),
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
+            imageView.bottomAnchor.constraint(equalTo: clickButton.topAnchor, constant: -12),
+            
+            deleteSelfButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             deleteSelfButton.centerXAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -6),
             deleteSelfButton.centerYAnchor.constraint(equalTo: imageView.topAnchor, constant: 6),
             deleteSelfButton.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.15),
             deleteSelfButton.heightAnchor.constraint(equalTo: deleteSelfButton.widthAnchor),
 
             
-            clickButton.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 12),
+            
             
             clickButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor , constant: -12),
 

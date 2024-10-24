@@ -249,8 +249,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
+        collectionView.backgroundColor = .primaryBackground
         let flow = UICollectionViewFlowLayout()
-        flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         collectionView.collectionViewLayout = flow
     }
     
@@ -596,6 +596,13 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if section == 0 {
+            return UIEdgeInsets.zero
+        }
+        return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }
     
     

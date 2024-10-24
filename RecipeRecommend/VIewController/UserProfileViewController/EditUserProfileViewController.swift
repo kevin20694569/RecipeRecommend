@@ -24,12 +24,11 @@ class EditUserProfileViewController : UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
-
     }
     
     func navBarSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+    //   self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
+     //   self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
         let item = UIBarButtonItem(title: "登出", style: .done, target: self, action: #selector(navBarRightButtonTapped ( _ :)))
         navigationItem.rightBarButtonItem = item
     }
@@ -83,6 +82,7 @@ class EditUserProfileViewController : UIViewController {
         tableView.sectionHeaderHeight = 0
         tableView.isScrollEnabled = false
         tableView.allowsSelection = false
+    
         
         
     }
@@ -112,6 +112,7 @@ class EditUserProfileViewController : UIViewController {
     func navItemSetup() {
         self.navigationItem.title = "編輯個人檔案"
         navigationItem.backButtonTitle = ""
+
     }
 }
 

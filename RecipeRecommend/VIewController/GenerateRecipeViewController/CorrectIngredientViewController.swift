@@ -68,6 +68,8 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         registerCell()
         registerCollectionHeaderView()
         collectionViewSetup()
+        view.backgroundColor = .primaryBackground
+        
     }
     
     func recognizeImages() async  {
@@ -104,7 +106,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         super.viewWillAppear(animated)
         navBarSetup()
         let ingredients = outputCurrentValidIngredients()
-        rightButtonItem.isEnabled = ingredients.count > 0
+      //  rightButtonItem.isEnabled = ingredients.count > 0
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -128,12 +130,12 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     }
     
     func navBarSetup() {
-        self.navigationController?.navigationBar.standardAppearance.configureWithOpaqueBackground()
-        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithOpaqueBackground()
+        self.navigationController?.navigationBar.standardAppearance.configureWithTransparentBackground()
+        self.navigationController?.navigationBar.scrollEdgeAppearance?.configureWithTransparentBackground()
         self.navigationItem.backBarButtonItem?.title = ""
         self.navigationItem.backButtonTitle = ""
-        rightButtonItem.isEnabled = false
-        
+     //   rightButtonItem.isEnabled = false
+     
         navigationItem.setRightBarButton(self.rightButtonItem, animated: false)
     }
     
@@ -147,7 +149,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
         collectionView.allowsSelection = true
-        
+        collectionView.backgroundColor = .primaryBackground
         collectionView.showsVerticalScrollIndicator = false
         
         let flow = UICollectionViewFlowLayout()
@@ -454,6 +456,7 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 
                 return headerView
             }
+            
         }
         if indexPath.section == 3 {
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "AddButtonHeaderView", for: indexPath) as! AddButtonHeaderView
@@ -463,11 +466,17 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LabelHeaderView", for: indexPath) as! LabelHeaderView
+        view.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
         return view
         
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        if section == 0 {
+            return UIEdgeInsets.zero
+        }
+        
 
         if section == 2, let ingredients = photoInputedIngredients  {
             if ingredients.count < 1 {
@@ -475,6 +484,8 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         }
+
+        
         
         if section == 3 {
             if photoOutputedIngredients.count < 1 {
@@ -484,15 +495,13 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         }
         
         
-        if let ingredients = photoInputedIngredients, ingredients.count < 1 && photoOutputedIngredients.count < 1  {
-            if section == 0 {
-                return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
-            }
-            if section == 3 {
-                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            }
-        }
         
+        if let ingredients = photoInputedIngredients, ingredients.count < 1 && photoOutputedIngredients.count < 1  {
+            
+            
+            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            
+        }
         
         return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }

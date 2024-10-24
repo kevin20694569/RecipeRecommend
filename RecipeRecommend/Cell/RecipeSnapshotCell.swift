@@ -46,6 +46,7 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
         buttonSetup()
         labelSetup()
         imageViewSetup()
+        self.backgroundColor = .clear
     }
     
     func imageViewSetup() {
@@ -95,6 +96,7 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
     func labelSetup() {
         let nameFont = UIFont.weightSystemSizeFont(systemFontStyle: .title3 , weight: .medium)
         titleLabel.font = nameFont
+        titleLabel.textColor = .color950
         //titleLabel.numberOfLines = 2
         titleLabel.adjustsFontSizeToFitWidth = true
         let timeFont = UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .regular)
@@ -102,7 +104,6 @@ class RecipeSnapshotCell : UITableViewCell, RecipeTableCell, RecipeDelegate {
         timeLabel.font = timeFont
         timeLabel.textAlignment = .right
         timeLabel.adjustsFontSizeToFitWidth = true
-        
     }
     
     @objc func heartButtonToggle() {

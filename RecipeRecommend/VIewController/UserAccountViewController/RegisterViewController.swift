@@ -1,13 +1,19 @@
 import UIKit
 import PhotosUI
 
-class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserProfileCellDelegate {
+class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserProfileCellDelegate, KeyBoardControllerDelegate {
     var user: User!
     
     var mainView : UIView = UIView()
 
     
-    var registerButton : ZoomAnimatedButton = ZoomAnimatedButton()
+    var nextButton : ZoomAnimatedButton = ZoomAnimatedButton()
+    
+    var activeTextField: UITextField?
+    
+    var activeTextView: UITextView?
+    
+    lazy var keyboardController : KeyBoardController! = KeyBoardController(view: self.view, delegate: self)
 
 
     var buttonAttributedTitleContainer : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)])
@@ -22,25 +28,37 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     var password : String?
     
-    var registerStatus : Bool = false { didSet {
-        registerButton.isEnabled = registerStatus
+    var nextButtonStatus : Bool = false { didSet {
+        nextButton.isEnabled = nextButtonStatus
     }}
     
     var tableCellTextTuples : [(String, String?)] = [("名稱", nil), ("電子郵件", nil), ("密碼", nil), ("確認密碼", nil)] { didSet {
         guard !registering else {
-            registerButton.isEnabled = false
+            nextButtonStatus = false
             return
         }
-        guard let name = tableCellTextTuples[0].1,
-              let email = tableCellTextTuples[1].1,
-              let password = tableCellTextTuples[2].1,
-              let checkPassword = tableCellTextTuples[3].1,
-              password == checkPassword
+        guard var name = tableCellTextTuples[0].1,
+              var email = tableCellTextTuples[1].1,
+              var password = tableCellTextTuples[2].1,
+              var checkPassword = tableCellTextTuples[3].1
+              
         else {
-            registerButton.isEnabled = false
+            nextButtonStatus = false
             return
         }
-        registerStatus = true
+        name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        email = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        password = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        checkPassword = checkPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard password != "",
+              checkPassword != "",
+              name != "",
+              email != "",
+              password == checkPassword else {
+            nextButtonStatus = false
+            return
+        }
+        nextButtonStatus = true
         
     }}
     
@@ -51,6 +69,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         //tableView.rowHeight = UIScreen.main.bounds.height * 0.2
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
+        tableView.backgroundColor = .primaryBackground
     }
     
     init() {
@@ -63,6 +82,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerKeyboardNotification()
         registerCell()
         viewSetup()
         tableViewSetup()
@@ -86,7 +106,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     }
     
     func buttonSetup() {
-        [registerButton].forEach() {
+        [nextButton].forEach() {
             $0.clipsToBounds = true
             $0.layer.cornerRadius = 14
         }
@@ -99,9 +119,9 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         config.baseBackgroundColor = .orangeTheme
         
         config.baseForegroundColor = .white
-        registerButton.configuration = config
-        registerButton.addTarget(self, action: #selector(registerButtonTapped ( _ :)), for: .touchUpInside)
-        registerButton.isEnabled = false
+        nextButton.configuration = config
+        nextButton.addTarget(self, action: #selector(nextButtonTapped ( _ :)), for: .touchUpInside)
+        nextButton.isEnabled = false
 
         
         
@@ -115,7 +135,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         self.show(controller, sender: nil)
     }
     
-    @objc func registerButtonTapped(_ button : UIButton) {
+    @objc func nextButtonTapped(_ button : UIButton) {
          guard !registering else {
              return
          }
@@ -131,15 +151,27 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
 
      }
     
+    func registerKeyboardNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyboardShown(notification: Notification) {
+        self.keyboardController.keyboardShown(notification: notification, activeTextField: self.activeTextField, activeTextView: nil)
+    }
+    @objc func keyboardHidden(notification: Notification) {
+        self.keyboardController.keyboardHidden(notification: notification, activeTextField: self.activeTextField, activeTextView: nil)
+    }
+    
     
     
     func buttonLayout() {
         let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
-            registerButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
-            registerButton.heightAnchor.constraint(equalTo:  view.heightAnchor,multiplier: 0.06),
-            registerButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bounds.height * 0.1),
-            registerButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+            nextButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
+            nextButton.heightAnchor.constraint(equalTo:  view.heightAnchor,multiplier: 0.06),
+            nextButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bounds.height * 0.1),
+            nextButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
         ])
     }
 
@@ -148,7 +180,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     func mainViewSetup() {
         mainView.clipsToBounds = true
-        mainView.backgroundColor = .backgroundPrimary
+        mainView.backgroundColor = .primaryBackground
         mainView.layer.cornerRadius = 32
     }
     
@@ -161,7 +193,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
             $0.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview($0)
         }*/
-        [tableView, registerButton].forEach() {
+        [tableView, nextButton].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview($0)
         }
@@ -344,39 +376,56 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let text = textField.text as NSString? {
-
+            
             let updatedText = text.replacingCharacters(in: range, with: string)
-
+            var index = 0
+            
             for cell in tableView.visibleCells {
                 if let cell = cell as? TextFieldWithWarningLabelTableCell {
                     
                     if cell.textField == textField {
-                        let index = cell.textField.tag
-
+                        index = cell.textField.tag
                         tableCellTextTuples[index].1 = updatedText
-                        
-                        if let inValidStr = textFieldIsInValid(textField: textField, updatedText: updatedText, tag: index) {
-
-                            cell.warningLabel.isHidden = false
-                            cell.warningLabel.text = inValidStr
-                        } else {
-                            cell.warningLabel.isHidden = true
-                        }
-                        if index == 2 {
-                            
-                        }
-                        break
                     }
+                    
                 }
             }
+            guard let passwordCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? TextFieldWithWarningLabelTableCell ,
+                  let checkCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TextFieldWithWarningLabelTableCell else {
+                return true
+            }
+            
+
+            if let inValidStr = textFieldIsInValid(textField: textField, updatedText: updatedText, tag: index) {
+
+                if index >= 2 {
+                    
+                    checkCell.warningLabel.isHidden = false
+                    checkCell.warningLabel.text = inValidStr
+                }
+                
+            } else {
+                if index >= 2 {
+                    checkCell.warningLabel.isHidden = true
+                }
+                
+            }
+            
+            
         }
-        
         return true
     }
     
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+        
+        
+    
+    
     func textFieldIsInValid(textField : UITextField, updatedText : String, tag : Int) -> String? {
 
-        let text = textField.text
         
         switch tag {
         case 0 :
@@ -389,14 +438,16 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
             return nil
         case 2 :
             if let passwordCell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell,
-               let checkCell = tableView.cellForRow(at: IndexPath(row: tag + 1, section: 0)) as? TextFieldWithWarningLabelTableCell
+               let checkCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TextFieldWithWarningLabelTableCell
             {
-              
+
+                
+                return checkCell.textField.text == updatedText ? nil : "不相符"
             }
             return nil
         case 3 :
-            if let checkCell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell,
-               let passwordCell = tableView.cellForRow(at: IndexPath(row: tag - 1, section: 0)) as? TextFieldWithWarningLabelTableCell
+            if let checkCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TextFieldWithWarningLabelTableCell,
+               let passwordCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? TextFieldWithWarningLabelTableCell
             {
                 return passwordCell.textField.text == updatedText ? nil : "不相符"
             }

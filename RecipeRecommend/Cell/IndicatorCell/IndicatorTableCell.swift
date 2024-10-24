@@ -18,6 +18,8 @@ class IndicatorTableCell : UITableViewCell, IndicatorCell {
         stackViewSetup()
         initLayout()
         configureIndicatorViews()
+        backgroundColor = .clear
+        
     }
     
     required init?(coder: NSCoder) {

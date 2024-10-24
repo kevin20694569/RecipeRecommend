@@ -142,6 +142,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
+        collectionView.backgroundColor = .primaryBackground
 
     }
     
@@ -258,6 +259,9 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         let bounds = view.bounds
         if section == 0 {
             return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.02, right: 0)
+        }
+        if historyBrowsedRecipes.isEmpty {
+            return UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         }
 
         

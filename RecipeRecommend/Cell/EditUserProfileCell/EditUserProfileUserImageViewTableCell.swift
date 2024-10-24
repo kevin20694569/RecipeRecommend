@@ -4,6 +4,8 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
 
     var cameraButton : ZoomAnimatedButton! = ZoomAnimatedButton()
     
+    var cameraBlurView : UIView = UIVisualEffectView(frame: .zero, style: .userInterfaceStyle)
+    
     weak var editUserProfileCellDelegate : EditUserProfileCellDelegate?
     
     var user : User!
@@ -28,13 +30,15 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
     
     override func initLayout() {
         super.initLayout()
+        mainImageView.addSubview(cameraBlurView)
+        self.mainImageView.addSubview(cameraButton)
 
-        contentView.addSubview(cameraButton)
+        cameraBlurView.translatesAutoresizingMaskIntoConstraints = false
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
+        cameraBlurView.isUserInteractionEnabled = false
         buttonLayout()
-        
-
     }
+    
     
     func buttonLayout() {
         NSLayoutConstraint.activate([
@@ -42,18 +46,27 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
             cameraButton.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor),
             cameraButton.leadingAnchor.constraint(equalTo: mainImageView.leadingAnchor),
             cameraButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
-            cameraButton.heightAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 0.2)
+            cameraButton.heightAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 0.2),
+            
+            cameraBlurView.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor),
+            cameraBlurView.centerYAnchor.constraint(equalTo: cameraButton.centerYAnchor),
+            cameraBlurView.widthAnchor.constraint(equalTo: cameraButton.widthAnchor),
+            cameraBlurView.heightAnchor.constraint(equalTo: cameraButton.heightAnchor)
+            
+            
         ])
     }
     
     func buttonSetup() {
 
         var cameraConfig = UIButton.Configuration.filled()
-        cameraConfig.baseBackgroundColor = .secondaryBackground
+        cameraConfig.baseBackgroundColor = .clear
         cameraConfig.image = UIImage(systemName: "camera")
         cameraConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
         cameraButton.configuration = cameraConfig
         cameraButton.addTarget(self, action: #selector(cameraButtonTapped ( _ : )), for: .touchUpInside)
+        cameraButton.scaleTargets?.append(cameraBlurView)
+        cameraButton.animatedEnable = false
         
     }
 
@@ -88,8 +101,6 @@ class RegisterUserImageViewTableCell : ChangeUserImageViewTableCell {
 
 class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCell {
     
-
-    
     
     var photoLibraryButton : ZoomAnimatedButton = ZoomAnimatedButton()
     
@@ -103,15 +114,13 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
         super.buttonSetup()
         
         cameraButton.isHidden = true
-
-       // self.isUserInteractionEnabled = false
-       // self.contentView.isUserInteractionEnabled = false
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
         config.image = UIImage(systemName: "photo.on.rectangle.angled.fill")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .medium))
         photoLibraryButton.configuration = config
         photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonTapped ( _ : )), for: .touchUpInside)
+        cameraBlurView.isHidden = true
         
 
         
@@ -133,7 +142,14 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
             mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.4),
             mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 1)
         ])
+       
         
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let bounds = UIScreen.main.bounds
+        mainImageView.layer.cornerRadius = bounds.height * 0.4 / 2
     }
     
     @objc func photoLibraryButtonTapped( _ button : UIButton) {
@@ -167,6 +183,8 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
         ])
 
     }
+    
+    
     
     @MainActor required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

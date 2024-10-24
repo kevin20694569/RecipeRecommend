@@ -13,7 +13,7 @@ enum DisplayRecipeStatus {
  
 
 
-class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate, AdvertiseViewDelegate {
+class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, ShowRecipeViewControllerDelegate, AdvertiseViewDelegate, RecipeStatusControll {
 
 
     func reloadRecipe(recipe: Recipe) {
@@ -182,7 +182,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         advertiseView.isHidden = true
         advertiseView.advertiseViewDelegate = self
         advertiseView.configure(advertises: Advertise.wonderfulfood_examples)
-        showAdvertiseView()
     }
     
     func showAdvertiseView() {
@@ -276,6 +275,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 75
         tableView.delaysContentTouches = false
+        tableView.backgroundColor = .primaryBackground
         
 
       //  tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
@@ -342,7 +342,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func layoutSetup() {
-        self.view.backgroundColor = .systemBackground
+        self.view.backgroundColor = .primaryBackground
         self.view.addSubview(searchBar)
         self.view.addSubview(searchBarRightButton)
         self.view.addSubview(tableView)
@@ -557,7 +557,30 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         case .Search:
             recipe = self.searchRecipes[indexPath.row]
         }
-        showRecipeDetailViewController(recipe: recipe)
+        guard let recipeDetailViewController = showRecipeDetailViewController(recipe: recipe) else {
+            return
+        }
+        recipeDetailViewController.recipeStatusDelegate = self
+    }
+    
+    func configureRecipeLikedStatus(recipe : Recipe) {
+        
+        if let rowOfLikedRecipe = self.recipes.firstIndex(of: recipe) {
+            if let cell = tableView.cellForRow(at: IndexPath(row: rowOfLikedRecipe, section: 0)) as? RecipeSnapshotCell {
+                cell.configureRecipeLikedStatus(liked: recipe.liked)
+            }
+        }
+        
+        if let rowOfSearchedRecipe = self.searchRecipes.firstIndex(of: recipe) {
+            if let cell = tableView.cellForRow(at: IndexPath(row: rowOfSearchedRecipe, section: 0)) as? RecipeSnapshotCell {
+                cell.configureRecipeLikedStatus(liked: recipe.liked)
+            }
+        }
+        
+        
+        
+        
+        
     }
     
     

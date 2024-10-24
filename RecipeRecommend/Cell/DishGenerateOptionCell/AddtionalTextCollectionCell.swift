@@ -35,7 +35,7 @@ class AddtionalTextCollectionCell : UICollectionViewCell {
     
     func textViewSetup() {
         textView.font = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .regular)
-        textView.backgroundColor = .secondaryBackground
+        textView.backgroundColor = .thirdaryBackground
         textView.clipsToBounds = true
         textView.layer.cornerRadius = 12
         let inset : CGFloat = 12

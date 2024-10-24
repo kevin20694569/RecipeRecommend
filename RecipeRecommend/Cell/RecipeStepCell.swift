@@ -82,7 +82,8 @@ class RecipeStepCell : UITableViewCell {
         descriptionLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         descriptionLabel.numberOfLines = 0
         stepOrderLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold)
-        stepOrderLabel.backgroundColor = .orangeTheme
+        stepOrderLabel.textColor = .primaryLabel
+        stepOrderLabel.backgroundColor = .accent
         stepOrderLabel.clipsToBounds = true
         stepOrderLabel.textAlignment = .center
         stepOrderLabel.layer.cornerRadius = 8
@@ -106,6 +107,7 @@ class RecipeStepCell : UITableViewCell {
         imageViewSetup()
         labelSetup()
         initLayout()
+        backgroundColor = .clear
     }
     
     required init?(coder: NSCoder) {

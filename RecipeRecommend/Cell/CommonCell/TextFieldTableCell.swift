@@ -16,6 +16,7 @@ class TextFieldTableCell : UITableViewCell {
         labelSetup()
         textFieldSetup()
         initLayout()
+        self.backgroundColor = .clear
         
     }
     

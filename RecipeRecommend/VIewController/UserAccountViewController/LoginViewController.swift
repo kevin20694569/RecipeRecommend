@@ -358,7 +358,7 @@ class LoginViewController : UIViewController {
     
     func mainViewSetup() {
         mainView.clipsToBounds = true
-        mainView.backgroundColor = .backgroundPrimary
+        mainView.backgroundColor = .primaryBackground
         mainView.layer.cornerRadius = 32
     }
     

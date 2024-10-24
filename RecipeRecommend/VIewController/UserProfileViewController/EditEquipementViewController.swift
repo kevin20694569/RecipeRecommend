@@ -131,6 +131,7 @@ class EditEquipementViewController : UIViewController, KeyBoardControllerDelegat
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.delaysContentTouches = false
+        collectionView.backgroundColor = .primaryBackground
         collectionView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         let flow = UICollectionViewFlowLayout()
         flow.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)

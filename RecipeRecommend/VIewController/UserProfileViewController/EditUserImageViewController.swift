@@ -32,7 +32,9 @@ class EditUserImageViewController : UIViewController, EditUserProfileCellDelegat
         tableViewSetup()
         navItemSetup()
         initLayout()
+        view.backgroundColor = .primaryBackground
     }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

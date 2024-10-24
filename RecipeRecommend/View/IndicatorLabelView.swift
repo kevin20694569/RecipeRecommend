@@ -97,7 +97,8 @@ class IndicatorLabelView : UIView {
     }
     
     func highlight() {
-        self.indicatorCircleView.backgroundColor = .tintColor
+        self.indicatorCircleView.backgroundColor = .accent
+        orderLabel.textColor = .white
         
     }
     
@@ -124,8 +125,10 @@ class IndicatorLabelView : UIView {
     
     
     func labelSetup() {
-        self.orderLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .regular)
+        self.orderLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium)
+        orderLabel.textColor = .primaryLabel
         textLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .footnote , weight: .medium)
+        textLabel.textColor = .primaryLabel
         textLabel.adjustsFontSizeToFitWidth = true
     }
     

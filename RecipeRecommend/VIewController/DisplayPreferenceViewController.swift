@@ -89,6 +89,7 @@ class DisplayPreferenceViewController : UIViewController {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.delaysContentTouches = false
+        tableView.backgroundColor = .primaryBackground
 
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl

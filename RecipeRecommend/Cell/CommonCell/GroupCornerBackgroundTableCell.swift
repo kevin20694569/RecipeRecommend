@@ -34,6 +34,7 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
         background.backgroundColor = UIColor.thirdaryBackground
         background.clipsToBounds = true
         background.layer.cornerRadius = 20
+        backgroundColor = .clear
         
     }
     

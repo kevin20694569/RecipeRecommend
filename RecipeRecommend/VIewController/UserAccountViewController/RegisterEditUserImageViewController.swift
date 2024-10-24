@@ -2,6 +2,7 @@ import UIKit
 
 class RegisterEditUserImageViewController : EditUserImageViewController {
     
+    
     var editUserImageLabel : UILabel = UILabel()
     
     var finishedButton : ZoomAnimatedButton = ZoomAnimatedButton()
@@ -27,6 +28,7 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
         buttonSetup()
         labelSetup()
         viewSetup()
+        
         
     }
 
@@ -73,6 +75,8 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
         
     }
     
+
+    
     func buttonSetup() {
         [finishedButton].forEach() {
             $0.clipsToBounds = true
@@ -88,6 +92,7 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
         config.baseForegroundColor = .white
         finishedButton.configuration = config
         finishedButton.addTarget(self, action: #selector(finishedButtonTapped ( _ :)), for: .touchUpInside)
+        
     }
     
     func labelSetup() {
@@ -104,7 +109,7 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
             finishedButton.configuration?.title = nil
             do {
 
-               // try await UserManager.shared.register(name: user.name, email: user.email, password: password, image: self.newImage)
+               try await UserManager.shared.register(name: user.name, email: user.email, password: password, image: self.newImage)
                 try await Task.sleep(nanoseconds: 1000000000)
        
                 config?.title = "成功註冊"
@@ -156,6 +161,8 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
         super.registerCell()
         tableView.register(RegisterEditUserProfileUserImageViewTableCell.self, forCellReuseIdentifier: "RegisterEditUserProfileUserImageViewTableCell")
     }
+    
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RegisterEditUserProfileUserImageViewTableCell", for: indexPath) as! RegisterEditUserProfileUserImageViewTableCell

@@ -47,6 +47,7 @@ class EditUserNameViewController : UIViewController {
         tableView.allowsSelection = false
         tableView.separatorColor = .primaryLabel
         tableView.isScrollEnabled = false
+        tableView.backgroundColor = .primaryBackground
     }
     
     

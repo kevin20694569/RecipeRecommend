@@ -24,6 +24,8 @@ class CollectionViewTableCell : UITableViewCell, UICollectionViewDelegate, UICol
         initLayout()
         separatorSetup()
         collectionViewSetup()
+        backgroundColor = .clear
+        collectionView.backgroundColor = .clear
     }
     
     func registerCell() {
@@ -38,6 +40,7 @@ class CollectionViewTableCell : UITableViewCell, UICollectionViewDelegate, UICol
         collectionView.dataSource = self
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.delaysContentTouches = false
+        
         let flow = UICollectionViewFlowLayout()
         flow.scrollDirection = .horizontal
         self.collectionView.collectionViewLayout = flow

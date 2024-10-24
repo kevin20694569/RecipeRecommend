@@ -32,14 +32,12 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         let lastIndex = images.count - 1
 
         if (images[lastIndex] == nil)  {
- 
-            
             if let cell = collectionView.cellForItem(at: IndexPath(row: lastIndex, section: 0)) as? InputPhotoIngredientCollectionCell {
 
                 try? self.cameraController.ChangePreView(on: cell.imageView)
             }
-            
-           
+        } else {
+            self.addButtonEnable(enable: true)
         }
 
     }
@@ -79,6 +77,8 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             try await configureCameraController()
             configure()
         }
+        backgroundColor = .clear
+        collectionView.backgroundColor = .clear
     }
     func configureCameraController() async throws {
         
@@ -152,15 +152,16 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         addButtonEnable = enable
         if let cell = self.addButtonCell {
             
-            cell.addButton.isEnabled = enable
+            cell.configure(buttonEnable: enable)
         }
         
     }
     
     
     override var collectionViewHeightConstant: CGFloat! {
-        UIScreen.main.bounds.height * 0.48
+        UIScreen.main.bounds.height * 0.6
     }
+    
     
     var addButtonCell : AddButtonCollectionCell? {
         self.collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) as? AddButtonCollectionCell
@@ -225,7 +226,6 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
     }
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == images.count - 1 && images[indexPath.row] != nil {
-            print(indexPath.row)
             cameraController.previewLayer?.removeFromSuperlayer()
         }
     }
