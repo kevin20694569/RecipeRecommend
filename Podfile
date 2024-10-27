@@ -17,5 +17,6 @@ target 'DishGenerate' do
     # Pods for testing
   end
   pod 'Alamofire'
+  pod 'AWSMobileClient'
 
 end

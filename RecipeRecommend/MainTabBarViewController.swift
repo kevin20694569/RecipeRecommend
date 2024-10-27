@@ -122,7 +122,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
             let image = itemImages[index]
-            print(UIColor.color950)
+
             let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.primaryLabel, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.primaryBackground, renderingMode: .alwaysOriginal))
             item.tag = index
             return item

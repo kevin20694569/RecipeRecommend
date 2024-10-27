@@ -1,7 +1,16 @@
 
 import UIKit
 
+protocol InputPhotoIngredientTableCellDelegate : UIViewController {
+    func changeCatchButtonStatus(to status : CatchButtonStatus)
+    func lastCollectionViewIsPresentToScreen() -> Bool
+}
+
 class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollectionCellDelegate {
+    
+    
+    var isAddingNewCollectionCell : Bool = false
+    weak var delegate : InputPhotoIngredientTableCellDelegate?
     func snapshotView() -> UIImage? {
         return cameraController.snapshotView()
     }
@@ -21,8 +30,16 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             }
             self.previewRemoveFromSuperView()
         }
-        images.remove(at: index)
-        self.collectionView.deleteItems(at: [indexPath])
+
+        collectionView.performBatchUpdates( {
+            images.remove(at: index)
+            self.collectionView.deleteItems(at: [indexPath])
+        }) { Bool in
+            if let bool  = self.delegate?.lastCollectionViewIsPresentToScreen() {
+                self.delegate?.changeCatchButtonStatus(to: bool ? .reset : .forbidden)
+            }
+        }
+       
         if images.count == 1 {
             if let cell = collectionView.visibleCells.first as? InputPhotoIngredientCollectionCell {
                 cell.deleteSelfButton.isHidden = true
@@ -110,6 +127,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         guard self.addButtonEnable else {
             return
         }
+        isAddingNewCollectionCell = true
         self.addButtonEnable(enable: false)
 
 
@@ -122,8 +140,14 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             }
         }
         let indexPath = IndexPath(row: images.count - 1, section: 0)
+        collectionView.performBatchUpdates {
+            collectionView.insertItems(at: [indexPath])
+        } completion: { Bool in
+            self.isAddingNewCollectionCell = false
+        }
+
         
-        collectionView.insertItems(at: [indexPath])
+        
         let lastIndexPath = IndexPath(row: indexPath.row - 1, section: 0)
         if let lastCell = collectionView.cellForItem(at: lastIndexPath) as? InputPhotoIngredientCollectionCell {
             lastCell.toolButtonRefresh(enable: false, animated: true)
@@ -132,6 +156,7 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         
         DispatchQueue.main.async { [self] in
             collectionView.scrollToItem(at: addButtonIndexPath, at: .centeredHorizontally, animated: true)
+            
             if let cell = collectionView.cellForItem(at: indexPath) as? InputPhotoIngredientCollectionCell {
                 try? self.cameraController.ChangePreView(on: cell.imageView)
                 cell.toolButtonRefresh(enable: true, animated: true)
@@ -238,6 +263,35 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
             return CGSize(width: collectionViewHeightConstant * 0.2, height: collectionViewHeightConstant)
         }
         return CGSize(width: collectionViewHeightConstant / 1.8, height: collectionViewHeightConstant)
+    }
+    
+    
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard !isAddingNewCollectionCell else {
+            return
+        }
+        
+        let currentXOffSet = scrollView.contentOffset.x
+        let contentXSize = scrollView.contentSize.width
+        let singlePageXSize = Double(contentXSize) / Double(self.images.count)
+        let currentPage = round(currentXOffSet / singlePageXSize)
+        
+        guard let lastImageCollectionCell = collectionView.cellForItem(at: IndexPath(row: images.count - 1, section: 0)) as? InputPhotoIngredientCollectionCell  else {
+            return
+        }
+        
+        guard let lastCollectionImageViewFrameInView =  lastImageCollectionCell.imageView.superview?.convert(lastImageCollectionCell.imageView.frame, to: nil) else {
+            return
+        }
+        let viewWidth = UIScreen.main.bounds.width
+        if viewWidth - lastCollectionImageViewFrameInView.minX  >= lastImageCollectionCell.bounds.width * 0.5  {
+            
+            delegate?.changeCatchButtonStatus(to: .catch)
+        } else {
+            delegate?.changeCatchButtonStatus(to: .forbidden)
+        }
+       
     }
 
     

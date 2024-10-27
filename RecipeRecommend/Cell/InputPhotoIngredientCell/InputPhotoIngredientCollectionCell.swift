@@ -55,7 +55,7 @@ class InputPhotoIngredientCollectionCell : UICollectionViewCell {
         self.imageView.image = image
         
         changeFlashImage(flashIsOn: flashIsON)
-        changeClickButtonImage(beCaptureTarget: image == nil)
+        self.clickButton.configuration?.image = image == nil ? nil : UIImage(systemName: "arrow.circlepath")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         
     }
     
@@ -144,6 +144,7 @@ extension InputPhotoIngredientCollectionCell {
  
         clickButton.clipsToBounds = true
         clickButton.addTarget(self, action: #selector(clickButtonTapped ( _ : )), for: .touchUpInside)
+        clickButton.isHidden = true
         
         var lightConfig = UIButton.Configuration.filled()
         lightConfig.baseBackgroundColor = .clear
@@ -151,6 +152,7 @@ extension InputPhotoIngredientCollectionCell {
         lightConfig.background.imageContentMode = .scaleAspectFit
         toggleFlashButton.configuration = lightConfig
         toggleFlashButton.addTarget(self, action: #selector(toggleFlashButtonTapped ( _  : )), for: .touchUpInside)
+        toggleFlashButton.isHidden = true
         
         var deleteConfig = UIButton.Configuration.filled()
         deleteConfig.baseBackgroundColor = .systemRed
@@ -164,9 +166,16 @@ extension InputPhotoIngredientCollectionCell {
         
     }
     
-    @objc func clickButtonTapped( _ button : UIButton)  {
+    @objc func clickButtonTapped( _ button : UIButton)   {
+
+        triggerCatchButton(button)
+
+    }
+    
+    
+    func triggerCatchButton( _ button : UIButton) -> CatchButtonStatus {
         guard let delegate = ingredientAddCollectionCellDelegate else {
-            return
+            return .forbidden
         }
         if currentImage != nil {
             //重置
@@ -175,7 +184,8 @@ extension InputPhotoIngredientCollectionCell {
             delegate.modifyImageArray(image: nil)
             try? delegate.cameraControllerDisplayOn(view: self.imageView)
             delegate.addButtonEnable(enable: false)
-            self.changeClickButtonImage(beCaptureTarget: true)
+            button.configuration?.image = nil
+            return .catch
         } else {
             Task {
 
@@ -189,12 +199,17 @@ extension InputPhotoIngredientCollectionCell {
                 }
                 delegate.modifyImageArray(image: image)
                 delegate.addButtonEnable(enable: true)
-                self.changeClickButtonImage(beCaptureTarget: false)
+                button.configuration?.image  = UIImage(systemName: "arrow.circlepath")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+                
             }
+            return .reset
+             
         }
-        toolButtonRefresh(enable: true, animated: false)
+        
+        
+     //   toolButtonRefresh(enable: true, animated: false)
+        
     }
-    
 
 
     
@@ -224,11 +239,6 @@ extension InputPhotoIngredientCollectionCell {
         } else {
             toggleFlashButton.configuration?.background.image =  UIImage(systemName: "lightbulb.slash")?.withTintColor(.label, renderingMode: .alwaysOriginal)
         }
-    }
-    
-    func changeClickButtonImage(beCaptureTarget :  Bool ) {
-        self.clickButton.configuration?.image = beCaptureTarget ? nil : UIImage(systemName: "arrow.circlepath")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        //self.clickButton.configuration?.baseBackgroundColor =  beCaptureTarget ? .systemRed : .lightGray
     }
     
     

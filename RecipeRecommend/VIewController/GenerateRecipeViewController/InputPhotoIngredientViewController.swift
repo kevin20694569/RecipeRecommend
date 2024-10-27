@@ -1,7 +1,11 @@
 import UIKit
 import PhotosUI
 
-class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+enum CatchButtonStatus {
+    case `catch`, reset, forbidden
+}
+
+class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, InputPhotoIngredientTableCellDelegate {
     
     
     
@@ -13,7 +17,11 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     var catchButtonSubView : UIView = UIView()
     var flashLightButton : ZoomAnimatedButton = ZoomAnimatedButton()
     
+    var catchButtonStatus : CatchButtonStatus = .catch
+    
+    var catchButtonIsAnimating : Bool = false
     var cameraInputTableCell : InputPhotoIngredientTableCell {
+        
         return tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! InputPhotoIngredientTableCell
     }
     
@@ -37,6 +45,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         if section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "InputPhotoIngredientTableCell", for: indexPath) as! InputPhotoIngredientTableCell
             cell.separatorInset = UIEdgeInsets(top: 0, left: bounds.width / 2, bottom: 0, right: bounds.width / 2)
+            cell.delegate = self
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "CollectionViewTableCell", for: indexPath)
@@ -71,6 +80,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = false
         navBarSetup()
     }
     
@@ -126,7 +136,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         self.view.addSubview(selectPhotoButton)
         view.addSubview(flashLightButton)
         view.addSubview(catchButton)
-        view.addSubview(catchButtonSubView)
+        view.insertSubview(catchButtonSubView , belowSubview: catchButton.imageView!)
         view.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -183,7 +193,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         NSLayoutConstraint.activate([
             
             flashLightButton.centerYAnchor.constraint(equalTo: catchButton.centerYAnchor),
-            flashLightButton.centerXAnchor.constraint(equalTo: tableView.leadingAnchor, constant: tableView.frame.maxX - selectPhotoButton.center.x)
+            flashLightButton.centerXAnchor.constraint(equalTo: tableView.leadingAnchor, constant: tableView.frame.maxX - selectPhotoButton.center.x),
         ])
         
         
@@ -207,10 +217,11 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .color950
         config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8)
-        catchButton.configuration = config
+        config.image = UIImage()
  
-        catchButton.clipsToBounds = true
+       
         catchButton.configuration = config
+        catchButton.clipsToBounds = true
         catchButton.scaleTargets?.append(catchButtonSubView)
         catchButton.addTarget(self, action: #selector( catchButtonTapped( _ :)), for: .touchUpInside)
         
@@ -220,8 +231,8 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
         
         var flashConfig = UIButton.Configuration.filled()
         flashConfig.baseBackgroundColor = .clear
-        flashConfig.image = UIImage(systemName: "flashlight.slash")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
-        flashConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font :      UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium))
+        flashConfig.image = UIImage(systemName: "lightbulb.slash")?.withTintColor( .label, renderingMode: .alwaysOriginal)
+        flashConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration.init(font: UIFont.weightSystemSizeFont(systemFontStyle: .largeTitle, weight: .medium))
         flashLightButton.configuration = flashConfig
         flashLightButton.addTarget(self, action: #selector( flashLightButtonTapped( _ :)), for: .touchUpInside)
         
@@ -253,15 +264,107 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     }
     
     @objc func catchButtonTapped( _ button : UIButton) {
+        guard lastCollectionViewIsPresentToScreen() else {
+            return
+        }
+        guard let imageCollectionViewTableCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? InputPhotoIngredientTableCell else {
+            return
+        }
+        guard let lastImageCollectionCell = imageCollectionViewTableCell.collectionView.cellForItem(at: IndexPath(row: imageCollectionViewTableCell.images.count - 1, section: 0)) as? InputPhotoIngredientCollectionCell  else {
+            return
+        }
+        
+        let status = lastImageCollectionCell.triggerCatchButton(button)
+        changeCatchButtonStatus(to: status)
+       
+
         
     }
     
-    @objc func flashLightButtonTapped( _ button : UIButton) {
+    func lastCollectionViewIsPresentToScreen() -> Bool {
+        guard let imageCollectionViewTableCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? InputPhotoIngredientTableCell else {
+            return false
+        }
+        guard let lastImageCollectionCell = imageCollectionViewTableCell.collectionView.cellForItem(at: IndexPath(row: imageCollectionViewTableCell.images.count - 1, section: 0)) as? InputPhotoIngredientCollectionCell  else {
+            return false
+        }
         
+        guard let lastCollectionImageViewFrameInView =  lastImageCollectionCell.imageView.superview?.convert(lastImageCollectionCell.imageView.frame, to: self.view) else {
+            return false
+        }
+        //最後一個imageCollectionCell要露出自己的0.5才可以觸發
+        let viewWidth = view.bounds.width
+        if viewWidth - lastCollectionImageViewFrameInView.minX  >= lastImageCollectionCell.bounds.width * 0.5  {
+            
+            return true
+        }
+        
+        return false
+        
+    }
+    
+
+    
+    func changeCatchButtonStatus(to status : CatchButtonStatus) {
+        guard !catchButtonIsAnimating else {
+            return
+        }
+        catchButtonIsAnimating = true
+        
+        switch status {
+        case .catch:
+            catchButton.isEnabled = true
+            catchButton.configuration?.baseBackgroundColor = .color950
+            UIView.animate(withDuration: 0.15, animations: { [self] in
+                [catchButtonSubView, catchButton].forEach() {
+                    $0.transform = .identity
+                }
+            },completion: { bool in
+                self.catchButtonIsAnimating = false
+            })
+        case .reset:
+            catchButton.isEnabled = true
+            self.catchButtonIsAnimating = false
+            break
+        case .forbidden:
+            catchButton.isEnabled = false
+            catchButton.configuration?.baseBackgroundColor = .secondaryBackground
+            UIView.animate(withDuration: 0.15, animations: { [self] in
+                [catchButtonSubView, catchButton].forEach() {
+                    $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                }
+            }, completion: { _ in
+                self.catchButtonIsAnimating = false
+            })
+        }
+        catchButtonStatus = status
+    }
+    
+    
+    
+    @objc func flashLightButtonTapped( _ button : UIButton) {
+        guard let imageCollectionViewTableCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? InputPhotoIngredientTableCell else {
+            return
+        }
+        
+        guard let lastImageCollectionCell = imageCollectionViewTableCell.collectionView.cellForItem(at: IndexPath(row: imageCollectionViewTableCell.images.count - 1, section: 0)) as? InputPhotoIngredientCollectionCell  else {
+            return
+        }
+        changeFlashImage(flashIsOn: imageCollectionViewTableCell.toggleFlash())
     }
     
     @objc func selectPhotoButtonTapped( _ button : UIButton) {
         showImagePicker()
+    }
+    
+    
+    
+    func changeFlashImage(flashIsOn : Bool) {
+        if flashIsOn {
+            flashLightButton.configuration?.image = UIImage(systemName: "lightbulb.max.fill")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
+        } else {
+            flashLightButton.configuration?.image =  UIImage(systemName: "lightbulb.slash")?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
+        }
     }
     
     
@@ -351,6 +454,13 @@ extension InputPhotoIngredientViewController : PHPickerViewControllerDelegate {
                     index -= 1
                 }
                 cell.images.insert(contentsOf: images, at: index)
+                cell.collectionView.reloadSections([0])
+                let bool = self.lastCollectionViewIsPresentToScreen()
+                
+                self.changeCatchButtonStatus(to: bool ? .catch :.forbidden)
+
+
+
                 cell.collectionView.reloadSections([0])
                 if !lastImageEqualNil {
                     cell.addButtonEnable(enable: true)

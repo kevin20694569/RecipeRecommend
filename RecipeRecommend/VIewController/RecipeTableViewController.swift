@@ -342,7 +342,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func layoutSetup() {
-        self.view.backgroundColor = .primaryBackground
+        self.view.backgroundColor = .clear
         self.view.addSubview(searchBar)
         self.view.addSubview(searchBarRightButton)
         self.view.addSubview(tableView)
