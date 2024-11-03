@@ -1,6 +1,6 @@
 import UIKit
 
-class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout, IngredientAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
+class CorrectIngredientViewController : UIViewController, UICollectionViewDelegateFlowLayout, IngredientAddButtonHeaderViewDelegate, KeyBoardControllerDelegate, CheckingIngredientsViewDelegate {
     
     
     
@@ -26,12 +26,99 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     var user_id : String {SessionManager.shared.user_id!}
     
+    let checkingView = CheckingIngredientsView()
+
+
+    
     let photoInputedIndexPath : IndexPath = IndexPath(row: 0, section: 1)
     
     lazy var rightButtonItem : UIBarButtonItem! =  UIBarButtonItem(title: "下一步", style: .done , target: self, action: #selector(rightButtonItemTapped ( _ : )))
     
+    
     @objc func rightButtonItemTapped( _ barButtonItem : UIBarButtonItem) {
-        showDishGeneratedOptionViewController()
+        
+        showCheckingIngredientsView()
+       // generateRecommendRecipes()
+        //showDishGeneratedOptionViewController()
+    }
+    
+    func showCheckingIngredientsView() {
+        guard checkingView.layer.opacity == 0 else {
+            return
+        }
+        let validIngredients  = outputCurrentValidIngredients()
+        checkingView.configure(ingredients: validIngredients)
+        view.subviews.forEach() {
+            $0.isUserInteractionEnabled = false
+        }
+        navigationController?.navigationBar.isUserInteractionEnabled = false
+        checkingView.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 0.2, animations: {
+            self.checkingView.layer.opacity = 1
+        })
+       
+    }
+    
+    func dismissView() {
+        guard checkingView.layer.opacity == 1 else {
+            return
+        }
+        view.subviews.forEach() {
+            $0.isUserInteractionEnabled = true
+        }
+        navigationController?.navigationBar.isUserInteractionEnabled = true
+        checkingView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.2, animations: {
+            self.checkingView.layer.opacity = 0
+        })
+    }
+    
+    func layoutCheckingView() {
+        checkingView.delegate = self
+        checkingView.layer.opacity = 0
+        NSLayoutConstraint.activate([
+            
+            checkingView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.bounds.width * 0.1),
+            checkingView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -view.bounds.width * 0.1),
+            checkingView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
+            checkingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+        ])
+    }
+    
+    func generateRecommendRecipes()  {
+        let validIngredients  = outputCurrentValidIngredients()
+        let preference = RecommendRecipePreference(id: UUID().uuidString, user_id: self.user_id, ingredients: validIngredients)
+        if let nav = navigationController as? MainNavgationController {
+            if let mainTableController = nav.mainRecipeViewController {
+                mainTableController.recommendedPreference = preference
+                mainTableController.changeButtonStatus(status: .isGenerating)
+                
+                
+                Task {
+                    let viewControllers = nav.popToRootViewController(animated: true)
+                    
+                    mainTableController.lastGeneratedViewControllers = viewControllers
+                    do {
+                        
+                        
+                        let (preference, recipes) = try await RecipeManager.shared.getRecommendRecipes(user_id: self.user_id, preference: preference)
+                        mainTableController.recommendedRecipes = recipes
+                        mainTableController.recommendedPreference = preference
+                        mainTableController.changeButtonStatus(status: .already)
+                        
+                    } catch {
+                       // try? await Task.sleep(nanoseconds: 1000000000)
+                        mainTableController.changeButtonStatus(status: .error)
+                        print("getRecommendRecipesError", error)
+                    }
+                    
+
+                }
+                
+                
+            }
+        }
     }
     
     func outputCurrentValidIngredients() -> [Ingredient] {
@@ -87,11 +174,9 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
                 ingredient.rightPropablyTitle = ingredient.getTranslatedName(key: recognizeResults[index][1].name)
             }
             if let cell = self.collectionView.cellForItem(at: photoInputedIndexPath) as? DetectedPhotoCollectionViewCollectionCell  {
-                for collectionCell in cell.collectionView.visibleCells {
-                    if let collectionCell = collectionCell as? DetectedPhotoCollectionCell,
-                       let indexPath = cell.collectionView.indexPath(for: collectionCell)
-                    {
-                        let ingredient = ingredients[indexPath.row]
+                for (index, ingredient) in ingredients.enumerated() {
+                    let indexPath = IndexPath(row: index, section: 0)
+                    if let collectionCell = cell.collectionView.cellForItem(at: indexPath) as? DetectedPhotoCollectionCell {
                         collectionCell.configure(inputedIngredient: ingredient, outputedIngredient: ingredient.outputedIngredient)
                     }
                 }
@@ -106,7 +191,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         super.viewWillAppear(animated)
         navBarSetup()
         let ingredients = outputCurrentValidIngredients()
-      //  rightButtonItem.isEnabled = ingredients.count > 0
+        rightButtonItem.isEnabled = ingredients.count > 0
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,9 +200,9 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     }
     
     func initLayout() {
-        view.addSubview(collectionView)
-        view.subviews.forEach() {
+        [collectionView, checkingView].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
         }
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -126,6 +211,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
+        layoutCheckingView()
         view.backgroundColor = .systemBackground
     }
     
@@ -390,7 +476,7 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
                 }
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddTextIngredientCollectionCell", for: indexPath) as! AddTextIngredientCollectionCell
-
+                
                 cell.ingredientCellDelegate = self
                 cell.configure(buttonEnable: true)
                 return cell
@@ -414,23 +500,20 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let screenBounds = UIScreen.main.bounds
+        let titleFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         
         if section == 2 , let ingredients = photoInputedIngredients   {
             if ingredients.count > 0 {
-                return CGSize(width: view.bounds.width, height: view.bounds.height * 0.1)
+                return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
             }
+            
         }
         if section == 3 {
-            
-            return CGSize(width: view.bounds.width, height: view.bounds.height * 0.1)
+            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
         }
-        
-        return CGSize(width: 0, height: 0)
+        return CGSize(width:0, height: 0)
     }
-    
-    
-    
-    
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -442,7 +525,6 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         if section == 1 {
             return CGSize(width: screenBounds.width, height: screenBounds.height * 0.38)
         }
-        let size = UIFont.preferredFont(forTextStyle: .title3)
         let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
         let verInset : CGFloat = 8
         return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
@@ -472,40 +554,33 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        guard let photoInputedIngredients = photoInputedIngredients else {
+            return UIEdgeInsets.zero
+        }
         
         if section == 0 {
             return UIEdgeInsets.zero
         }
         
-
-        if section == 2, let ingredients = photoInputedIngredients  {
-            if ingredients.count < 1 {
-                
-                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        if section == 1 {
+            if photoInputedIngredients.isEmpty  {
+                return UIEdgeInsets.zero
+            }
+            return UIEdgeInsets.zero
+        }
+        if photoInputedIngredients.isEmpty {
+            if section == 2 {
+                return UIEdgeInsets.zero
             }
         }
 
-        
-        
-        if section == 3 {
-            if photoOutputedIngredients.count < 1 {
-                
-                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            }
-        }
-        
-        
-        
-        if let ingredients = photoInputedIngredients, ingredients.count < 1 && photoOutputedIngredients.count < 1  {
-            
-            
-            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            
-        }
         
         return UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
     }
 }
+    
+    
+
 
 extension CorrectIngredientViewController :  UITextFieldDelegate {
     @objc func keyboardShown(notification: Notification) {

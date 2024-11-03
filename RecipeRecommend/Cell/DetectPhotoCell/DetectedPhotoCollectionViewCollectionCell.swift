@@ -47,6 +47,7 @@ class DetectedPhotoCollectionViewCollectionCell : CollectionViewCollectionCell, 
     
     override func collectionViewSetup() {
         super.collectionViewSetup()
+        collectionView.backgroundColor = .primaryBackground
 
     }
     

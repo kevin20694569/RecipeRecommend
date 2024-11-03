@@ -111,6 +111,7 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
 
                try await UserManager.shared.register(name: user.name, email: user.email, password: password, image: self.newImage)
                 try await Task.sleep(nanoseconds: 1000000000)
+                finishedButton.isUserInteractionEnabled = false
        
                 config?.title = "成功註冊"
                 config?.attributedTitle = AttributedString("成功註冊！", attributes: .init())

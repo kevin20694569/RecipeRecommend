@@ -1,6 +1,0 @@
-framework module Pods_DishGenerate_DishGenerateUITests {
-  umbrella header "Pods-DishGenerate-DishGenerateUITests-umbrella.h"
-
-  export *
-  module * { export * }
-}

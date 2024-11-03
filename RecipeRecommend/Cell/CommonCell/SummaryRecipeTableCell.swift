@@ -51,7 +51,11 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
     override func prepareForReuse() {
         super.prepareForReuse()
         self.recipeImageView.image = nil
-        tagCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .centeredHorizontally, animated: false)
+        if tagCollectionView.visibleCells.count > 0 {
+            
+            tagCollectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .centeredHorizontally, animated: false)
+            
+        }
     }
     
     
@@ -69,7 +73,10 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         self.recipe = recipe
         summaryLabel.text = recipe.description
         titleLabel.text = recipe.name
-        timeLabel.text = recipe.costTimeDescription
+        if let created_time = recipe.created_time,
+           let formattedStr = Formatter.timeAgoOrDate(from: created_time) {
+            timeLabel.text = formattedStr
+        }
         configureRecipeLikedStatus(liked: recipe.liked)
         updateBottomButtonStatus(animated: false)
         Task(priority : .background) {
@@ -137,6 +144,7 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         tagCollectionView.delegate = self
         tagCollectionView.dataSource = self
         tagCollectionView.showsHorizontalScrollIndicator = false
+        tagCollectionView.backgroundColor = .clear
         let bounds = UIScreen.main.bounds
         let flow = UICollectionViewFlowLayout()
         flow.minimumLineSpacing = 4
@@ -213,23 +221,6 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         delegate.showRecipeDetailViewController(recipe: recipe)
     }
     
-
-    
-    func generateDishDetail() async  {
-        
-       /* guard self.recipe.status != .isGenerating else {
-            return
-        }*/
-        //self.recipe.status = .isGenerating
-     /*   NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["recipe" : recipe])
-        do {
-            let recipe = try await RecipeManager.shared.generateDishDetail(dish_id: recipe.id, quantity: 1)
-            NotificationCenter.default.post(name: .reloadDishNotification, object: nil, userInfo: ["recipe" : recipe])
-        } catch {
-            print("generateDishDetailError", error)
-        }*/
-
-    }
     
     func updateBottomButtonStatus(animated : Bool) {
         self.bottomButton.configuration?.showsActivityIndicator = false
@@ -241,30 +232,6 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         } else {
             bottomButton.backgroundColor = .orangeTheme
         }
-        /*if recipe.status == .already {
-            self.bottomButton.configuration?.showsActivityIndicator = false
-            bottomButton.configuration?.attributedTitle = AttributedString("查看食譜", attributes: generatedStringAttributes)
-            if animated {
-                UIView.animate(withDuration: 0.4) {
-                    self.bottomButton.backgroundColor = .orangeTheme
-                }
-            } else {
-                bottomButton.backgroundColor = .orangeTheme
-            }
-        } else if recipe.status == .none {
-            self.bottomButton.configuration?.showsActivityIndicator = false
-            bottomButton.configuration?.attributedTitle = AttributedString("生成詳細食譜", attributes: generatedStringAttributes)
-            if animated {
-                UIView.animate(withDuration: 0.4) {
-                    self.bottomButton.backgroundColor = .themeColor
-                }
-            } else {
-                bottomButton.backgroundColor = .themeColor
-            }
-        } else if recipe.status == .isGenerating {
-            bottomButton.configuration?.attributedTitle = nil
-            self.bottomButton.configuration?.showsActivityIndicator = true
-        }*/
     }
     
     @objc func heartButtonTapped(_ button : UIButton) {
@@ -280,7 +247,7 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         if liked {
             self.heartButton.configuration?.image = UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal)
         } else {
-            self.heartButton.configuration?.image = UIImage(systemName: "heart")
+            self.heartButton.configuration?.image = UIImage(systemName: "heart")?.withTintColor( .primaryLabel, renderingMode: .alwaysOriginal )
         }
     }
     
@@ -308,10 +275,8 @@ extension SummaryRecipeTableCell : UICollectionViewDelegate, UICollectionViewDat
         return cell
     }
     
-
-    
-
-    
-    
 }
+
+
+
 

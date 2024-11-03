@@ -91,8 +91,8 @@ class SliderCollectionCell : UICollectionViewCell {
 }
 
 
-class DifficultSliderCollectionCell : SliderCollectionCell, DishPreferenceCell  {
-    var preference: GenerateRecipePreference!
+class DifficultSliderCollectionCell : SliderCollectionCell  {
+    var preference: RecommendRecipePreference!
     
     
     override var minimumValue : Float { 0 }
@@ -146,8 +146,8 @@ class DifficultSliderCollectionCell : SliderCollectionCell, DishPreferenceCell  
     
 }
 
-class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
-    var preference: GenerateRecipePreference!
+class TemperatureSliderCollectionCell : SliderCollectionCell {
+    var generateRecipePreference: GenerateRecipePreference!
     
     
     override var minimumValue : Float { 0 }
@@ -157,7 +157,9 @@ class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell
         self.slider.value
     }
     
-    func configure(titleArray : [String]) {
+    func configure(titleArray : [String], value : Double = 0.5) {
+        
+        self.slider.value = Float(value)
         for (index, string) in titleArray.enumerated() {
             labels[index].text = string
         }
@@ -182,7 +184,7 @@ class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell
     }
     override func sliderDidEndDraging( _ sender : UISlider) {
         super.sliderDidEndDraging(sender)
-      //  self.preference.temperature = Double(self.currentValue)
+        self.generateRecipePreference.temperature = Double(self.currentValue)
         
     }
     
@@ -192,8 +194,8 @@ class TemperatureSliderCollectionCell : SliderCollectionCell, DishPreferenceCell
     }
 }
 
-class TimeSliderCollectionCell : SliderCollectionCell, DishPreferenceCell {
-    var preference: GenerateRecipePreference!
+class TimeSliderCollectionCell : SliderCollectionCell {
+    var preference: RecommendRecipePreference!
     
     override var minimumValue : Float { 20 }
     override var maximumValue : Float { 60 }

@@ -3,9 +3,22 @@ import UIKit
 class EditUserProfileViewController : UIViewController {
     var tableView : UITableView! = UITableView()
     
-    var options : [String]! = ["暱稱", "擁有設備", "喜好菜式"]
+    lazy var options : [String]! = {
+        if user.id == SessionManager.anonymous_user_id {
+            return  ["暱稱", "擁有設備", "喜好菜式"]
+        }
+        return ["暱稱", "擁有設備", "喜好菜式", "刪除帳號"]
+    }()
+        
     
     var user : User!
+    
+    lazy var loadingView : LoadingBlurView = {
+        let view = LoadingBlurView(frame: .zero, style: .userInterfaceStyle, title: "正在刪除帳號，請稍候...")
+        view.configure(title:  "正在刪除帳號，請稍候...", start_generating: true)
+        view.layer.opacity = 0
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +37,84 @@ class EditUserProfileViewController : UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         TapGestureHelper.shared.shouldAddTapGestureInWindow(view:  self.view)
+    }
+    
+    func showDeleteAccountController() {
+        let alertController = UIAlertController(title: "確定要刪除帳號？", message: "此動作無法復原！", preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(
+            title: "取消",
+            style: .cancel,
+            handler: nil)
+
+        alertController.addAction(cancelAction)
+        
+        
+        let okAction = UIAlertAction(
+            title: "刪除",
+            style: .destructive,
+            handler: { [weak self] action in
+                guard let self = self else {
+                    return
+                }
+                layoutBlurView()
+                let showTask = Task {
+                    try await Task.sleep(nanoseconds: 3_000_000_000)
+                    self.showLoadingView()
+                }
+                Task {
+                    do {
+                        try await UserManager.shared.deleteAccount(user_id: self.user.id)
+                        showTask.cancel()
+                        self.dismissLoadingView()
+                        SceneDelegate.logout()
+                    } catch {
+                        self.loadingView.errorImageView.isHidden = false
+                        self.loadingView.configure(title: "刪除帳號出現問題，請稍後再試。", start_generating: false)
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        self.dismissLoadingView()
+                    }
+                    
+                }
+            })
+        alertController.addAction(okAction)
+        present(alertController, animated: true)
+    }
+    
+    func layoutBlurView() {
+        view.addSubview(loadingView)
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    func showLoadingView() {
+        
+        guard loadingView.layer.opacity < 1 else {
+            return
+        }
+        self.navigationController?.navigationBar.isUserInteractionEnabled = false
+        loadingView.triggerRefreshControll()
+        UIView.animate(withDuration: 0.2) {
+            self.loadingView.layer.opacity = 1
+        } completion: { Bool in
+            
+        }
+    }
+    
+    func dismissLoadingView() {
+        guard loadingView.layer.opacity > 0 else {
+            return
+        }
+        UIView.animate(withDuration: 0.2) {
+            self.loadingView.layer.opacity = 0
+        } completion: { Bool in
+            self.navigationController?.navigationBar.isUserInteractionEnabled = true
+        }
     }
     
     func navBarSetup() {
@@ -116,7 +207,7 @@ class EditUserProfileViewController : UIViewController {
     }
 }
 
-extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSource {
+extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSource, EditUserNameViewControllerDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -155,6 +246,7 @@ extension EditUserProfileViewController : UITableViewDelegate, UITableViewDataSo
             value = user.name
             cell.configureCorners(topCornerMask: true)
             break
+
         default :
             cell.customAccessoryImageView.isHidden = false
         }

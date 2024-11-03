@@ -66,7 +66,7 @@ class ButtonSideCollectionCell : UICollectionViewCell, HorizontalButtonAnchorSid
     
     @objc func buttonTapped( _ button : UIButton) {
         model.isSelected.toggle()
-        highlight(title: self.model.name, selected: model.isSelected)
+        highlight(title: self.model.name ?? "", selected: model.isSelected)
         buttonSideCollectionCellDelegate?.highlight(cell: self)
     }
     

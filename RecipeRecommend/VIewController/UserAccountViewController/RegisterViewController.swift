@@ -58,9 +58,25 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
             nextButtonStatus = false
             return
         }
+        guard isValidEmail(email) else {
+            nextButtonStatus = false  
+            return
+        }
+        
+        guard Formatter.nameIsValid(text: name) else {
+            nextButtonStatus = false
+            return
+        }
         nextButtonStatus = true
         
     }}
+    
+    
+    func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
     
     func tableViewSetup() {
         tableView.isScrollEnabled = false
@@ -82,6 +98,7 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         registerKeyboardNotification()
         registerCell()
         viewSetup()
@@ -89,8 +106,18 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
         labelSetup()
         mainViewSetup()
         buttonSetup()
-        
+        navItemSetup()
         initLayout()
+    }
+
+    
+    
+    
+    
+    
+    
+    func navItemSetup() {
+        navigationItem.backButtonTitle = ""
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -139,15 +166,39 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
          guard !registering else {
              return
          }
+        nextButton.configuration?.showsActivityIndicator = true
+        let attrString = nextButton.configuration?.attributedTitle
+        nextButton.configuration?.attributedTitle = nil
+        
 
         guard let name = tableCellTextTuples[0].1,
               let email = tableCellTextTuples[1].1,
               let password = tableCellTextTuples[2].1 else {
             return
         }
-        self.user = User(id: "", name: name, email: email, image: nil)
-        self.password = password
-        self.showEditUserImageViewController()
+        self.navigationController?.navigationBar.isUserInteractionEnabled = false
+
+        Task {
+            defer {
+                self.navigationController?.navigationBar.isUserInteractionEnabled = true
+            }
+            let user = try? await UserManager.shared.selectUserByEmail(email: email)
+            guard user == nil else {
+                
+                nextButton.configuration?.attributedTitle = attrString
+                nextButton.configuration?.showsActivityIndicator = false
+                
+                if let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TextFieldWithWarningLabelTableCell {
+                    cell.warningLabel.text = "此電子郵件已被註冊過。"
+                    cell.warningLabel.isHidden = false
+                }
+                return
+            }
+            self.user = User(id: "", name: name, email: email, image: nil)
+            self.password = password
+            self.showEditUserImageViewController()
+        }
+        
 
      }
     
@@ -189,10 +240,6 @@ class RegisterViewController : UIViewController, UITextFieldDelegate, EditUserPr
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
-       /* [emailTextField, passwordTextField, emailLabel, warningLabel, passwordLabel, registerButton, , checkPasswordLabel, checkPasswordTextField].forEach() {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            mainView.addSubview($0)
-        }*/
         [tableView, nextButton].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             mainView.addSubview($0)
@@ -375,6 +422,7 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         if let text = textField.text as NSString? {
             
             let updatedText = text.replacingCharacters(in: range, with: string)
@@ -390,9 +438,9 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
                     
                 }
             }
-            guard let passwordCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? TextFieldWithWarningLabelTableCell ,
+            guard let nameCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TextFieldWithWarningLabelTableCell ,
                   let checkCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TextFieldWithWarningLabelTableCell else {
-                return true
+                return !string.contains(" ")
             }
             
 
@@ -404,16 +452,21 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
                     checkCell.warningLabel.text = inValidStr
                 }
                 
+                if index == 0 {
+                    nameCell.warningLabel.isHidden = false
+                    nameCell.warningLabel.text = inValidStr
+                }
+                
             } else {
                 if index >= 2 {
                     checkCell.warningLabel.isHidden = true
                 }
-                
+                if index == 0 {
+                    nameCell.warningLabel.isHidden = true
+                }
             }
-            
-            
         }
-        return true
+        return !string.contains(" ")
     }
     
     
@@ -429,6 +482,10 @@ extension RegisterViewController : PHPickerViewControllerDelegate, UITableViewDe
         
         switch tag {
         case 0 :
+            if let nameCell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell
+            {
+                return Formatter.nameIsValid(text: updatedText) ? nil : "名稱最多16個字元"
+            }
             return nil
         case 1 :
             if let cell = tableView.cellForRow(at: IndexPath(row: tag, section: 0)) as? TextFieldWithWarningLabelTableCell

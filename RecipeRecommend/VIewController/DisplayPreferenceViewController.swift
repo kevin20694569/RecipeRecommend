@@ -2,7 +2,7 @@ import UIKit
 
 class DisplayPreferenceViewController : UIViewController {
     
-    var preferences : [GenerateRecipePreference]! = [] // GenerateRecipePreference.examples
+    var preferences : [RecommendRecipePreference]! = [] // GenerateRecipePreference.examples
     var tableView : UITableView = UITableView()
     
     var user_id : String? { SessionManager.shared.user_id }
@@ -66,7 +66,7 @@ class DisplayPreferenceViewController : UIViewController {
         }
     }
     
-    func insertNewPreferences(newPreferences : [GenerateRecipePreference], insertFunc: insertFuncToArray ) {
+    func insertNewPreferences(newPreferences : [RecommendRecipePreference], insertFunc: insertFuncToArray ) {
         
         let newIndexPaths = (preferences.count...preferences.count + newPreferences.count - 1).compactMap { index in
             return IndexPath(row: index, section: 0)
@@ -152,10 +152,11 @@ extension DisplayPreferenceViewController : UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let preference = self.preferences[indexPath.row]
         if let cell = tableView.cellForRow(at: indexPath) as? DisplayPreferenceCell {
-            if let preference_id = cell.preference.id {
-                showDishSummaryViewController(preference_id: preference_id, showRightBarButtonItem: false)
-            }
+            let preference_id = cell.preference.id
+            showDishSummaryViewController(preference_id: preference_id, showRightBarButtonItem: false, preference: preference)
+            
         }
     }
     

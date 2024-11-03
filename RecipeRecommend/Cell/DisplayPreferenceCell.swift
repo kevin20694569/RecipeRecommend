@@ -2,7 +2,7 @@ import UIKit
 
 class DisplayPreferenceCell : UITableViewCell {
     
-    var preference : GenerateRecipePreference!
+    var preference : RecommendRecipePreference!
     
     var mainView : UIView! = UIView()
     
@@ -28,10 +28,10 @@ class DisplayPreferenceCell : UITableViewCell {
     weak var delegate : DisplayPreferenceCellDelegate?
     
     
-    func configure(preference : GenerateRecipePreference) {
+    func configure(preference : RecommendRecipePreference) {
         
         self.preference = preference
-        func getAttributedString(text : String, color : UIColor = .color950, font : UIFont = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .bold)) -> NSAttributedString {
+        func getAttributedString(text : String, color : UIColor = .color950, font : UIFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)) -> NSAttributedString {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 4
             let attString = AttributedString(text, attributes: AttributeContainer([.font : font,
@@ -43,18 +43,6 @@ class DisplayPreferenceCell : UITableViewCell {
         
         
         ingredientsLabel.attributedText = getAttributedString(text: "食材：" + preference.ingredientsDescription)
-        cuisineLabel.attributedText = getAttributedString(text: "菜式：" + preference.cuisinesDescription)
-        equipmentsLabel.attributedText = getAttributedString(text: "設備：" + preference.equipementsDescription)
-      //  complexityLabel.attributedText = getAttributedString(text: "難度：" + preference.complexity.description)
-       // timeLimitLabel.attributedText = getAttributedString(text: "時間：" + preference.timeLimitDescription)
-        
-        if let text = preference.addictionalText {
-            addtionalTextLabel.attributedText = getAttributedString(text: "ex：" + text)
-            labelStackView.addArrangedSubview(addtionalTextLabel)
-        } else {
-            addtionalTextLabel.removeFromSuperview()
-        }
-        
         if let created_time = preference.created_time,
            let formattedStr = Formatter.timeAgoOrDate(from: created_time) {
             created_timeLabel.attributedText = getAttributedString(text: formattedStr, color: .secondaryLabelColor, font: UIFont.weightSystemSizeFont(systemFontStyle: .callout, weight: .medium))
@@ -68,14 +56,8 @@ class DisplayPreferenceCell : UITableViewCell {
     func labelSetup() {
         ingredientsLabel.numberOfLines = 0
         equipmentsLabel.numberOfLines = 0
-        [ingredientsLabel, cuisineLabel, equipmentsLabel, /*complexityLabel, timeLimitLabel,*/ addtionalTextLabel ].forEach() {
+        [ingredientsLabel].forEach() {
             let attributedString = NSMutableAttributedString(string: "", attributes: [.foregroundColor : UIColor.color950])
-
-            // 设置行间距
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 6
-
-
 
             $0.attributedText = attributedString
             $0.textColor = .color950

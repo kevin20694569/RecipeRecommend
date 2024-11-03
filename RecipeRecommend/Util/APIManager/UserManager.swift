@@ -99,7 +99,7 @@ final class UserManager : MainServerAPIManager {
         guard let url = URL(string: "\(self.serverResourcePrefix)?user_id=\(user_id)") else {
             throw APIError.BadRequestURL
         }
-        guard let imageData = newImage.jpegData(compressionQuality: 0.7) else {
+        guard let imageData = newImage.compressImage() else {
             return
         }
         
@@ -137,7 +137,7 @@ final class UserManager : MainServerAPIManager {
                 multipartFormData.append(emailData, withName: "email")
                 multipartFormData.append(passwordData, withName: "password")
                 if let image = image,
-                   let imageData = image.jpegData(compressionQuality: 0.7){
+                   let imageData = image.compressImage() {
                     multipartFormData.append(imageData, withName: "userimage", fileName: "userimage.jpg", mimeType: "image/jpeg")
                 }
                 
@@ -152,5 +152,42 @@ final class UserManager : MainServerAPIManager {
             }
         }
     }
+    
+    func deleteAccount(user_id : String) async throws  {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/\(user_id)") else {
+            throw APIError.BadRequestURL
+        }
+        let req = try SessionManager.shared.initAuthURLRequest(url: url, method: "DELETE")
+        
+        
+        let (data, response) = try await URLSession.shared.data(for: req)
+        guard let httpRes = response as? HTTPURLResponse else {
+            throw APIError.BadRequestURL
+        }
+        guard 200...299  ~= httpRes.statusCode else {
+            throw APIError.BadRequestURL
+        }
+    }
+    
+    func selectUserByEmail(email : String) async throws -> User {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/by-email/\(email)") else {
+            throw APIError.BadRequestURL
+        }
+        
+        var req = URLRequest(url: url)
+        let (data, response) = try await URLSession.shared.data(for: req)
+        guard let httpRes = response as? HTTPURLResponse else {
+            throw APIError.BadRequestURL
+        }
+        guard 200...299  ~= httpRes.statusCode else {
+            throw APIError.BadRequestURL
+        }
+        let decoder = JSONDecoder()
+        let userJson = try decoder.decode(UserJson.self, from: data)
+        let user = User.init(json: userJson)
+        return user
+    }
+
+    
     
 }

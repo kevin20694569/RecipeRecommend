@@ -60,6 +60,10 @@ class Recipe : GetImageModel {
     
     var created_time : String?
     
+    var is_generated : Bool = false
+    
+    var reference_recipe_id : String?
+    
     
     
     init(id: String!, name: String!, cuisine: String!, preference_id: String!, user_id: String, created_Time: String!, summary: String!, costTime: Int!, complexity: Complexity!, image_ID: String!, image_url : String? = nil, isGenerateddetail: Bool, image : UIImage?, steps : [Step]?, ingredients : [Ingredient]?, status : DishGenerateStatus) {
@@ -153,7 +157,15 @@ class Recipe : GetImageModel {
         self.tags = json.tags?.compactMap({ json in
             return Tag(json: json)
         })
-       
+        
+        if let image_url = json.original_recipe_image_url {
+            self.image_URL = URL(string: image_url)
+        }
+        
+        self.reference_recipe_id = json.referecne_recipe_id
+        
+        self.is_generated = json.is_generated
+        
     }
     
     
@@ -200,7 +212,14 @@ struct RecipeJson : Decodable {
     
     var created_time : String?
     
+    
     var updated_time : String?
+    
+    var original_recipe_image_url : String?
+    
+    var is_generated : Bool = false
+    
+    var referecne_recipe_id : String?
     
     
     
@@ -223,6 +242,11 @@ struct RecipeJson : Decodable {
         case steps = "steps"
         case tags = "tags"
         case liked = "liked"
+        
+        case original_recipe_image_url = "original_recipe_image_url"
+        
+        case is_generated = "is_generated"
+        case reference_recipe_id = "reference_recipe_id"
     }
     
     init(from decoder: any Decoder) throws {
@@ -246,6 +270,9 @@ struct RecipeJson : Decodable {
             if let liked = try? container.decodeIfPresent(Bool.self, forKey: .liked) {
                 self.liked = liked
             }
+            self.original_recipe_image_url = try? container.decodeIfPresent(String.self, forKey: .original_recipe_image_url)
+            self.is_generated = (try? container.decodeIfPresent(Int.self, forKey: .is_generated) == 1 ? true : false) ?? false
+            self.referecne_recipe_id = try? container.decodeIfPresent(String.self, forKey: .reference_recipe_id)
         } catch {
             print(error)
             throw error

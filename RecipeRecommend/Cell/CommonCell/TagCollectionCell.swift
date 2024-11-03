@@ -28,6 +28,8 @@ class TagCollectionCell : UICollectionViewCell {
         mainViewLayout()
         titleLabelLayout()
         
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
     }
     
     func labelSetup() {
@@ -41,6 +43,7 @@ class TagCollectionCell : UICollectionViewCell {
         mainView.clipsToBounds = true
         mainView.layer.cornerRadius = 16
         mainView.backgroundColor = .thirdaryBackground
+        
     }
     
     func mainViewLayout() {

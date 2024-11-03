@@ -17,12 +17,15 @@ class SessionManager : NSObject, APIManager {
     
     static let anonymous_user_id = "uKBgj-m98kPAxOhbI2hA0"
     
-    func initAuthURLRequest(url : URL) throws -> URLRequest {
+    func initAuthURLRequest(url : URL, method : String = "GET") throws -> URLRequest {
         guard let jwt_token = jwt_token else {
             throw AuthenticError.LostJWTKey
         }
+        
 
         var req = URLRequest(url: url)
+        
+        req.httpMethod = method
         
         req.setValue("Bearer \(jwt_token)", forHTTPHeaderField: "Authorization")
         return req

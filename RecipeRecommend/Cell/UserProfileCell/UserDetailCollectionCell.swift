@@ -41,15 +41,22 @@ class UserDetailCollectionCell : UICollectionViewCell  {
             horStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor    ),
             horStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             horStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
-            nameLabel.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.3),
+            
+            horStackView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 36),
+            horStackView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -36),
+            
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
+
+            
             nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -contentView.bounds.height * 0.2),
             
 
             editButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: contentView.bounds.height * 0.2),
             
             
-           // editButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant : -8),
+            editButton.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.45),
+            
+            
             editButton.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.3)
 
         ])
@@ -78,6 +85,7 @@ class UserDetailCollectionCell : UICollectionViewCell  {
         nameLabel.adjustsFontSizeToFitWidth = true
         
     }
+    
     
     func stackViewSetup() {
 

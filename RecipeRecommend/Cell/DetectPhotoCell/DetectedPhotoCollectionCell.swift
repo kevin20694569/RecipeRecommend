@@ -16,9 +16,16 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     
     weak var delegate : DetectedPhotoCollectionCellDelegate?
     
-    var attributes : AttributeContainer = AttributeContainer([.font : UIFont.weightSystemSizeFont(systemFontStyle: .title3,
-                                                                                                  weight: .medium),
-                                                              .foregroundColor : UIColor.white,])
+    
+    var deSelectAttributed = AttributeContainer([
+        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .regular),
+        .foregroundColor : UIColor.primaryLabel
+    ])
+    
+    var selectAttributed = AttributeContainer([
+        .font : UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .bold),
+        .foregroundColor : UIColor.backgroundPrimary
+    ])
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,25 +59,38 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         
         if let leftTitle = leftTitle {
             leftButton.configuration?.showsActivityIndicator = false
-            let leftAttString = AttributedString(leftTitle, attributes: attributes)
+            let leftAttString = AttributedString(leftTitle, attributes: deSelectAttributed)
             leftButton.configuration?.attributedTitle = leftAttString
             
         }
         if let rightTitle = rightTitle {
             rightButton.configuration?.showsActivityIndicator = false
-            let rightAttString = AttributedString(rightTitle, attributes: attributes)
+            let rightAttString = AttributedString(rightTitle, attributes: deSelectAttributed)
             rightButton.configuration?.attributedTitle = rightAttString
         }
 
         if selectSide == .left {
-            leftButton.configuration?.baseBackgroundColor = .orangeTheme
-            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
+           
+            leftButton.configuration?.attributedTitle = AttributedString( leftButton.configuration!.title!, attributes: selectAttributed)
+            leftButton.configuration?.baseBackgroundColor = .primaryLabel
+            
+            
+            rightButton.configuration?.attributedTitle = AttributedString( rightButton.configuration!.title!, attributes: deSelectAttributed)
+            rightButton.configuration?.baseBackgroundColor = .thirdaryBackground
+            
         } else if selectSide == .right {
-            rightButton.configuration?.baseBackgroundColor = .orangeTheme
-            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
+            
+            rightButton.configuration?.attributedTitle = AttributedString( rightButton.configuration!.title!, attributes: selectAttributed)
+            rightButton.configuration?.baseBackgroundColor = .primaryLabel
+            
+            
+            leftButton.configuration?.attributedTitle = AttributedString( leftButton.configuration!.title!, attributes: deSelectAttributed)
+            leftButton.configuration?.baseBackgroundColor = .thirdaryBackground
         } else {
-            rightButton.configuration?.baseBackgroundColor = .secondaryBackground
-            leftButton.configuration?.baseBackgroundColor = .secondaryBackground
+            leftButton.configuration?.attributedTitle = AttributedString( leftButton.configuration!.title!, attributes: deSelectAttributed)
+            leftButton.configuration?.baseBackgroundColor = .thirdaryBackground
+            rightButton.configuration?.attributedTitle = AttributedString( rightButton.configuration!.title!, attributes: deSelectAttributed)
+            rightButton.configuration?.baseBackgroundColor = .thirdaryBackground
         }
 
 
@@ -119,25 +139,34 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         let insetFloat : CGFloat = 4
         let insets = NSDirectionalEdgeInsets(top: insetFloat, leading: insetFloat * 2, bottom: insetFloat , trailing: insetFloat * 2)
         var leftConfig = UIButton.Configuration.filled()
-        let leftAttString = AttributedString("", attributes: attributes)
+        let leftAttString = AttributedString("", attributes: deSelectAttributed)
         leftConfig.attributedTitle = leftAttString
         leftConfig.contentInsets = insets
         
         leftConfig.showsActivityIndicator = true
+        leftConfig.activityIndicatorColorTransformer = .init({ color in
+            return .primaryLabel
+        })
+    
         leftConfig.baseBackgroundColor = .secondaryBackground
         
         leftButton.configuration = leftConfig
+        
         leftButton.titleLabel?.numberOfLines = 1
         leftButton.titleLabel?.adjustsFontSizeToFitWidth = true
         leftButton.addTarget(self, action: #selector(selectButtonTapped ( _ :)), for: .touchUpInside)
         
         var rightConfig = UIButton.Configuration.filled()
-        let rigthAttString = AttributedString("", attributes: attributes)
+        let rigthAttString = AttributedString("", attributes: deSelectAttributed)
         rightConfig.titleLineBreakMode = .byWordWrapping
         rightConfig.contentInsets = insets
         rightConfig.showsActivityIndicator = true
         rightConfig.attributedTitle = rigthAttString
         rightConfig.baseBackgroundColor = .secondaryBackground
+        rightConfig.activityIndicatorColorTransformer = .init({ color in
+            return .primaryLabel
+        })
+    
         rightButton.configuration = rightConfig
         rightButton.titleLabel?.numberOfLines = 1
         

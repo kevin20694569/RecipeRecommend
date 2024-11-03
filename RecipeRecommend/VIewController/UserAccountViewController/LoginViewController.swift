@@ -40,9 +40,14 @@ class LoginViewController : UIViewController {
         buttonSetup()
         initLayout()
         configure()
+        navItemSetup()
         
     }
 
+    
+    func navItemSetup() {
+        navigationItem.backButtonTitle = ""
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -175,7 +180,7 @@ class LoginViewController : UIViewController {
             } catch  {
                 switch error {
                 case AuthenticError.LoginFail :
-                    warningLabel.text = "帳號或密碼錯誤。"
+                    warningLabel.text = "電子郵件或密碼錯誤。"
                 default:
                     warningLabel.text = "未知的錯誤，請稍侯再試。"
                 }
@@ -189,7 +194,6 @@ class LoginViewController : UIViewController {
     
     func showRegisterViewController() {
         let vc = RegisterViewController()
-        // navigationController?.pushViewController(vc, animated: true)
         show(vc, sender: nil)
     }
     
@@ -309,6 +313,7 @@ class LoginViewController : UIViewController {
             $0.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
             $0.textInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         }
+        emailTextField.textContentType = .emailAddress
         passwordTextField.isSecureTextEntry = true
     }
     

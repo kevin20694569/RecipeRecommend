@@ -7,10 +7,17 @@ enum StepStatus  {
 
 class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
+    var user_id : String { SessionManager.shared.user_id}
+    
     var recipe : Recipe!
+    
+    var reference_recipe : Recipe?
+    
     var steps : [Step]!
     
     var ingredients : [Ingredient]!
+    
+    var preference : RecommendRecipePreference?
     
     var tableView : UITableView! = UITableView()
     
@@ -18,28 +25,65 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     var rightBarButton : UIButton = UIButton()
     
+    var history_generated_recipes : [Recipe] = []
 
-    
     weak var recipeStatusDelegate : RecipeStatusControll?
     
-    init(recipe : Recipe, steps : [Step]!, ingredients : [Ingredient]!) {
+    init(recipe : Recipe, preference : RecommendRecipePreference? = nil ) {
         super.init(nibName: nil, bundle: nil)
+        
         self.recipe = recipe
-        self.steps = steps
-        self.ingredients = ingredients
+        self.steps = recipe.steps
+        self.ingredients = recipe.ingredients
+        self.preference = preference
+
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        buttonSetup()
         Task {
             await markAsBrowsed()
+            if recipe.is_generated {
+                guard let referecne_recipe_id = self.recipe.reference_recipe_id else {
+                    return
+                }
+                await getReferencedRecipe(reference_recipe_id: referecne_recipe_id)
+            } else {
+                await getGeneratedRecipes(recipe_id: self.recipe.id)
+            }
         }
         registerCell()
-        buttonSetup()
+        
         viewSetup()
         tableViewSetup()
         initLayout()
+        navItemSetup()
+    }
+    
+    func getGeneratedRecipes(recipe_id : String, dateThreshold : String? = nil) async {
+        do {
+            let recipes = try await RecipeManager.shared.getGeneratedRecipesByReferenceRecipeID(reference_recipe_id: recipe_id, user_id: self.user_id, dateThreshold: dateThreshold)
+            
+            history_generated_recipes.insert(contentsOf: recipes, at: history_generated_recipes.count)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func getReferencedRecipe(reference_recipe_id : String) async {
+        do {
+            let recipe = try await RecipeManager.shared.getRecipeByRecipeID(recipe_id: reference_recipe_id)
+            self.reference_recipe = recipe
+            self.rightBarButton.isEnabled = true
+        } catch {
+            print(error)
+        }
+    }
+    
+    func navItemSetup() {
+        self.navigationItem.backButtonTitle = ""
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -47,8 +91,12 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     }
     
     func markAsBrowsed() async {
+        guard !self.recipe.is_generated else {
+            return
+        }
         try? await RecipeManager.shared.markRecipeBrowsed(recipe_id: self.recipe.id  )
     }
+    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +118,13 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     func viewSetup() {
         self.view.backgroundColor = .primaryBackground
+        let label = UILabel()
+        label.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
+        label.text = recipe.name
+        label.isUserInteractionEnabled = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(displayMoreGeneratedRecipesButtonTapped(_ : )))
+        label.addGestureRecognizer(gesture)
+        self.navigationItem.titleView = label
     }
 
 
@@ -88,29 +143,57 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
             
         ])
     }
-
+    
     func buttonSetup() {
+        navigationItem.rightBarButtonItem?.isEnabled = recipe.is_generated
+        /*
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = .themeColor
-        config.image = UIImage(systemName: "waterbottle")
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .body, weight: .medium))
-        rightBarButton.configuration = config
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightBarButton)
-        
-        rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
-        
-      /*  config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
-        config.baseForegroundColor = .primaryLabel
-        config.image = UIImage(systemName: "heart")
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
-        heartButton.configuration = config*/
-       
+
+        config.baseForegroundColor = .accent
         
+        
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
+       // rightBarButton.configuration = config*/
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: recipe.is_generated ? "原食譜" : "生成", style: .plain, target: self, action: #selector(rightBarButtonTapped (_ :)))
+        
+      //  rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
+        
+    }
+    
+    func showGenerateOptionsViewController() {
+        let controller = GeneratedPreferenceViewController(ingredients: preference?.ingredients ?? [], reference_recipe_id: self.recipe.id)
+        self.show(controller, sender: nil)
+    }
+    
+    func showGeneratedRecipesViewController(history_generated_recipes : [Recipe]) {
+        
+        let controller = GeneratedRecipeSummaryDisplayController(dishes: history_generated_recipes)
+        self.show(controller, sender: nil)
+    }
+    
+    func showRecipeDetailViewController(recipe : Recipe) {
+        let controller = RecipeDetailViewController(recipe: recipe)
+        show(controller, sender: nil)
     }
 
     
     @objc func rightBarButtonTapped(_ button : UIButton) {
+        if self.recipe.is_generated {
+            guard let recipe = reference_recipe else {
+                return
+            }
+            showRecipeDetailViewController(recipe: recipe)
+        } else {
+            showGenerateOptionsViewController()
+        }
+    }
+    
+    @objc func displayMoreGeneratedRecipesButtonTapped(_ sender : Any) {
+        guard history_generated_recipes.count > 0 else {
+            return
+        }
+        showGeneratedRecipesViewController(history_generated_recipes: history_generated_recipes)
         
     }
     

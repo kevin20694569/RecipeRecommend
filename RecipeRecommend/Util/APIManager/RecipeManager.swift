@@ -1,34 +1,26 @@
 import UIKit
 
 final class RecipeManager : MainServerAPIManager {
-
+    
     static let shared : RecipeManager = RecipeManager()
     
     override var serverResourcePrefix: String {
         return super.serverResourcePrefix + "/recipe"
     }
     
-    func getRecommendRecipes(user_id : String, preference : GenerateRecipePreference) async throws -> (GenerateRecipePreference,  [Recipe]) {
+    func getRecommendRecipes(user_id : String, preference : RecommendRecipePreference) async throws -> (RecommendRecipePreference,  [Recipe]) {
         guard let url = URL(string: "\(self.serverResourcePrefix)/recommend-recipes") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)
         try self.insertJwtTokenToHeadersDefault(req: &req)
         let ingredientsReqString = Ingredient.getRequestString(models: preference.ingredients)
-        let equipmentsReqString = Equipment.getRequestString(models: preference.equipments)
-        let cuisineReqString = Cuisine.getRequestString(models: preference.cuisine)
-
+        
         let params : [String : Codable?] = [
             "user_id" : preference.user_id,
             "ingredients" : ingredientsReqString,
-            "equipments" : equipmentsReqString,
-            "cuisine" : cuisineReqString,
-          //  "complexity" : preference.complexity.description,
-          //  "timelimit" : preference.timeLimit,
-         //   "temperature" : preference.temperature,
-            "addictionalText" : preference.addictionalText,
         ]
-
+        
         let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         req.httpBody = body
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -36,24 +28,73 @@ final class RecipeManager : MainServerAPIManager {
         
         let (data, _) = try await URLSession.shared.data(for: req)
         let decoder = JSONDecoder()
-        let result =  try decoder.decode(GenerateRecipesJson.self, from: data)
+        let result =  try decoder.decode(RecommendRecipesJson.self, from: data)
         
         guard let preJson = result.preference,
               let recJsons = result.recipes else {
             throw APIError.BadRequestURL
         }
-        guard let preference = GenerateRecipePreference(json:  preJson),
+        guard let preference = RecommendRecipePreference(json:  preJson),
               let recipes = result.recipes?.compactMap({ json in
                   return Recipe(json: json)
               }) else {
             throw APIError.BadRequestURL
         }
-
+        
         return (preference, recipes)
     }
     
+    func generateRecipe(user_id : String, preference : GenerateRecipePreference) async throws -> (GenerateRecipePreference,  Recipe) {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/generate-recipe") else {
+            throw APIError.BadRequestURL
+        }
+        
+        var req = URLRequest(url: url)
+        try self.insertJwtTokenToHeadersDefault(req: &req)
+        let ingredients = preference.ingredients.compactMap { element in
+            return element.name
+        }
+        let equipments = preference.equipments.compactMap { element in
+            return element.name
+        }
+        let cuisines = preference.cuisine.compactMap { element in
+            return element.name
+        }
+        let params : [String : Codable?] = [
+            "reference_recipe_id" : preference.reference_recipe_id,
+            "user_id" : preference.user_id,
+            "ingredients" : ingredients,
+            "equipments" : equipments,
+            "cuisines" : cuisines,
+            "temperature" : preference.temperature,
+            "additionalText" : preference.additionalText,
+        ]
+        
+        let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+        req.httpBody = body
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpMethod = "POST"
+        
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let decoder = JSONDecoder()
+        let result =  try decoder.decode(GenerateRecipeJson.self, from: data)
+        
+        guard let preJson = result.preference,
+              let recJson = result.recipe else {
+            throw APIError.BadRequestURL
+        }
+        guard let preference = GenerateRecipePreference(json: preJson )
+        else {
+            
+            throw APIError.BadRequestURL
+        }
+        let recipe = Recipe(json: recJson)
+        
+        return (preference, recipe)
+    }
+    
     func getRecipesByPreferencID(preference_id : String) async throws -> [Recipe] {
-        guard let url = URL(string: "\(self.serverResourcePrefix)?preference_id=\(preference_id)") else {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/by-preference/\(preference_id)") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)
@@ -104,18 +145,36 @@ final class RecipeManager : MainServerAPIManager {
         return recipes
     }
     
+    func getHistoryGeneratedRecipesByDateThreshold(user_id : String, dateThreshold : String) async throws -> [Recipe] {
+        guard let url =  URL(string: "\(self.serverResourcePrefix)/generated/user?user_id=\(user_id)&dateThreshold=\(dateThreshold)") else {
+            throw APIError.BadRequestURL
+        }
+        var req = URLRequest(url: url)
+        try self.insertJwtTokenToHeadersDefault(req: &req)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let decoder = JSONDecoder()
+        let result =  try decoder.decode(RecipesResJson.self, from: data)
+        guard let recipesJson = result.recipes else {
+            throw APIError.BadRequestURL
+        }
+        let recipes = recipesJson.compactMap { json in
+            return Recipe(json: json)
+        }
+        return recipes
+    }
+    
     func markRecipeBrowsed(recipe_id : String) async throws {
         guard let url = URL(string: "\(self.serverResourcePrefix)/browse") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)
         try self.insertJwtTokenToHeadersDefault(req: &req)
-
+        
         let params : [String : Codable?] = [
             "user_id" : self.user_id,
             "recipe_id" : recipe_id
         ]
-
+        
         let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         req.httpBody = body
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -143,39 +202,7 @@ final class RecipeManager : MainServerAPIManager {
             "user_id" : self.user_id,
             "excluded_recipe_ids" : excluded_recipe_ids
         ]
-
-        let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
-        req.httpBody = body
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.method = .post
         
-        let (data, _) = try await URLSession.shared.data(for: req)
-        let decoder = JSONDecoder()
-        let result =  try decoder.decode(RecipesResJson.self, from: data)
-        guard let recipesJson = result.recipes else {
-            throw APIError.BadRequestURL
-        }
-        let recipes = recipesJson.compactMap { json in
-            return Recipe(json: json)
-        }
-        return recipes
-    }
-    
-    
-    
-    func searchRecipesByQuery(query : String, excluded_recipe_ids : [String]? = nil) async throws -> [Recipe] {
-        
-        guard let url = URL(string: "\(self.serverResourcePrefix)/search/like") else {
-            throw APIError.BadRequestURL
-        }
-        var req = URLRequest(url: url)
-        try self.insertJwtTokenToHeadersDefault(req: &req)
-        let params : [String : Codable?] = [
-            "query" : query,
-            "user_id" : self.user_id,
-            "excluded_recipe_ids" : excluded_recipe_ids
-        ]
-
         let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         req.httpBody = body
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -205,7 +232,7 @@ final class RecipeManager : MainServerAPIManager {
             "recipe_id" : recipe_id,
             "like" : like
         ]
-
+        
         let body = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         req.httpBody = body
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -215,7 +242,7 @@ final class RecipeManager : MainServerAPIManager {
         guard let httpRes = response as? HTTPURLResponse else {
             throw APIError.BadRequestURL
         }
-
+        
         if 200...299  ~= httpRes.statusCode {
             return
         } else {
@@ -224,10 +251,41 @@ final class RecipeManager : MainServerAPIManager {
         
     }
     
+    
+    func getGeneratedRecipesByReferenceRecipeID(reference_recipe_id : String, user_id : String, dateThreshold : String? = nil) async throws -> [Recipe] {
+        guard let url =  URL(string: "\(self.serverResourcePrefix)/generated/reference-recipe?user_id=\(user_id)&reference_recipe_id=\(reference_recipe_id)&dateThreshold=\(dateThreshold ?? "")") else {
+            throw APIError.BadRequestURL
+        }
+        var req = URLRequest(url: url)
+        try self.insertJwtTokenToHeadersDefault(req: &req)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let decoder = JSONDecoder()
+        let result =  try decoder.decode(RecipesResJson.self, from: data)
+        guard let recipesJson = result.recipes else {
+            throw APIError.BadRequestURL
+        }
+        let recipes = recipesJson.compactMap { json in
+            return Recipe(json: json)
+        }
+        return recipes
+    }
+    
+    func getRecipeByRecipeID(recipe_id : String) async throws -> Recipe {
+        guard let url =  URL(string: "\(self.serverResourcePrefix)/\(recipe_id)") else {
+            throw APIError.BadRequestURL
+        }
+        var req = URLRequest(url: url)
+        try self.insertJwtTokenToHeadersDefault(req: &req)
+        let (data, _) = try await URLSession.shared.data(for: req)
+        let decoder = JSONDecoder()
+        let json =  try decoder.decode(RecipeJson.self, from: data)
+        return Recipe(json: json)
+    }
+    
 }
 
-struct GenerateRecipesJson : Decodable {
-    var preference : DishPreferenceJson?
+struct RecommendRecipesJson : Decodable {
+    var preference : RecommendPreferenceJson?
     var recipes : [RecipeJson]?
     
     enum CodingKeys: String, CodingKey {
@@ -237,9 +295,11 @@ struct GenerateRecipesJson : Decodable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.preference = try? container.decodeIfPresent(DishPreferenceJson.self, forKey: .preference)
+        self.preference = try? container.decodeIfPresent(RecommendPreferenceJson.self, forKey: .preference)
         self.recipes = try? container.decode([RecipeJson].self, forKey: .recipes)
     }
+    
+    
 }
 
 struct RecipesResJson : Decodable {
@@ -253,6 +313,22 @@ struct RecipesResJson : Decodable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.recipes = try? container.decode([RecipeJson].self, forKey: .recipes)
+    }
+}
+
+struct GenerateRecipeJson : Decodable {
+    var preference : GeneratePreferenceJson?
+    var recipe : RecipeJson?
+    
+    enum CodingKeys: String, CodingKey {
+        case generated_preference = "generated_preference"
+        case recipe = "recipe"
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.preference = try? container.decodeIfPresent(GeneratePreferenceJson.self, forKey: .generated_preference)
+        self.recipe = try? container.decode(RecipeJson.self, forKey: .recipe)
     }
 }
 

@@ -371,15 +371,13 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
     
     func showCorrectIngredientViewController() {
        
-        let photoInputedIngredients = cameraInputTableCell.images.enumerated().compactMap { (index, image) in
+        var photoInputedIngredients : [PhotoInputedIngredient]? = cameraInputTableCell.images.enumerated().compactMap { (index, image) in
             if let image = image {
                 return PhotoInputedIngredient(image: image, leftTitle: nil, rightTitle: nil)
             }
             return nil
         }
-        
-        
-        
+        //photoInputedIngredients = PhotoInputedIngredient.examples
         let controller = CorrectIngredientViewController(photoInputedIngredients: photoInputedIngredients)
        // let controller = CorrectIngredientViewController(photoInputedIngredients: PhotoInputedIngredient.examples)
         show(controller, sender: nil)

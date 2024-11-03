@@ -33,7 +33,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var user_id : String {SessionManager.shared.user_id!}
     
-    var isLoadingNewDishes : Bool = false
+    var isLoadingNewRecipes : Bool = false
     
     var searchRecipes : [Recipe] = []
     
@@ -134,11 +134,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     var buttonStatus : DishGenerateStatus! = DishGenerateStatus.none
     
-    var generatedDishes : [Recipe]?//= Dish.examples
+    var recommendedRecipes : [Recipe]?//= Dish.examples
     
-    var generatedPreference : GenerateRecipePreference?
+    var recommendedPreference : RecommendRecipePreference?
     
-    var generatedRecipesIsAppended : Bool = false
+    var recommendedRecipesIsAppended : Bool = false
     
     var recipes : [Recipe] = []
     
@@ -179,7 +179,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         navSetup()
         emptyView.configure(text: "你還沒按讚任何食譜喔！")
         emptyView.isHidden = true
-        advertiseView.isHidden = true
+       // advertiseView.isHidden = true
         advertiseView.advertiseViewDelegate = self
         advertiseView.configure(advertises: Advertise.wonderfulfood_examples)
     }
@@ -276,9 +276,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.estimatedRowHeight = 75
         tableView.delaysContentTouches = false
         tableView.backgroundColor = .primaryBackground
-        
-
-      //  tableView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: MainTabBarViewController.bottomBarFrame.height, right: 0)
         let refreshControl = UIRefreshControl()
         tableView.refreshControl = refreshControl
         refreshControl.addTarget(self, action: #selector(refreshControllerTriggered( _: )), for: .valueChanged)
@@ -289,11 +286,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     @objc func refreshControllerTriggered(_ refreshController : UIRefreshControl) {
-        guard !isLoadingNewDishes else {
+        guard !isLoadingNewRecipes else {
             return
         }
         Task {
-            isLoadingNewDishes = true
+            isLoadingNewRecipes = true
             await reloadTableView()
         }
     }
@@ -304,8 +301,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     func reloadTableView() async {
         defer {
-         //   tableView.refreshControl?.endRefreshing()
-            isLoadingNewDishes = false
+            isLoadingNewRecipes = false
         }
         do {
             let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: "")
@@ -364,6 +360,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             searchBarRightButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor),
             searchBarRightButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -12),
             searchBarRightButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor),
+            
+            searchBarRightButton.widthAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor, multiplier: 0.07),
+            searchBarRightButton.heightAnchor.constraint(greaterThanOrEqualTo: searchBar.heightAnchor, multiplier: 0.8),
 
             
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
@@ -419,23 +418,19 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
                 config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .medium))
                 searchBarRightButton.configuration = config
             case .isGenerating :
-                self.generatedDishes = nil
-                searchBarRightButton.configuration?.image = UIImage(systemName: "rectangle.and.pencil.and.ellipsis")
+                self.recommendedRecipes = nil
+                searchBarRightButton.configuration?.image = nil
+                searchBarRightButton.configuration?.showsActivityIndicator = true
                 searchBarRightButton.configuration?.baseBackgroundColor = .orangeTheme
-                let imageView = searchBarRightButton.imageView
-                imageView?.translatesAutoresizingMaskIntoConstraints = true
-                let rotation = CABasicAnimation(keyPath: "transform.rotation")
-                rotation.fromValue = 0
-                rotation.toValue = CGFloat.pi * 2
-                rotation.duration = 1
-                rotation.repeatCount = Float.infinity
-               // imageView?.layer.add(rotation, forKey: "rotate")
+                
             case .already :
+                searchBarRightButton.configuration?.showsActivityIndicator = false
                 searchBarRightButton.imageView?.layer.removeAllAnimations()
                 searchBarRightButton.imageView?.layer.removeAnimation(forKey: "rotate")
                 searchBarRightButton.configuration?.baseBackgroundColor = .systemGreen
                 searchBarRightButton.configuration?.image = UIImage(systemName: "checkmark")
             case .error :
+                searchBarRightButton.configuration?.showsActivityIndicator = false
                 searchBarRightButton.imageView?.layer.removeAllAnimations()
                 searchBarRightButton.imageView?.layer.removeAnimation(forKey: "rotate")
                 searchBarRightButton.configuration?.baseBackgroundColor = .systemRed
@@ -454,8 +449,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         guard advertiseView.isHidden else {
             return
         }
-        if let dishes = generatedDishes  {
-            showRecipeSummaryDisplayController(recipes: dishes)
+        if let recipes = recommendedRecipes  {
+            showRecipeSummaryDisplayController(recipes: recipes)
         } else if buttonStatus == .error {
             showLastGeneratedViewControllers()
         } else {
@@ -586,7 +581,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard !isLoadingNewDishes else {
+        guard !isLoadingNewRecipes else {
             return
         }
         
@@ -602,9 +597,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             
             Task {
                 defer {
-                    isLoadingNewDishes = false
+                    isLoadingNewRecipes = false
                 }
-                isLoadingNewDishes = true
+                isLoadingNewRecipes = true
                 let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: created_time)
                 
                 //   insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
@@ -621,9 +616,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             
             Task {
                 defer {
-                    isLoadingNewDishes = false
+                    isLoadingNewRecipes = false
                 }
-                isLoadingNewDishes = true
+                isLoadingNewRecipes = true
                 let newRecipes = try await RecipeManager.shared.getLikedRecipesByDateThresold(dateThresold: created_time)
                 guard newRecipes.count > 0 else {
                     return

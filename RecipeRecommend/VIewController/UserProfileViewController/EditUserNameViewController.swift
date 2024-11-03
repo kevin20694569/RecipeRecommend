@@ -6,7 +6,7 @@ class EditUserNameViewController : UIViewController {
     var user : User!
     
     var newName : String?{ didSet {
-        navigationItem.rightBarButtonItem?.isEnabled = newName != initName && newName != nil
+        navigationItem.rightBarButtonItem?.isEnabled = Formatter.nameIsValid(text: newName) && newName != initName
     }}
     
     
@@ -81,8 +81,10 @@ class EditUserNameViewController : UIViewController {
                 try await UserManager.shared.rename(user_id: self.user.id, newName: name)
                 if let nav = self.navigationController as? UserProfileNavViewController {
                     
-                    await nav.reloadUser()
+                    
                     user.name = name
+                    await nav.reloadUser()
+                    
                 }
                 self.navigationController?.popViewController(animated: true)
             }
@@ -93,6 +95,8 @@ class EditUserNameViewController : UIViewController {
     
     func registerCell() {
         tableView.register(TextFieldTableCell.self, forCellReuseIdentifier: "TextFieldTableCell")
+        tableView.register(EditNameLabelTableCell.self, forCellReuseIdentifier: "EditNameLabelTableCell")
+        
     }
     
     required init?(coder: NSCoder) {
@@ -103,10 +107,15 @@ class EditUserNameViewController : UIViewController {
 
 extension EditUserNameViewController : UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if indexPath.row == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "EditNameLabelTableCell", for: indexPath) as! EditNameLabelTableCell
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableCell", for: indexPath) as! TextFieldTableCell
         cell.textFieldDelegate = self
         if let newName = newName {
@@ -114,6 +123,8 @@ extension EditUserNameViewController : UITableViewDelegate, UITableViewDataSourc
         } else {
             cell.configure(title : "名字", value: user.name)
         }
+        
+        
         
         return cell
     }

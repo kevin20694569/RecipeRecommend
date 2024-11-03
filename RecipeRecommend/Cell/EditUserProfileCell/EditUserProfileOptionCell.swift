@@ -1,7 +1,7 @@
 import UIKit
 
 enum EditUserProfileOptionCellType : Int {
-    case userName, dislikeIngredient, cuisine
+    case userName, dislikeIngredient, cuisine, deleteAccount
 }
 
 
@@ -38,6 +38,15 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
         self.cellType = cellType
         titleLabel.text = title
         valueLabel.text = value
+        if cellType == .deleteAccount {
+            titleLabel.textColor = .systemRed
+            customAccessoryImageView.image = customAccessoryImageView.image?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        } else {
+            titleLabel.textColor = .primaryLabel
+            customAccessoryImageView.image = customAccessoryImageView.image?.withTintColor(.primaryLabel, renderingMode: .alwaysOriginal)
+        }
+        
+        
 
     }
 
@@ -51,6 +60,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
         valueLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         valueLabel.textAlignment = .right
         valueLabel.textColor = .primaryLabel
+        valueLabel.adjustsFontSizeToFitWidth = true
     }
     
     func titleLabelLayout() {
@@ -75,6 +85,10 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
             editUserProfileCellDelegate?.showEditEquipementViewController()
         case .cuisine :
             editUserProfileCellDelegate?.showEditFavoriteCuisineViewController()
+        case .deleteAccount :
+            editUserProfileCellDelegate?.showDeleteAccountController()
+            break
+            
         default :
             break
         }
@@ -95,7 +109,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
         NSLayoutConstraint.activate([
             valueLabel.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -labelHorConstant),
             valueLabel.centerYAnchor.constraint(equalTo: background.centerYAnchor),
-            valueLabel.leadingAnchor.constraint(lessThanOrEqualTo: titleLabel.trailingAnchor, constant: 20)
+            valueLabel.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.65)
         ])
     }
     

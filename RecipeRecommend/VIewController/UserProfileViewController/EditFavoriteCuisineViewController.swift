@@ -188,7 +188,7 @@ extension EditFavoriteCuisineViewController : UICollectionViewDelegate, UICollec
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonTrailngCollectionCell", for: indexPath) as! ButtonTrailngCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
+                cell.configure(title: cuisine.name ?? "", isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldTrailingCollectionCell", for: indexPath) as! CuisineTextFieldTrailingCollectionCell
@@ -204,7 +204,7 @@ extension EditFavoriteCuisineViewController : UICollectionViewDelegate, UICollec
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonCenterCollectionCell", for: indexPath) as! ButtonCenterCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
+                cell.configure(title: cuisine.name ?? "", isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             }  else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldCenterCollectionCell", for: indexPath) as! CuisineTextFieldCenterCollectionCell
@@ -219,7 +219,7 @@ extension EditFavoriteCuisineViewController : UICollectionViewDelegate, UICollec
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonLeadingCollectionCell", for: indexPath) as! ButtonLeadingCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: cuisine.name, isSelected: cuisine.isSelected, model: cuisine)
+                cell.configure(title: cuisine.name ?? "", isSelected: cuisine.isSelected, model: cuisine)
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CuisineTextFieldLeadingCollectionCell", for: indexPath) as! CuisineTextFieldLeadingCollectionCell

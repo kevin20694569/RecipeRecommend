@@ -104,7 +104,7 @@ extension HorizontalBackgroundAnchorSideCell {
     var backgroundCenterAnchor : NSLayoutConstraint { background.centerXAnchor.constraint(equalTo: contentView.centerXAnchor) }
 
     func backgroundSetup() {
-        background.backgroundColor = .themeColor
+        background.backgroundColor = .primaryBackground
         background.clipsToBounds = true
         background.layer.cornerRadius = 12
     }
@@ -156,7 +156,7 @@ protocol EditEquipmentCellDelegate : NSObject, AddButtonHeaderViewDelegate {
 
 protocol GenerateOptionCellDelegate : AddButtonHeaderViewDelegate, EditEquipmentCellDelegate, EditCuisineCellDelegate {
 
-    var ingrdients : [Ingredient] { get set }
+    var ingredients : [Ingredient] { get set }
     
     var temperature : Double { get }
 
@@ -197,7 +197,7 @@ extension SummaryRecipeTableCellDelegate {
             return
         }
         
-        let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
+        let controller = RecipeDetailViewController(recipe: recipe)
         controller.recipeStatusDelegate = self
         self.show(controller, sender: nil)
 
@@ -210,6 +210,7 @@ protocol EditUserProfileCellDelegate : EditUserNameViewControllerDelegate {
     func showEditNameViewController()
     func showEditEquipementViewController()
     func showEditFavoriteCuisineViewController()
+    func showDeleteAccountController()
     func showImagePicker()
 }
 
@@ -217,6 +218,9 @@ extension EditUserProfileCellDelegate {
     func showEditUserImageViewController() {
         let controller = EditUserImageViewController(user: user)
         self.show(controller, sender: nil)
+    }
+    func showDeleteAccountController() {
+        
     }
     
     func showImagePicker() {
@@ -239,6 +243,8 @@ extension EditUserProfileCellDelegate {
         self.show(controller, sender: nil)
         
     }
+    
+    
 }
 
 protocol UserProfileCellDelegate : ShowRecipeViewControllerDelegate {
@@ -259,7 +265,7 @@ extension UserProfileCellDelegate {
             return
         }
         
-        let controller = RecipeDetailViewController(recipe: recipe, steps: steps, ingredients: ingredients)
+        let controller = RecipeDetailViewController(recipe: recipe)
         show(controller, sender: nil)
         navigationController?.isNavigationBarHidden = false
     }
@@ -272,12 +278,12 @@ extension UserProfileCellDelegate {
 }
 
 protocol DisplayPreferenceCellDelegate : UIViewController {
-    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem: Bool)
+    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem: Bool, preference : RecommendRecipePreference?)
     var tableView : UITableView { get }
 }
 extension DisplayPreferenceCellDelegate {
-    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem : Bool) {
-        let controller = RecipeSummaryDisplayController(preference_id: preference_id, showRightBarButtonItem: showRightBarButtonItem)
+    func showDishSummaryViewController(preference_id : String, showRightBarButtonItem : Bool, preference : RecommendRecipePreference? = nil) {
+        let controller = RecipeSummaryDisplayController(preference_id: preference_id, showRightBarButtonItem: showRightBarButtonItem, preference : preference)
         show(controller, sender: nil)
     }
 }

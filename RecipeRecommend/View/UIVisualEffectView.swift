@@ -7,7 +7,7 @@ extension UIVisualEffectView  {
             let blurEffect = UIBlurEffect(style: style)
             self.effect = blurEffect
             self.frame = frame
-        }
+    }
 
     
 }

@@ -5,11 +5,11 @@ class TitleLabelSideCollectionCell : UICollectionViewCell, HorizontalBackgroundA
     func editModeToggleTo(enable: Bool) {
         if enable {
             UIView.animate(withDuration: 0.2) {
-                self.background.backgroundColor = .systemRed
+                self.background.backgroundColor = .thirdaryBackground
             }
         } else {
             UIView.animate(withDuration: 0.2) {
-                self.background.backgroundColor = .themeColor
+                self.background.backgroundColor = .primaryLabel
             }
         }
     }
@@ -51,7 +51,7 @@ class TitleLabelSideCollectionCell : UICollectionViewCell, HorizontalBackgroundA
     
     
     func backgroundSetup() {
-        background.backgroundColor = .themeColor
+        background.backgroundColor = .primaryLabel
         background.clipsToBounds = true
         background.layer.cornerRadius = 12
     }
@@ -61,7 +61,7 @@ class TitleLabelSideCollectionCell : UICollectionViewCell, HorizontalBackgroundA
     }
     
     func labelSetup() {
-        titleLabel.textColor = .white 
+        titleLabel.textColor = .backgroundPrimary
         titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         titleLabel.adjustsFontSizeToFitWidth = true
     }

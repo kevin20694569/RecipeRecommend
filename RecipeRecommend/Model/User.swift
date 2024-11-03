@@ -30,7 +30,7 @@ class User : Equatable, GetImageModel {
         }
     }
     
-    static let example : User = User(id: "id", name: "世新大學", email: "kevin22", image: UIImage.焗烤玉米濃湯)
+    static let example : User = User(id: "id", name: "世新大學", email: "kevin22", image: nil)
     
     static let `default` : User = User(id: "", name: "", email: "", image: nil)
     

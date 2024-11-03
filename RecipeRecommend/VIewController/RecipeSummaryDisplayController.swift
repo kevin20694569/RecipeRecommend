@@ -3,6 +3,8 @@ import UIKit
 class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UITableViewDataSource, RecipeDelegate, RecipeStatusControll {
 
     
+    
+    var user_id : String { SessionManager.shared.user_id }
     func configureRecipeLikedStatus(recipe : Recipe) {
         guard let index = self.recipes.firstIndex(of: recipe) else {
             return
@@ -12,6 +14,8 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
         }
         cell.configure(recipe: recipe)
     }
+    
+    var recommendRecipePreference : RecommendRecipePreference?
     
     
     func reloadRecipe(recipe: Recipe) {
@@ -87,14 +91,17 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     var tableView : UITableView! = UITableView()
     
     
-    init(dishes : [Recipe]) {
+    init(dishes : [Recipe], preference : RecommendRecipePreference? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.recipes = dishes
+        self.recommendRecipePreference = preference
     }
     
-    init(preference_id : String, showRightBarButtonItem : Bool) {
+    
+    init(preference_id : String, showRightBarButtonItem : Bool,  preference : RecommendRecipePreference? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.preference_id = preference_id
+        self.recommendRecipePreference = preference
         if !showRightBarButtonItem {
             self.navBarRightButton.isHidden = true
         }
@@ -191,8 +198,10 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     }
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if let cell = cell as? SummaryRecipeTableCell {
-            let firstIndexPath : IndexPath = IndexPath(row: 0, section: 0)
-            cell.tagCollectionView.scrollToItem(at: firstIndexPath, at: .centeredHorizontally, animated: false)
+            if cell.tagCollectionView.visibleCells.count > 0 {
+                let firstIndexPath : IndexPath = IndexPath(row: 0, section: 0)
+                cell.tagCollectionView.scrollToItem(at: firstIndexPath, at: .centeredHorizontally, animated: false)
+            }
         }
     }
     
@@ -207,10 +216,25 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
 }
 
 extension RecipeSummaryDisplayController : SummaryRecipeTableCellDelegate {
+
     func configureLikedHeart(recipe : Recipe) {
         
     }
     
+    func showRecipeDetailViewController(recipe : Recipe) {
+        guard let steps = recipe.steps,
+              let ingredients = recipe.ingredients else {
+            return
+        }
+        
+        let controller = RecipeDetailViewController(recipe: recipe, preference: self.recommendRecipePreference)
+        controller.recipeStatusDelegate = self
+        self.show(controller, sender: nil)
+
+    }
+    
 }
+
+
 
 

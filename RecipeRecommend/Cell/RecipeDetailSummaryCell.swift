@@ -153,6 +153,7 @@ class RecipeDetailSummaryCell : UITableViewCell {
         tagCollectionView.delegate = self
         tagCollectionView.dataSource = self
         tagCollectionView.showsHorizontalScrollIndicator = false
+        tagCollectionView.backgroundColor = .clear
         let bounds = UIScreen.main.bounds
         let flow = UICollectionViewFlowLayout()
         flow.minimumLineSpacing = 4
@@ -182,7 +183,7 @@ class RecipeDetailSummaryCell : UITableViewCell {
             
             summaryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             summaryLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            summaryLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            summaryLabel.trailingAnchor.constraint(equalTo: heartButton.trailingAnchor),
             
             //costTimeLabel.centerYAnchor.constraint(equalTo: tagCollectionView.centerYAnchor),
             //costTimeLabel.topAnchor.constraint(equalTo: tagCollectionView.bottomAnchor, constant: 20),

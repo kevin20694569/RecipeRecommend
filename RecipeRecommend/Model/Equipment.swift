@@ -1,8 +1,8 @@
 import UIKit
 
 protocol SelectedModel : AnyObject, Equatable {
-    var id : UUID { get set }
-    var name : String! { get set }
+    var id : String { get set }
+    var name : String? { get set }
     var isSelected : Bool { get set }
     
     static func getRequestString(models : [Self]) -> String
@@ -40,15 +40,19 @@ class Equipment : SelectedModel, NSCopying, Codable  {
         (lhs.id == rhs.id || lhs.name == rhs.name) && lhs.isSelected == rhs.isSelected
     }
     
-    var id : UUID = UUID()
+    var id : String = UUID().uuidString
     
-    var name : String!
+    var name : String?
     
     var isSelected : Bool = false
     
-    init(name : String, isSelected : Bool) {
+    init(name : String?, isSelected : Bool) {
         self.name = name
         self.isSelected = isSelected
+    }
+    
+    init(name : String?) {
+        self.name = name
     }
     
     init() {
@@ -62,18 +66,17 @@ class Equipment : SelectedModel, NSCopying, Codable  {
     }
     
     
-    static var examples : [Equipment] = [Equipment(name: "微波爐", isSelected: false),
-                                         Equipment(name: "烤箱", isSelected: false),
-                                         Equipment(name: "瓦斯爐", isSelected: false),
+    static var examples : [Equipment] = [Equipment(name: "烤箱", isSelected: false),
                                          Equipment(name: "氣炸鍋", isSelected: false),
                                          Equipment(name: "電鍋", isSelected: false)]
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(UUID.self, forKey: .id)
-        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try? container.decodeIfPresent(String.self, forKey: .name)
         self.isSelected = try container.decode(Bool.self, forKey: .isSelected)
     }
+    
 }
 
 

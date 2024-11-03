@@ -234,7 +234,7 @@ extension EditEquipementViewController : UICollectionViewDelegate, UICollectionV
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonTrailngCollectionCell", for: indexPath) as! ButtonTrailngCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: equipment.name ?? "", isSelected: equipment.isSelected, model: equipment)
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldTrailingCollectionCell", for: indexPath) as! EquipmentTextFieldTrailingCollectionCell
@@ -250,7 +250,7 @@ extension EditEquipementViewController : UICollectionViewDelegate, UICollectionV
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonCenterCollectionCell", for: indexPath) as! ButtonCenterCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: equipment.name ?? "", isSelected: equipment.isSelected, model: equipment)
                 return cell
             }  else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldCenterCollectionCell", for: indexPath) as! EquipmentTextFieldCenterCollectionCell
@@ -265,7 +265,7 @@ extension EditEquipementViewController : UICollectionViewDelegate, UICollectionV
             if isDefaultModel {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ButtonLeadingCollectionCell", for: indexPath) as! ButtonLeadingCollectionCell
                 cell.buttonSideCollectionCellDelegate = self
-                cell.configure(title: equipment.name, isSelected: equipment.isSelected, model: equipment)
+                cell.configure(title: equipment.name ?? "", isSelected: equipment.isSelected, model: equipment)
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EquipmentTextFieldLeadingCollectionCell", for: indexPath) as! EquipmentTextFieldLeadingCollectionCell

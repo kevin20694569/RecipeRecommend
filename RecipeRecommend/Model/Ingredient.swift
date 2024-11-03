@@ -2,7 +2,10 @@
 
 import UIKit
 
-class Ingredient : Equatable {
+class Ingredient : Equatable, SelectedModel {
+    
+
+    
     static func == (lhs: Ingredient, rhs: Ingredient) -> Bool {
         lhs.id == rhs.id
     }
@@ -18,7 +21,7 @@ class Ingredient : Equatable {
         return result
     }
     
-    var id : String! = UUID().uuidString
+    var id : String = UUID().uuidString
     
     
     var name : String?
@@ -30,7 +33,8 @@ class Ingredient : Equatable {
     var probalyName : [String]?
     
     var order_index : Int?
-    
+    var isSelected: Bool = false
+     
     var multiplication : Double = 1
     var quantityDescription : String? {
         if let (num, text) = getQuantityNum() {
@@ -99,11 +103,12 @@ class Ingredient : Equatable {
     init(name : String, quantity : String) {
         self.name = name
         self.quantity = quantity
+        
     }
     
     
     convenience init(json : IngredientJson) {
-        self.init(id: json.id, name: json.name, quantity: json.quantity, created_time: json.created_time, dish_id: json.dish_id, order_index:    json.order_index    )
+        self.init(id: json.id ?? UUID().uuidString, name: json.name, quantity: json.quantity, created_time: json.created_time, dish_id: json.dish_id, order_index:    json.order_index    )
     }
     
     func getQuantityNum() -> (Double, String)? {
@@ -145,7 +150,7 @@ class Ingredient : Equatable {
         return nil
     }
     
-    init(id : String?, name : String, quantity : String, created_time : String?, dish_id : String?, order_index : Int?) {
+    init(id : String, name : String, quantity : String, created_time : String?, dish_id : String?, order_index : Int?) {
         self.id = id
         self.name = name
         self.quantity = quantity

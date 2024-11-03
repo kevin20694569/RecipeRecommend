@@ -1,15 +1,15 @@
 import UIKit
 
-protocol DishPreferenceCell {
-    var preference : GenerateRecipePreference! { get set }
-}
-
 
 class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
     
+    
+
+    
+    
     var user_id : String { SessionManager.shared.user_id! }
     
-    lazy var preference : GenerateRecipePreference = GenerateRecipePreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingrdients, cuisine: self.cuisines, complexity: self.complexity, timeLimit: 20, equipments: self.equipments, temperature: self.temperature)
+    lazy var preference : RecommendRecipePreference = RecommendRecipePreference(id: UUID().uuidString, user_id: self.user_id, ingredients: self.ingredients)
     func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -55,6 +55,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     
     var indicatorSection : Int = 0
     var equipmentSection : Int = 1
+    
+
     
     
     
@@ -132,15 +134,14 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     
     var complexitySection : Int = 2
     
-    var temperatureSection : Int = 3
+    var temperatureSection : Int { 3 }
     
     
-    var costTimeSection : Int = 2
     
     
     var cuisineSection : Int = 2
     
-    var additionalTextSection : Int = 3
+    var additionalTextSection : Int { 3 }
     
     var complexity : Complexity {
         let indexPath = IndexPath(row: 0, section: complexitySection)
@@ -161,26 +162,18 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
         return 0
     }
     
-    var costTime : Int {
-        let indexPath = IndexPath(row: 0, section: costTimeSection)
-        if let cell = self.collectionView.cellForItem(at: indexPath) as? TimeSliderCollectionCell {
-            return  Int(cell.currentValue)
-            
-        }
-        return 30
-    }
     
     
-    
-    var ingrdients : [Ingredient] = []
+    var ingredients : [Ingredient] = []
     
     var options : [(title : String?, subTitle : String?)] = [(nil, nil),
                                                              //  ("份量人數", nil),
                                                              ("擁有的設備", "(可多選)"),
                                                              //     ("難易程度", nil),
-                                                             //    ("創意程度", nil),
+                                                             
                                                              //       ("製作時間", nil),
                                                              ("指定菜式", "(可多選)"),
+                                                             ("創意程度", nil),
                                                              //(nil, nil),
                                                              ("其他補充", "(如素食、過敏原、忌口...等等)")]
     
@@ -188,7 +181,11 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     
     init(ingredients : [Ingredient] ) {
         super.init(nibName: nil, bundle: nil)
-        self.ingrdients = ingredients
+        self.ingredients = ingredients
+    }
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -255,13 +252,11 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     }
     
     func generateRecommendRecipes()  {
-        
-        preference.equipments = self.equipments
-        preference.cuisine = self.cuisines
-        preference.ingredients = self.ingrdients
+
+        preference.ingredients = self.ingredients
         if let nav = navigationController as? MainNavgationController {
             if let mainTableController = nav.mainRecipeViewController {
-                mainTableController.generatedPreference = preference
+                mainTableController.recommendedPreference = preference
                 mainTableController.changeButtonStatus(status: .isGenerating)
                 
                 
@@ -271,8 +266,8 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
                     do {
                         
                         let (preference, recipes) = try await RecipeManager.shared.getRecommendRecipes(user_id: self.user_id, preference: preference)
-                        mainTableController.generatedDishes = recipes
-                        mainTableController.generatedPreference = preference
+                        mainTableController.recommendedRecipes = recipes
+                        mainTableController.recommendedPreference = preference
                         mainTableController.changeButtonStatus(status: .already)
                         
                     } catch {
@@ -287,12 +282,6 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
                 
             }
         }
-        
-        
-        
-        
-        
-        
     }
     
     func registerCell() {
@@ -361,6 +350,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
 extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
+        
         return 4
     }
     
@@ -399,14 +389,14 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
             
             if section == equipmentSection {
                 model = equipments[row]
-                title = model.name
+                title = model.name ?? ""
                 isSelected = model.isSelected
                 isDefaultModel = row <= Equipment.examples.count - 1
             }
             
             if section == cuisineSection {
                 model = cuisines[row]
-                title = model.name
+                title = model.name ?? ""
                 isSelected = model.isSelected
                 isDefaultModel = row <= Cuisine.examples.count - 1
             }
@@ -485,41 +475,13 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
             return cell
             
         }
+
         
-        /*  if section == complexitySection {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DifficultSliderCollectionCell", for: indexPath) as! DifficultSliderCollectionCell
-         let titleArray = ["簡單", "普通", "困難"]
-         cell.preference = self.preference
-         cell.configure(titleArray: titleArray)
-         return cell
-         }
-         if section == temperatureSection {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TemperatureSliderCollectionCell", for: indexPath) as! TemperatureSliderCollectionCell
-         let titleArray =  ["穩定", "適中", "放飛"]
-         cell.preference = self.preference
-         cell.configure(titleArray: titleArray)
-         return cell
-         }*/
-        
-        /*
-         
-         if section == costTimeSection {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TimeSliderCollectionCell", for: indexPath) as! TimeSliderCollectionCell
-         let titleArray =  ["20分鐘", "40分鐘", "1小時"]
-         cell.preference = self.preference
-         cell.configure(titleArray: titleArray)
-         return cell
-         }*/
-        
-        /* if section == 6 {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReferenceHistoryCollectionCell", for: indexPath) as! ReferenceHistoryCollectionCell
-         return cell
-         }*/
         
         if section == additionalTextSection {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddtionalTextCollectionCell", for: indexPath) as! AddtionalTextCollectionCell
             cell.textViewDelegate = self
-            cell.configure()
+            cell.configure(text : "")
             return cell
         }
         return UICollectionViewCell()
@@ -627,7 +589,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
         if let textViewText = textView.text as NSString? {
             
             let updatedText = textViewText.replacingCharacters(in: range, with: text)
-            preference.addictionalText = updatedText
+          //  preference.additionalText = updatedText
         }
         return true
     }
@@ -665,6 +627,8 @@ extension RecipeGeneratedOptionViewController  {
         self.keyboardController.keyboardHidden(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
     }
 }
+
+
 
 
 

@@ -16,7 +16,10 @@ class AddtionalTextCollectionCell : UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
+    func configure(text : String?) {
+        if let text = text {
+            self.textView.text = text
+        }
         textView.delegate = self.textViewDelegate
     }
     

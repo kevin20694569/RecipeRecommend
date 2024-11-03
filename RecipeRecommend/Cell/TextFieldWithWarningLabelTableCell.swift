@@ -1,5 +1,7 @@
 import UIKit
 
+
+
 class TextFieldWithWarningLabelTableCell : TextFieldTableCell {
     
     var warningLabel : UILabel = UILabel()
@@ -55,7 +57,7 @@ class TextFieldWithWarningLabelTableCell : TextFieldTableCell {
     override func textFieldSetup() {
         textField.layer.cornerRadius = 12
         textField.backgroundColor = .secondaryBackground
-        textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title1, weight: .medium)
+        textField.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .medium)
         textField.textInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
     }
     
@@ -63,6 +65,11 @@ class TextFieldWithWarningLabelTableCell : TextFieldTableCell {
     func configure(title: String, value : String?, isSecureEntry : Bool) {
         if let value = value {
             textField.text = value
+        }
+        if title == "電子郵件" {
+            textField.addTarget(self, action: #selector(emailTextFieldDidChange), for: .editingChanged)
+        }  else {
+            textField.removeTarget(self, action: #selector(emailTextFieldDidChange), for: .editingChanged)
         }
         self.titleLabel.text = title
         textField.delegate = textFieldDelegate
@@ -77,6 +84,23 @@ class TextFieldWithWarningLabelTableCell : TextFieldTableCell {
         super.initLayout()
 
 
+    }
+    
+    func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+
+    @objc func emailTextFieldDidChange(_ textField: UITextField) {
+        if let email = textField.text, isValidEmail(email) {
+            warningLabel.isHidden = true
+            
+        } else {
+            warningLabel.isHidden = false
+            warningLabel.text = "無效的電子郵件"
+    
+        }
     }
 
     

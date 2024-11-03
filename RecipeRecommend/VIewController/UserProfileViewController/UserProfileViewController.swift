@@ -1,15 +1,10 @@
 
 import UIKit
 
-class UserProfileViewController : UIViewController, EditUserNameViewControllerDelegate {
+class UserProfileViewController : UIViewController, EditUserNameViewControllerDelegate, UserProfileCollectionHeaderViewDelegate {
+    
     func reloadRecipe(recipe: Recipe) {
-        /*  guard let index = historyDishes.firstIndex(of: recipe) else {
-         return
-         }
-         let indexPath = IndexPath(row: index, section: 1)
-         if let cell = collectionView.cellForItem(at: indexPath) as? DishDelegate  {
-         cell.reloadDish(recipe: recipe)
-         }*/
+
     }
     
     var isLoadingNewDishes : Bool = false
@@ -26,6 +21,8 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         
     }
     
+    var collectionViewRecipePresentedStatus : UserProfileCollectionRecipePresentedStatus = .browsed
+    
     var user_id : String? { SessionManager.shared.user_id }
     
     
@@ -33,11 +30,13 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     var historyBrowsedRecipes : [Recipe] = []
     
+    var generatedRecipes : [Recipe] = []
+    
     var user : User! = User.default
     
     var emptyView : EmptyView = EmptyView()
     
-    var userRecipesIsEmpty : Bool = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +65,16 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         }
     }
     
+    func changeCollectionViewPresenting(to status : UserProfileCollectionRecipePresentedStatus) {
+        guard collectionViewRecipePresentedStatus != status else {
+            return
+        }
+        self.collectionViewRecipePresentedStatus = status
+        Task {
+            await reloadCollectionView()
+        }
+    }
+    
     func reloadCollectionView() async {
         
         defer {
@@ -74,34 +83,68 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
         guard let user_id = user_id, user_id != "" else {
             return
         }
-        do {
-            let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(user_id: user_id, dateThresold: "")
-            self.historyBrowsedRecipes.removeAll()
-            self.historyBrowsedRecipes.append(contentsOf: newRecipes)
-            if historyBrowsedRecipes.isEmpty {
-                userRecipesIsEmpty = true
-            }
-            collectionView.performBatchUpdates ({
-                self.collectionView.reloadSections([1])
-            }) { bool in
+        Task {
+            do {
+                if self.collectionViewRecipePresentedStatus == .browsed {
+                    
+                    try await reloadBrowsedRecipes(user_id: user_id)
+                } else {
+                    try await reloadGeneratedRecipes(user_id: user_id)
+                }
                 
+                collectionView.performBatchUpdates ({
+                    self.collectionView.reloadSections([1])
+                })
+                
+            } catch {
+                print("reloadCollectionViewError", error)
             }
-            
-        } catch {
-            print("reloadCollectionViewError", error)
         }
+        
+    }
+    
+    func reloadBrowsedRecipes(user_id : String) async throws {
+        
+        let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(user_id: user_id, dateThresold: "")
+        self.historyBrowsedRecipes.removeAll()
+        self.historyBrowsedRecipes.append(contentsOf: newRecipes)
+        
+        
+    }
+    
+    func reloadGeneratedRecipes(user_id : String) async throws {
+        
+        let newRecipes = try await RecipeManager.shared.getHistoryGeneratedRecipesByDateThreshold(user_id:  user_id, dateThreshold: "")
+        self.generatedRecipes.removeAll()
+        self.generatedRecipes.append(contentsOf: newRecipes)
     }
     
     func insertNewRecipes(newRecipes : [Recipe], insertFunc: insertFuncToArray ) {
-        
-        let newIndexPaths = (historyBrowsedRecipes.count...historyBrowsedRecipes.count + newRecipes.count - 1).compactMap { index in
-            return IndexPath(row: index, section: 1)
+        var newIndexPaths : [IndexPath] = []
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            newIndexPaths = (historyBrowsedRecipes.count...historyBrowsedRecipes.count + newRecipes.count - 1).compactMap { index in
+                return IndexPath(row: index, section: 1)
+            }
+        } else {
+            newIndexPaths = (generatedRecipes.count...generatedRecipes.count + newRecipes.count - 1).compactMap { index in
+                return IndexPath(row: index, section: 1)
+            }
         }
+
         collectionView.performBatchUpdates {
+            
             if insertFunc == .unshift {
-                self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: 0)
+                if self.collectionViewRecipePresentedStatus == .browsed {
+                    self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: 0)
+                } else {
+                    self.generatedRecipes.insert(contentsOf: newRecipes, at: 0)
+                }
             } else {
-                self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: self.historyBrowsedRecipes.count)
+                if self.collectionViewRecipePresentedStatus == .browsed {
+                    self.historyBrowsedRecipes.insert(contentsOf: newRecipes, at: self.historyBrowsedRecipes.count)
+                } else {
+                    self.generatedRecipes.insert(contentsOf: newRecipes, at: self.generatedRecipes.count)
+                }
             }
             collectionView.insertItems(at: newIndexPaths)
         }
@@ -164,7 +207,7 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     }
     
     func registerReuseHeaderView() {
-        collectionView.register(LeadingLogoHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "LeadingLogoHeaderView")
+        collectionView.register(UserProfileCollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "UserProfileCollectionHeaderView")
     }
     
     func viewSetup() {
@@ -214,10 +257,19 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if section == 0 {
             return 1
         }
-        if historyBrowsedRecipes.isEmpty && userRecipesIsEmpty {
-            return 1
+        if collectionViewRecipePresentedStatus == .browsed {
+            if historyBrowsedRecipes.isEmpty {
+                return 1
+            }
+            return historyBrowsedRecipes.count
+        } else {
+            if generatedRecipes.isEmpty {
+                return 1
+            }
+            return generatedRecipes.count
         }
-        return historyBrowsedRecipes.count
+
+       
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -230,27 +282,40 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
             cell.configure(user: user)
             return cell
         }
-        if historyBrowsedRecipes.isEmpty {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyCollectionCell", for: indexPath) as!  EmptyCollectionCell
-            cell.configure(text: "尚未有食譜瀏覽紀錄！")
-            return cell
-            
+
+        var recipe : Recipe!
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            if historyBrowsedRecipes.isEmpty {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyCollectionCell", for: indexPath) as!  EmptyCollectionCell
+                cell.configure(text: "尚未有瀏覽紀錄！")
+                return cell
+            }
+            recipe = historyBrowsedRecipes[row]
+
+        } else {
+            if generatedRecipes.isEmpty {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmptyCollectionCell", for: indexPath) as!  EmptyCollectionCell
+                cell.configure(text: "尚未有生成紀錄！")
+                return cell
+            }
+            recipe = generatedRecipes[row]
         }
-        let dish = historyBrowsedRecipes[row]
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SavedDishCell", for: indexPath) as!  HistoryRecipeCell
         
-        cell.configure(recipe: dish)
+        cell.configure(recipe: recipe)
         return cell
     }
     
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "LeadingLogoHeaderView", for: indexPath) as! LeadingLogoHeaderView
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "UserProfileCollectionHeaderView", for: indexPath) as! UserProfileCollectionHeaderView
+        
         if indexPath.section == 1 {
+            headerView.delegate = self
             headerView.imageViewTrigger = reloadCollectionView
-            headerView.configure(logoImage: UIImage(systemName: "clock")!, title: "瀏覽紀錄")
-            headerView.titleLabel.textColor = .color950
+            headerView.configure(logoImage: UIImage(systemName: "clock")!, title: "原食譜瀏覽紀錄", status: self.collectionViewRecipePresentedStatus)
         }
         return headerView
     }
@@ -260,11 +325,15 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if section == 0 {
             return UIEdgeInsets(top: bounds.height * 0.02, left: 0, bottom: bounds.height * 0.02, right: 0)
         }
-        if historyBrowsedRecipes.isEmpty {
-            return UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        }
-
-        
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            if historyBrowsedRecipes.isEmpty {
+                return UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+            }
+        } else {
+            if generatedRecipes.isEmpty {
+                return UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+            }
+        }  
         return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }
     
@@ -274,8 +343,14 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         if indexPath.section == 0 {
             return CGSize(width: bounds.width, height: bounds.height * 0.15)
         }
-        if historyBrowsedRecipes.isEmpty {
-            return CGSize(width: bounds.width, height: bounds.height * 0.1)
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            if historyBrowsedRecipes.isEmpty {
+                return CGSize(width: bounds.width, height: bounds.height * 0.1)
+            }
+        } else {
+            if generatedRecipes.isEmpty {
+                return CGSize(width: bounds.width, height: bounds.height * 0.1)
+            }
         }
         
         let spacing : CGFloat = 4
@@ -293,7 +368,6 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let bounds = view.bounds
         if section == 0 {
-            
             return CGSize(width: 0, height: 0)
         }
         return CGSize(width: bounds.width, height: bounds.height * 0.04)
@@ -314,7 +388,19 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         guard indexPath.section == 1 else {
             return
         }
-        let recipe = historyBrowsedRecipes[indexPath.row]
+        
+        var recipe : Recipe!
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            if historyBrowsedRecipes.count <= indexPath.row {
+                return
+            }
+            recipe = historyBrowsedRecipes[indexPath.row]
+        } else {
+            if generatedRecipes.count <= indexPath.row {
+                return
+            }
+            recipe = generatedRecipes[indexPath.row]
+        }
         showRecipeDetailViewController(recipe: recipe)
     }
     
@@ -325,25 +411,46 @@ extension UserProfileViewController : UICollectionViewDelegate, UICollectionView
         guard !isLoadingNewDishes else {
             return
         }
-       
-        guard let created_time = self.historyBrowsedRecipes.last?.created_time else {
-            return
-        }
-
-        if self.historyBrowsedRecipes.count - indexPath.row == 5 {
-            Task {
-                defer {
-                    isLoadingNewDishes = false
+        if self.collectionViewRecipePresentedStatus == .browsed {
+            
+            guard let created_time = self.historyBrowsedRecipes.last?.created_time else {
+                return
+            }
+            
+            if self.historyBrowsedRecipes.count - indexPath.row == 5 {
+                Task {
+                    defer {
+                        isLoadingNewDishes = false
+                    }
+                    isLoadingNewDishes = true
+                    let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(user_id: user_id, dateThresold: created_time)
+                    guard newRecipes.count > 0 else {
+                        return
+                    }
+                    insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
                 }
-                isLoadingNewDishes = true
-                let newRecipes = try await RecipeManager.shared.getHistoryBrowsedRecipesByDateThresold(user_id: user_id, dateThresold: created_time)
-                guard newRecipes.count > 0 else {
-                    return
+            }
+        } else {
+            guard let created_time = self.generatedRecipes.last?.created_time else {
+                return
+            }
+            
+            if self.generatedRecipes.count - indexPath.row == 20 {
+                Task {
+                    defer {
+                        isLoadingNewDishes = false
+                    }
+                    isLoadingNewDishes = true
+                    let newRecipes = try await RecipeManager.shared.getHistoryGeneratedRecipesByDateThreshold(user_id: user_id, dateThreshold: created_time)
+                    guard newRecipes.count > 0 else {
+                        return
+                    }
+                    insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
                 }
-                insertNewRecipes(newRecipes: newRecipes, insertFunc: .push)
             }
         }
     }
+    
 }
 
 extension UserProfileViewController : UserProfileCellDelegate {
