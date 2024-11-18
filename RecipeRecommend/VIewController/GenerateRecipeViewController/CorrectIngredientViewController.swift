@@ -18,7 +18,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     var activeTextView : UITextView?
     
-    var ingredientCellSpacing : CGFloat! = 12
+    lazy var ingredientCellSpacing : CGFloat = view.bounds.height * 0.02
     
     var editModeEnable : Bool = false
     
@@ -135,7 +135,7 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
     
     func showDishGeneratedOptionViewController() {
         let ingredients = outputCurrentValidIngredients()
-        let controller = RecipeGeneratedOptionViewController(ingredients: ingredients)
+        let controller = RecipeRecommendOptionViewController(ingredients: ingredients)
         show(controller, sender: nil)
     }
     
@@ -148,14 +148,15 @@ class CorrectIngredientViewController : UIViewController, UICollectionViewDelega
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardShown), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardHidden), name: UIResponder.keyboardWillHideNotification, object: nil)
-        Task {
-            await recognizeImages()
-        }
+
         initLayout()
         registerCell()
         registerCollectionHeaderView()
         collectionViewSetup()
         view.backgroundColor = .primaryBackground
+        Task {
+            await recognizeImages()
+        }
         
     }
     
@@ -326,13 +327,12 @@ extension CorrectIngredientViewController : DetectedPhotoCollectionCellDelegate,
     }
     
     func deleteIngredient(ingredient : Ingredient, section: InputIngredientSection) {
-        var sectionIndex : Int = 3
         var needReloadIndexPaths : [IndexPath] = []
         if section == .Photo {
             guard let index = photoOutputedIngredients.firstIndex(of: ingredient) else {
                 return
             }
-            sectionIndex = 2
+            let sectionIndex = 2
             
             
             needReloadIndexPaths = (index...photoOutputedIngredients.count ).compactMap { index in
@@ -505,12 +505,12 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
         
         if section == 2 , let ingredients = photoInputedIngredients   {
             if ingredients.count > 0 {
-                return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
+                return CGSize(width: screenBounds.width, height: titleFont.lineHeight + screenBounds.height * 0.03 )
             }
             
         }
         if section == 3 {
-            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
+            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + screenBounds.height * 0.03 )
         }
         return CGSize(width:0, height: 0)
     }
@@ -526,7 +526,7 @@ extension CorrectIngredientViewController : UICollectionViewDelegate, UICollecti
             return CGSize(width: screenBounds.width, height: screenBounds.height * 0.38)
         }
         let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
-        let verInset : CGFloat = 8
+        let verInset : CGFloat = screenBounds.height * 0.015
         return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
     }
     

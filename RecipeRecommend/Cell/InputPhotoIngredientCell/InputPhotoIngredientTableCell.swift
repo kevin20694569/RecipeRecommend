@@ -184,7 +184,11 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
     
     
     override var collectionViewHeightConstant: CGFloat! {
-        UIScreen.main.bounds.height * 0.6
+        if UIScreen.main.bounds.width >= 700 {
+            UIScreen.main.bounds.height * 0.7
+        } else {
+            UIScreen.main.bounds.height * 0.6
+        }
     }
     
     
@@ -250,10 +254,25 @@ class InputPhotoIngredientTableCell : CollectionViewTableCell, InputPhotoCollect
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == images.count - 1 && images[indexPath.row] != nil {
-            cameraController.previewLayer?.removeFromSuperlayer()
+        if indexPath.row == images.count - 1 {
+            if let cell = cell as? InputPhotoIngredientCollectionCell {
+                if cameraController.nowPlayingView == cell.imageView {
+                    cameraController.previewLayer?.removeFromSuperlayer()
+                }
+            }
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == images.count - 1 && images[indexPath.row] == nil {
+            if let cell = cell as? InputPhotoIngredientCollectionCell {
+                try? cameraController.ChangePreView(on: cell.imageView)
+            }
         }
     }
+    
+    
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

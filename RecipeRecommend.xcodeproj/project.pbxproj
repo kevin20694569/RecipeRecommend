@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		230744CA2C4CEE8000712609 /* TagCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230744C92C4CEE8000712609 /* TagCollectionCell.swift */; };
-		230744CC2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230744CB2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift */; };
+		230744CC2C4D0BB800712609 /* RecipeRecommendOptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230744CB2C4D0BB800712609 /* RecipeRecommendOptionViewController.swift */; };
 		230CC14D2C6B0FE500D593D9 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC14C2C6B0FE500D593D9 /* UserManager.swift */; };
 		230CC14F2C6BAFE100D593D9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */; };
 		230CC1512C6CA9E100D593D9 /* EditUserImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 230CC1502C6CA9E100D593D9 /* EditUserImageViewController.swift */; };
@@ -120,7 +120,6 @@
 		23C63B8D2C2D389A007F3C23 /* Other.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B8C2C2D389A007F3C23 /* Other.swift */; };
 		23C63B8F2C2D3910007F3C23 /* RecipeDetailSummaryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B8E2C2D3910007F3C23 /* RecipeDetailSummaryCell.swift */; };
 		23C63B912C2DDD9A007F3C23 /* RecipeDetailQuantityAdjustCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C63B902C2DDD9A007F3C23 /* RecipeDetailQuantityAdjustCell.swift */; };
-		23D2F3AC2CCE4AC4001AEBA9 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 23D2F3AB2CCE4AC4001AEBA9 /* AWSS3 */; };
 		23D2F3AE2CCF56BD001AEBA9 /* CheckingIngredientsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D2F3AD2CCF56B4001AEBA9 /* CheckingIngredientsView.swift */; };
 		23DC8A4A2CB79D4300CF01B1 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DC8A492CB79D4300CF01B1 /* EmptyView.swift */; };
 		23DC8A4C2CB7DD1F00CF01B1 /* EmptyCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23DC8A4B2CB7DD1F00CF01B1 /* EmptyCollectionCell.swift */; };
@@ -135,7 +134,7 @@
 
 /* Begin PBXFileReference section */
 		230744C92C4CEE8000712609 /* TagCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCollectionCell.swift; sourceTree = "<group>"; };
-		230744CB2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeGeneratedOptionViewController.swift; sourceTree = "<group>"; };
+		230744CB2C4D0BB800712609 /* RecipeRecommendOptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeRecommendOptionViewController.swift; sourceTree = "<group>"; };
 		230CC14C2C6B0FE500D593D9 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		230CC14E2C6BAFE100D593D9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		230CC1502C6CA9E100D593D9 /* EditUserImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserImageViewController.swift; sourceTree = "<group>"; };
@@ -268,7 +267,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23D2F3AC2CCE4AC4001AEBA9 /* AWSS3 in Frameworks */,
 				6CA153FA0295A71B6B178148 /* Pods_RecipeRecommend.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,7 +354,7 @@
 				236B9EEE2C0CBF0F0004E15A /* EditUserProfileCell */,
 				236784372C05D88E006C18A3 /* UserProfileCell */,
 				236784302C02EB4B006C18A3 /* RecipeDetailCell */,
-				23C210102BF892EF008F74D0 /* DishGenerateOptionCell */,
+				23C210102BF892EF008F74D0 /* RecipeGenerateOptionCell */,
 				23B5011E2BF49BFC00EAB2D7 /* CommonCell */,
 				23BA50B72BF36A7D00E3B85A /* InputPhotoIngredientCell */,
 				23B501192BF4892700EAB2D7 /* IndicatorCell */,
@@ -496,7 +494,7 @@
 				23DF3D752CD3CD9D006E635A /* GeneratedPreferenceViewController.swift */,
 				231341972BEB496C0015DFA6 /* InputPhotoIngredientViewController.swift */,
 				23BA50B52BF3660B00E3B85A /* CorrectIngredientViewController.swift */,
-				230744CB2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift */,
+				230744CB2C4D0BB800712609 /* RecipeRecommendOptionViewController.swift */,
 			);
 			path = GenerateRecipeViewController;
 			sourceTree = "<group>";
@@ -589,7 +587,7 @@
 			path = DetectPhotoCell;
 			sourceTree = "<group>";
 		};
-		23C210102BF892EF008F74D0 /* DishGenerateOptionCell */ = {
+		23C210102BF892EF008F74D0 /* RecipeGenerateOptionCell */ = {
 			isa = PBXGroup;
 			children = (
 				23C210112BF8934B008F74D0 /* QuantityCollectionCell.swift */,
@@ -598,7 +596,7 @@
 				23C210172BF8C376008F74D0 /* ReferenceHistoryCollectionCell.swift */,
 				23C210312BFE26FD008F74D0 /* AddtionalTextCollectionCell.swift */,
 			);
-			path = DishGenerateOptionCell;
+			path = RecipeGenerateOptionCell;
 			sourceTree = "<group>";
 		};
 		23C63B7A2C29819B007F3C23 /* APIManager */ = {
@@ -689,7 +687,6 @@
 			);
 			mainGroup = 234BF5032BDEA4120012CF6A;
 			packageReferences = (
-				23D2F3AA2CCE4AC4001AEBA9 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
 			);
 			productRefGroup = 234BF50D2BDEA4120012CF6A /* Products */;
 			projectDirPath = "";
@@ -848,7 +845,7 @@
 				23C210222BFB2A96008F74D0 /* Cuisine.swift in Sources */,
 				23C210302BFE1510008F74D0 /* CuisineTextFieldCollectionCell.swift in Sources */,
 				23C63B8D2C2D389A007F3C23 /* Other.swift in Sources */,
-				230744CC2C4D0BB800712609 /* RecipeGeneratedOptionViewController.swift in Sources */,
+				230744CC2C4D0BB800712609 /* RecipeRecommendOptionViewController.swift in Sources */,
 				23C63B872C2A6271007F3C23 /* RecommendRecipePreference.swift in Sources */,
 				236B9EE92C0C9CA70004E15A /* EditUserProfileViewController.swift in Sources */,
 				23B501162BF4873900EAB2D7 /* CollectionViewCollectionCell.swift in Sources */,
@@ -1044,7 +1041,8 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1077,7 +1075,8 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1113,25 +1112,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		23D2F3AA2CCE4AC4001AEBA9 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.28;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		23D2F3AB2CCE4AC4001AEBA9 /* AWSS3 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 23D2F3AA2CCE4AC4001AEBA9 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
-			productName = AWSS3;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		234BF5182BDEA4120012CF6A /* DishGenerate.xcdatamodeld */ = {

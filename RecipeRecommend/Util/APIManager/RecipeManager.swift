@@ -94,7 +94,7 @@ final class RecipeManager : MainServerAPIManager {
     }
     
     func getRecipesByPreferencID(preference_id : String) async throws -> [Recipe] {
-        guard let url = URL(string: "\(self.serverResourcePrefix)/by-preference/\(preference_id)") else {
+        guard let url = URL(string: "\(self.serverResourcePrefix)/by-preference/\(preference_id)?user_id=\(self.user_id)") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)
@@ -271,7 +271,7 @@ final class RecipeManager : MainServerAPIManager {
     }
     
     func getRecipeByRecipeID(recipe_id : String) async throws -> Recipe {
-        guard let url =  URL(string: "\(self.serverResourcePrefix)/\(recipe_id)") else {
+        guard let url =  URL(string: "\(self.serverResourcePrefix)/\(recipe_id)?user_id=\(self.user_id)") else {
             throw APIError.BadRequestURL
         }
         var req = URLRequest(url: url)

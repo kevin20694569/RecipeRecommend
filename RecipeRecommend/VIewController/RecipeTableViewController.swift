@@ -382,7 +382,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             advertiseView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             advertiseView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             advertiseView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
-            advertiseView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
+            advertiseView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
 
             
 

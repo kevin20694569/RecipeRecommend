@@ -378,6 +378,7 @@ class InputPhotoIngredientViewController : UIViewController, UITableViewDelegate
             return nil
         }
         //photoInputedIngredients = PhotoInputedIngredient.examples
+        
         let controller = CorrectIngredientViewController(photoInputedIngredients: photoInputedIngredients)
        // let controller = CorrectIngredientViewController(photoInputedIngredients: PhotoInputedIngredient.examples)
         show(controller, sender: nil)

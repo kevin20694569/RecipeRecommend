@@ -120,6 +120,7 @@ class RecipeSummaryDisplayController : UIViewController, UITableViewDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(handleReloadDishNotification(_:)), name: .reloadDishNotification, object: nil)
+        navigationItem.title = "AI推薦食譜"
 
         registerCell()
         buttonSetup()

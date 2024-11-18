@@ -34,13 +34,18 @@ class ImageViewTableCell : UITableViewCell {
     }
     
     func imageViewLayout() {
+        let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
             mainImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             mainImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             mainImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             mainImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.3),
             mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 1)
         ])
+        layoutIfNeeded()
+        mainImageView.layer.cornerRadius = bounds.height * 0.3 / 2
+
     }
     
     func imageViewSetup() {
@@ -52,6 +57,6 @@ class ImageViewTableCell : UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        mainImageView.layer.cornerRadius = mainImageView.bounds.height / 2
+     //   mainImageView.layer.cornerRadius = mainImageView.bounds.height / 2
     }
 }

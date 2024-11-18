@@ -125,8 +125,9 @@ class AdvertiseView : UIView {
             logoImageViewTopAnchor,
          //   logoImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             logoImageView.centerYAnchor.constraint(equalTo: xmarkButton.centerYAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: bounds.width * 0.13),
-            logoImageView.heightAnchor.constraint(equalTo: logoImageView.widthAnchor),
+
+            logoImageView.heightAnchor.constraint(equalTo: self.xmarkButton.heightAnchor, multiplier: 1.2),
+            logoImageView.widthAnchor.constraint(equalTo: logoImageView.heightAnchor),
             logoImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: screenBounds.width * 0.03),
             //logoImageView.bottomAnchor.constraint(equalTo: titleLabel.topAnchor),
         ])
@@ -151,6 +152,7 @@ class AdvertiseView : UIView {
 
             xmarkButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -screenBounds.width * 0.02),
 
+            xmarkButton.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.05)
         ])
         
     }

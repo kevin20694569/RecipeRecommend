@@ -12,9 +12,7 @@ class EditUserProfileOptionCell : GroupCornerBackgroundTableCell {
     
     var valueLabel : UILabel! = UILabel()
     
-    var labelHorConstant : CGFloat {
-        20
-    }
+
     
     var cellType : EditUserProfileOptionCellType! = .userName
     

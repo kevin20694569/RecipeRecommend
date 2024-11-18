@@ -110,6 +110,7 @@ class CheckingIngredientsView : UIView {
     func stackViewLayout() {
         let screenBounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
+            buttonStackView.heightAnchor.constraint(equalToConstant: screenBounds.height * 0.04),
             buttonStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             buttonStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: screenBounds.width * 0.06),
             buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -screenBounds.width * 0.06),

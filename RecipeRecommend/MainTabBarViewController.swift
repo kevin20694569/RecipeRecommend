@@ -22,7 +22,7 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
     
     lazy var viewControllers : [UINavigationController] = []
     
-    var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName: "house")!,  UIImage(systemName: "person.circle")!]
+    var itemImages : [UIImage] = [ UIImage(systemName: "rectangle.and.pencil.and.ellipsis.rtl")!  ,UIImage(systemName : "house")!,  UIImage(systemName: "person.circle")!]
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -117,17 +117,19 @@ class MainTabBarViewController : UIViewController, UITabBarDelegate {
         tabBar.barTintColor = .themeColor
 
         //tabBar.barTintColor = .clear
-        let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .bold))
-        let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .title2, weight: .bold))
+        let normalConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .body, weight: .bold))
+        let selectedConfig = UIImage.SymbolConfiguration(font: .weightSystemSizeFont(systemFontStyle: .body, weight: .bold))
         
         let items = viewControllers.enumerated().compactMap { (index, nav) in
-            let image = itemImages[index]
+            var image = itemImages[index]
 
             let item = UITabBarItem(title: nil, image: image.withConfiguration(normalConfig).withTintColor(.primaryLabel, renderingMode: .alwaysOriginal), selectedImage: image.withConfiguration(selectedConfig).withTintColor(.primaryBackground, renderingMode: .alwaysOriginal))
             item.tag = index
             return item
         }
-        tabBar.setItems(items, animated: false)
+        
+        //tabBar.items = items
+        tabBar.setItems(items, animated: true)
         tabBar.selectedItem = tabBar.items?[1]
         tabBar.delegate = self
 
@@ -179,24 +181,5 @@ extension MainTabBarViewController  {
     }
 }
 
-extension UIColor {
-    // 初始化方法，接受 HEX 色碼（格式: #RRGGBB 或 RRGGBB）
-    convenience init(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        
-        if hexSanitized.hasPrefix("#") {
-            hexSanitized.remove(at: hexSanitized.startIndex)
-        }
-        
-        var rgb: UInt64 = 0
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-        
-        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-        let blue = CGFloat(rgb & 0x0000FF) / 255.0
-        
-        self.init(red: red, green: green, blue: blue, alpha: 1.0)
-    }
-}
 
 

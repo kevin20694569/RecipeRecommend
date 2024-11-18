@@ -1019,11 +1019,11 @@ class PhotoInputedIngredient : Equatable {
     
     
     static var examples : [PhotoInputedIngredient] = {
-        let staticTitles : [(String, String)] = [("蘋果", "柳橙"), ("秋葵", "羅勒"), ("蛋", "大蒜" )]
+        let staticTitles : [(String, String)] = [("蘋果", "柳橙"), ("秋葵", "羅勒")]
         let results =  staticTitles.enumerated().compactMap() { index, titles in
             let image = UIImage.ingredientImages[index]!
 
-            return PhotoInputedIngredient(image: image, leftTitle: titles.0, rightTitle: titles.1)
+            return PhotoInputedIngredient(image: image, leftTitle: nil, rightTitle: nil)
             
         }
         return results

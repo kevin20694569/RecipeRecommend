@@ -67,8 +67,10 @@ class Equipment : SelectedModel, NSCopying, Codable  {
     
     
     static var examples : [Equipment] = [Equipment(name: "烤箱", isSelected: false),
+                                         Equipment(name: "平底鍋", isSelected: false),
                                          Equipment(name: "氣炸鍋", isSelected: false),
-                                         Equipment(name: "電鍋", isSelected: false)]
+                                         Equipment(name: "電鍋", isSelected: false),
+                                         Equipment(name: "快煮鍋", isSelected: false)]
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

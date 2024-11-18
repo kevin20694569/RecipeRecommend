@@ -159,11 +159,8 @@ extension CameraController {
     func ChangePreView(on view: UIView) throws {
         
         guard let captureSession = self.captureSession, captureSession.isRunning else { throw CameraControllerError.captureSessionIsMissing }
-        
-        if self.nowPlayingView === view {
-            self.previewLayer!.frame = view.bounds
-        } else {
-            self.previewLayer!.frame = view.bounds
+        self.previewLayer!.frame = view.bounds
+        if self.nowPlayingView !== view {
             view.layer.insertSublayer(self.previewLayer!, at: 0)
         }
         

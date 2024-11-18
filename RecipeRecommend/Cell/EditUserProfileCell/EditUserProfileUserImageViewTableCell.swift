@@ -39,6 +39,11 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
         buttonLayout()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        mainImageView.layer.cornerRadius = mainImageView.bounds.height / 2
+    }
+    
     
     func buttonLayout() {
         NSLayoutConstraint.activate([
@@ -55,6 +60,7 @@ class EditUserProfileUserImageViewTableCell : ImageViewTableCell {
             
             
         ])
+       
     }
     
     func buttonSetup() {
@@ -92,14 +98,14 @@ class ChangeUserImageViewTableCell : EditUserProfileUserImageViewTableCell {
 class RegisterUserImageViewTableCell : ChangeUserImageViewTableCell {
     override func imageViewSetup() {
         super.imageViewSetup()
-        mainImageView.layer.cornerRadius = 20
         mainImageView.layer.borderWidth = 0.8
         mainImageView.layer.borderColor = UIColor.secondaryLabelColor.cgColor
+        
     }
 }
 
 
-class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCell {
+class RegisterEditUserProfileUserImageViewTableCell : RegisterUserImageViewTableCell {
     
     
     var photoLibraryButton : ZoomAnimatedButton = ZoomAnimatedButton()
@@ -109,6 +115,7 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
         contentView.backgroundColor = .clear
         backgroundColor = .clear
     }
+    
     
     override func buttonSetup() {
         super.buttonSetup()
@@ -122,10 +129,6 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
         photoLibraryButton.addTarget(self, action: #selector(photoLibraryButtonTapped ( _ : )), for: .touchUpInside)
         cameraBlurView.isHidden = true
         
-
-        
-
-        
     }
     
     
@@ -134,22 +137,20 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
         
         NSLayoutConstraint.activate([
             mainImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-           // mainImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             mainImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-           // mainImageView.bottomAnchor.constraint(equalTo: photoLibraryButton.topAnchor),
             
-            mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.4),
             mainImageView.heightAnchor.constraint(equalToConstant: bounds.height * 0.4),
             mainImageView.widthAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 1)
         ])
-       
+       layoutIfNeeded()
+       mainImageView.layer.cornerRadius = mainImageView.bounds.height / 2
+
         
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        let bounds = UIScreen.main.bounds
-        mainImageView.layer.cornerRadius = bounds.height * 0.4 / 2
+        
     }
     
     @objc func photoLibraryButtonTapped( _ button : UIButton) {
@@ -166,20 +167,11 @@ class RegisterEditUserProfileUserImageViewTableCell : ChangeUserImageViewTableCe
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         NSLayoutConstraint.activate([
-            
             photoLibraryButton.topAnchor.constraint(equalTo: mainImageView.bottomAnchor),
             photoLibraryButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
-            
-         //   photoLibraryButton.centerXAnchor.constraint(equalTo: mainImageView.centerXAnchor),
-         //   photoLibraryButton.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor),
-         //   photoLibraryButton.leadingAnchor.constraint(equalTo: mainImageView.leadingAnchor),
-         //   photoLibraryButton.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor),
             photoLibraryButton.heightAnchor.constraint(equalTo: mainImageView.heightAnchor, multiplier: 0.2),
             photoLibraryButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            
-            
-            
-            
+
         ])
 
     }

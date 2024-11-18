@@ -1,7 +1,7 @@
 import UIKit
 
 
-class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
+class RecipeRecommendOptionViewController : UIViewController, GenerateOptionCellDelegate, UITextFieldDelegate, UITextViewDelegate, AddButtonHeaderViewDelegate, OptionGeneratedAddButtonHeaderViewDelegate, KeyBoardControllerDelegate {
     
     
 
@@ -347,7 +347,7 @@ class RecipeGeneratedOptionViewController : UIViewController, GenerateOptionCell
     
 }
 
-extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension RecipeRecommendOptionViewController : UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
@@ -493,13 +493,10 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
         if section == indicatorSection {
             return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
         }
-        /*   if section == 1 {
-         let font = UIFont.preferredFont(forTextStyle: .title3)
-         return CGSize(width: screenBounds.width, height: font.lineHeight + 20)
-         }*/
+
         if section == equipmentSection || section == cuisineSection {
             let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
-            let verInset : CGFloat = 8
+            let verInset : CGFloat = screenBounds.height * 0.015
             return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
         }
         if section == additionalTextSection {
@@ -543,7 +540,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
         let screenBounds = UIScreen.main.bounds
         let titleFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         if section >= equipmentSection && section <= cuisineSection || section == additionalTextSection {
-            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
+            return CGSize(width: screenBounds.width, height:titleFont.lineHeight + screenBounds.height * 0.03 )
         }
         return CGSize(width: screenBounds.width, height: 0)
     }
@@ -551,7 +548,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if section == equipmentSection  || section == cuisineSection {
-            return 12
+            return view.bounds.height * 0.02
         }
         return 0
     }
@@ -619,7 +616,7 @@ extension RecipeGeneratedOptionViewController : UICollectionViewDelegate, UIColl
     
 }
 
-extension RecipeGeneratedOptionViewController  {
+extension RecipeRecommendOptionViewController  {
     @objc func keyboardShown(notification: Notification) {
         self.keyboardController.keyboardShown(notification: notification, activeTextField: self.activeTextField, activeTextView: self.activeTextView)
     }

@@ -216,11 +216,11 @@ class UserProfileViewController : UIViewController, EditUserNameViewControllerDe
     
     func navItemSetup() {
         self.navigationItem.title = "個人檔案"
-        let titleLabel =  UILabel(frame: .zero)
+       /* let titleLabel =  UILabel(frame: .zero)
         titleLabel.textColor = .color950
         titleLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight:  .bold)
         titleLabel.text = "個人檔案"
-        navigationItem.titleView = titleLabel
+        navigationItem.titleView = titleLabel*/
         
         
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)

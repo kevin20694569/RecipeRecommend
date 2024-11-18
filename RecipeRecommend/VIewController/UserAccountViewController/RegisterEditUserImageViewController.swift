@@ -144,7 +144,6 @@ class RegisterEditUserImageViewController : EditUserImageViewController {
     override func tableViewSetup() {
         super.tableViewSetup()
         self.tableView.backgroundColor = .clear
-       // tableView.rowHeight = view.bounds.height * 0.4
 
     }
     

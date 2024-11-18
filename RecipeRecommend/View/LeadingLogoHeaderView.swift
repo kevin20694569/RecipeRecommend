@@ -23,13 +23,14 @@ class LeadingLogoHeaderView : UICollectionReusableView {
     
     
     func initLayout() {
+        let bounds = UIScreen.main.bounds
         [imageView, titleLabel].forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
             addSubview($0)
         }
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: bounds.width * 0.04),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
@@ -167,10 +168,20 @@ class UserProfileCollectionHeaderView : LeadingLogoHeaderView {
     }
     
     func menuSetup() {
+        if #available(iOS 17.0, *) {
+            self.titleMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, preferredElementSize: .automatic, children: [browsedAction, generatedAction])
+        }
         
         
+        else if #available(iOS 16, *) {
+
+            self.titleMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, preferredElementSize: .large, children: [browsedAction, generatedAction])
+
+        } else {
+            self.titleMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [browsedAction, generatedAction])
+        }
         
-        self.titleMenu = UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, preferredElementSize: .large, children: [browsedAction, generatedAction])
+        
     }
     
     func buttonLayout() {

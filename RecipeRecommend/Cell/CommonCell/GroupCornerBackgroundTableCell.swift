@@ -5,6 +5,11 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     
     var customAccessoryImageView : UIImageView! = UIImageView()
     
+    var labelHorConstant : CGFloat {
+        let bounds = UIScreen.main.bounds
+        return bounds.width * 0.04
+    }
+    
     
     
     var cellTapGesture : BackGroundColorTriggerTapGesture!
@@ -70,7 +75,7 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
         NSLayoutConstraint.activate([
             customAccessoryImageView.topAnchor.constraint(equalTo: background.topAnchor),
 
-            customAccessoryImageView.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -20),
+            customAccessoryImageView.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -self.labelHorConstant),
             customAccessoryImageView.bottomAnchor.constraint(equalTo: background.bottomAnchor),
         ])
 
@@ -83,8 +88,10 @@ class GroupCornerBackgroundTableCell : UITableViewCell {
     func backgroundLayout() {
         background.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(background)
+        let bounds = UIScreen.main.bounds
 
         NSLayoutConstraint.activate([
+            background.heightAnchor.constraint(equalToConstant: bounds.height * 0.06),
             background.topAnchor.constraint(equalTo: contentView.topAnchor),
             background.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),

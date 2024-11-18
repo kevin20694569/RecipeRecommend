@@ -27,9 +27,10 @@ class LabelHeaderView : UICollectionReusableView {
     }
     
     func titleLabelLayout() {
+        let bounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: bounds.width * 0.04),
             titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
     }
@@ -57,10 +58,12 @@ class SubLabelTitleLabelHeaderView : LabelHeaderView {
     }
     
     func subTitleLabelLayout() {
+        let bounds = UIScreen.main.bounds
         addSubview(subTextLabel)
+  
         subTextLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            subTextLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 6),
+            subTextLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: bounds.width * 0.02),
             subTextLabel.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor)
         ])
         
@@ -115,6 +118,7 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
     }
     
     func addButtonLayout() {
+        let bounds = UIScreen.main.bounds
         addSubview(addButton)
         addSubview(editButton)
         addButton.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +128,7 @@ class AddButtonHeaderView : SubLabelTitleLabelHeaderView  {
             addButton.centerYAnchor.constraint(equalTo: subTextLabel.centerYAnchor),
             
             editButton.centerYAnchor.constraint(equalTo: addButton.centerYAnchor),
-            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
+            editButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -bounds.width * 0.04)
         ])
     }
     

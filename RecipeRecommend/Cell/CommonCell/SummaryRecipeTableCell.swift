@@ -247,7 +247,7 @@ class SummaryRecipeTableCell : UITableViewCell, RecipeDelegate, RecipeTableCell 
         if liked {
             self.heartButton.configuration?.image = UIImage(systemName: "heart.fill")?.withTintColor(.red, renderingMode: .alwaysOriginal)
         } else {
-            self.heartButton.configuration?.image = UIImage(systemName: "heart")?.withTintColor( .primaryLabel, renderingMode: .alwaysOriginal )
+            self.heartButton.configuration?.image = UIImage(systemName: "heart")?.withTintColor( .white, renderingMode: .alwaysOriginal )
         }
     }
     

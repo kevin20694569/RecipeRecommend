@@ -40,9 +40,11 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
         contentView.subviews.forEach() {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
+       
         let constant : CGFloat = 8
         
         NSLayoutConstraint.activate([
+
             background.topAnchor.constraint(equalTo: contentView.topAnchor),
             background.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             background.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8),
@@ -79,7 +81,7 @@ class TextFieldSideCollectionCell : UICollectionViewCell, HorizontalBackgroundAn
     }
     
     func backgroundSetup() {
-        background.backgroundColor = .themeColor
+        self.background.backgroundColor = .color950
         background.clipsToBounds = true
         background.layer.cornerRadius = 12
         backgroundColor = .clear

@@ -25,6 +25,8 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     var rightBarButton : UIButton = UIButton()
     
+    var titleLabel : UILabel = UILabel()
+    
     var history_generated_recipes : [Recipe] = []
 
     weak var recipeStatusDelegate : RecipeStatusControll?
@@ -50,8 +52,6 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
                     return
                 }
                 await getReferencedRecipe(reference_recipe_id: referecne_recipe_id)
-            } else {
-                await getGeneratedRecipes(recipe_id: self.recipe.id)
             }
         }
         registerCell()
@@ -101,8 +101,38 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         navBarStyleSetup()
         configureRecipeLikedStatus(liked: self.recipe.liked)
+        if !self.recipe.is_generated {
+            Task {
+                await getGeneratedRecipes(recipe_id: self.recipe.id)
+                
+                enableShowGeneratedRecipesLabel(enable: history_generated_recipes.count > 0, animated: true)
+            }
+        }
+    }
+    
+    func enableShowGeneratedRecipesLabel(enable : Bool, animated : Bool) {
+        
+        guard let label = navigationItem.titleView as? UILabel else {
+            return
+        }
+        if animated {
+            label.text = enable ? "點擊查看過往生成的食譜" : "尚無生成的食譜"
+            UIView.animate(withDuration: 0.3) {
+                label.textColor = enable ? .label : .secondaryLabel
+                
+            } completion: { Bool in
+                label.isUserInteractionEnabled = enable
+            }
+
+        } else {
+            label.textColor = enable ? .label : .secondaryLabel
+            label.text = enable ? "點擊查看過往生成的食譜" : "尚無生成的食譜"
+            label.isUserInteractionEnabled = enable
+        }
+        
     }
     
     func tableViewSetup() {
@@ -120,11 +150,12 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
         self.view.backgroundColor = .primaryBackground
         let label = UILabel()
         label.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
-        label.text = recipe.name
-        label.isUserInteractionEnabled = true
         let gesture = UITapGestureRecognizer(target: self, action: #selector(displayMoreGeneratedRecipesButtonTapped(_ : )))
         label.addGestureRecognizer(gesture)
+        self.titleLabel = label
+        
         self.navigationItem.titleView = label
+        
     }
 
 
@@ -146,18 +177,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     
     func buttonSetup() {
         navigationItem.rightBarButtonItem?.isEnabled = recipe.is_generated
-        /*
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = .clear
-
-        config.baseForegroundColor = .accent
-        
-        
-        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium))
-       // rightBarButton.configuration = config*/
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: recipe.is_generated ? "原食譜" : "生成", style: .plain, target: self, action: #selector(rightBarButtonTapped (_ :)))
-        
-      //  rightBarButton.addTarget(self, action: #selector(rightBarButtonTapped ( _ :)), for: .touchUpInside)
         
     }
     
@@ -169,6 +189,7 @@ class RecipeDetailViewController : UIViewController, RecipeStatusControll {
     func showGeneratedRecipesViewController(history_generated_recipes : [Recipe]) {
         
         let controller = GeneratedRecipeSummaryDisplayController(dishes: history_generated_recipes)
+        controller.navigationItem.title = "AI生成食譜"
         self.show(controller, sender: nil)
     }
     

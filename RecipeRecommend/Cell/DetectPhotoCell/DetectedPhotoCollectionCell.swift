@@ -98,6 +98,7 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
     
     
     func initLayout() {
+        let bounds = UIScreen.main.bounds
         contentView.addSubview(imageView)
         contentView.addSubview(stackView)
         contentView.subviews.forEach() {
@@ -105,27 +106,29 @@ class DetectedPhotoCollectionCell : UICollectionViewCell {
         }
         
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant:  bounds.height * 0.01),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
     
     func stackViewLayout() {
+        let bounds = UIScreen.main.bounds
         let font = UIFont.preferredFont(forTextStyle: .title1)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            stackView.heightAnchor.constraint(equalToConstant: font.lineHeight  + 8 )
+            stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: bounds.height * 0.02),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant:  bounds.height * 0.02),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -bounds.height * 0.02),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -bounds.height * 0.02),
+            stackView.heightAnchor.constraint(equalToConstant: font.lineHeight  +  bounds.height * 0.02 )
         ])
         
     }
     
     func stackViewSetup() {
+        let screenBounds = UIScreen.main.bounds
         stackView.axis = .horizontal
-        stackView.spacing = 4
+        stackView.spacing = screenBounds.width * 0.02
         stackView.distribution = .fillEqually
 
         [leftButton, rightButton].forEach() {

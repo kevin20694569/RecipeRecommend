@@ -1,40 +1,16 @@
 PODS:
   - Alamofire (5.9.1)
-  - AWSAuthCore (2.37.2):
-    - AWSCore (= 2.37.2)
-  - AWSCognitoIdentityProvider (2.37.2):
-    - AWSCognitoIdentityProviderASF (= 2.37.2)
-    - AWSCore (= 2.37.2)
-  - AWSCognitoIdentityProviderASF (2.37.2):
-    - AWSCore (= 2.37.2)
-  - AWSCore (2.37.2)
-  - AWSMobileClient (2.37.2):
-    - AWSAuthCore (= 2.37.2)
-    - AWSCognitoIdentityProvider (= 2.37.2)
-    - AWSCognitoIdentityProviderASF (= 2.37.2)
-    - AWSCore (= 2.37.2)
 
 DEPENDENCIES:
   - Alamofire
-  - AWSMobileClient
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - AWSAuthCore
-    - AWSCognitoIdentityProvider
-    - AWSCognitoIdentityProviderASF
-    - AWSCore
-    - AWSMobileClient
 
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  AWSAuthCore: b0d15cd025a8aa8e3b044053b1c735e759b6e56d
-  AWSCognitoIdentityProvider: 33ac4940169e5987151911a92b7dc0929b044d3d
-  AWSCognitoIdentityProviderASF: 94f273d7a89632efa3d1358b96d87052b6a2750b
-  AWSCore: 4cbaf219af10ec390a0432ee2b380f7fa644b80c
-  AWSMobileClient: 7d049a0d52d706fc62bb175d0236af453890b874
 
-PODFILE CHECKSUM: 3fac781f922aea5f15e50cbb44b14d527975c2c5
+PODFILE CHECKSUM: 1c4b82cea2054586ae88f5bb1f4ca990ed72db24
 
 COCOAPODS: 1.15.2

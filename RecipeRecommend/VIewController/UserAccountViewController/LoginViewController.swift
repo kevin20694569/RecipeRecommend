@@ -266,14 +266,7 @@ class LoginViewController : UIViewController {
     }
     
     func buttonLayout() {
-        let bounds = view.bounds
-        /*NSLayoutConstraint.activate([
-            loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 30),
-            loginButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
-            loginButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.06),
-            loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 36),
-            loginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
-        ])*/
+        let bounds = UIScreen.main.bounds
         
         
         NSLayoutConstraint.activate([
@@ -284,19 +277,16 @@ class LoginViewController : UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-           // anonymousLoginButton.widthAnchor.constraint(equalTo: view.widthAnchor,multiplier: 0.7),
             anonymousLoginButton.heightAnchor.constraint(equalTo: view.heightAnchor,multiplier: 0.06),
-            anonymousLoginButton.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor, constant: bounds.width * 0.04),
+            anonymousLoginButton.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor, constant: bounds.width * 0.02),
             anonymousLoginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant:  bounds.width * 0.01),
-          //  anonymousLoginButton.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
         ])
         
         NSLayoutConstraint.activate([
-           // registerButton.widthAnchor.constraint(equalTo: anonymousLoginButton.widthAnchor),
             registerButton.heightAnchor.constraint(equalTo: anonymousLoginButton.heightAnchor),
 
             registerButton.topAnchor.constraint(equalTo: anonymousLoginButton.topAnchor),
-            registerButton.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: -bounds.width * 0.04),
+            registerButton.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: -bounds.width * 0.02),
         ])
         
         
@@ -328,11 +318,11 @@ class LoginViewController : UIViewController {
         
         NSLayoutConstraint.activate([
             emailLabel.topAnchor.constraint(equalTo: mainView.topAnchor, constant: bounds.height * 0.08),
-            emailLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 24),
-            emailLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -24),
+            emailLabel.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant:  bounds.height * 0.02),
+            emailLabel.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -bounds.height * 0.02),
         ])
         NSLayoutConstraint.activate([
-            passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16),
+            passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: bounds.height * 0.03),
             passwordLabel.leadingAnchor.constraint(equalTo: emailLabel.leadingAnchor),
             passwordLabel.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor),
         ])
@@ -346,15 +336,16 @@ class LoginViewController : UIViewController {
     }
     
     func textFieldLayout() {
+        let screenBounds = UIScreen.main.bounds
         NSLayoutConstraint.activate([
-            emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 12),
-            emailTextField.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: 24),
-            emailTextField.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -24),
+            emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: screenBounds.height * 0.02),
+            emailTextField.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: screenBounds.width * 0.04),
+            emailTextField.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -screenBounds.width * 0.04),
             emailTextField.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.06)
         ])
         
         NSLayoutConstraint.activate([
-            passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 12),
+            passwordTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant:  screenBounds.height * 0.02),
             passwordTextField.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor),
             passwordTextField.trailingAnchor.constraint(equalTo: emailTextField.trailingAnchor),
             passwordTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor)

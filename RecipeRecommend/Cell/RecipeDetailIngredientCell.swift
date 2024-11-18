@@ -17,16 +17,25 @@ class RecipeDetailIngredientCell : GroupCornerBackgroundTableCell {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
+        let bounds = UIScreen.main.bounds
+        
+        
         
         NSLayoutConstraint.activate([
             
-            nameLabel.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 20),
-            nameLabel.topAnchor.constraint(equalTo: background.topAnchor, constant: 14),
-            nameLabel.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -14),
+            nameLabel.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: bounds.width * 0.04),
+            nameLabel.topAnchor.constraint(equalTo: background.topAnchor, constant: bounds.height * 0.01),
+            nameLabel.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -bounds.height * 0.01),
             nameLabel.centerYAnchor.constraint(equalTo: background.centerYAnchor),
             
-            quantityLabel.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -20),
+            nameLabel.widthAnchor.constraint(lessThanOrEqualTo: background.widthAnchor, multiplier: 0.4),
+
+            
+            quantityLabel.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -bounds.width * 0.04),
             quantityLabel.centerYAnchor.constraint(equalTo: background.centerYAnchor),
+            quantityLabel.widthAnchor.constraint(lessThanOrEqualTo: background.widthAnchor, multiplier: 0.4),
+            quantityLabel.topAnchor.constraint(equalTo: background.topAnchor, constant: bounds.height * 0.01),
+            quantityLabel.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -bounds.height * 0.01),
         ])
         
     }
@@ -47,9 +56,13 @@ class RecipeDetailIngredientCell : GroupCornerBackgroundTableCell {
         quantityLabel.numberOfLines = 0
         quantityLabel.adjustsFontSizeToFitWidth = true
         quantityLabel.textColor = .primaryLabel
+        quantityLabel.textAlignment = .natural
         nameLabel.font = UIFont.weightSystemSizeFont(systemFontStyle: .title3, weight: .medium)
         nameLabel.clipsToBounds = true
         nameLabel.textColor = .primaryLabel
+        nameLabel.numberOfLines = 0
+        nameLabel.adjustsFontSizeToFitWidth = true
+        nameLabel.textAlignment = .right
     
     }
     

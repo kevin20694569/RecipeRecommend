@@ -13,6 +13,11 @@ final class RecognizeImageManager : MainServerAPIManager {
     
     func recognizeImages(images : [UIImage], user_id : String) async throws -> [[RecognizeImageJson]]  {
         
+        
+        guard images.count > 0 else {
+            throw NSError(domain: "images為空", code: 404, userInfo: nil)
+        }
+        
         guard let url = URL(string: "\(self.serverResourcePrefix)") else {
             throw APIError.BadRequestURL
         }
@@ -21,15 +26,18 @@ final class RecognizeImageManager : MainServerAPIManager {
         }
         
         
+        
         let headers: HTTPHeaders = [
             "Content-Type": "multipart/form-data",
             "authorization" : "Bearer \(jwt_token)"
         ]
+        
 
 
         let res = try await withUnsafeThrowingContinuation { continuation in
             AF.upload(multipartFormData: { multipartFormData in
                 multipartFormData.append(Data(user_id.utf8), withName: "user_id")
+
                 images.enumerated().forEach() { index, image in
                     guard let data = image.compressImage() else {
                         return
@@ -38,6 +46,7 @@ final class RecognizeImageManager : MainServerAPIManager {
                 }
 
             }, to: url, headers: headers).response { response in
+                
                 switch response.result {
                 case .success:
                     let decoder = JSONDecoder()
@@ -49,6 +58,7 @@ final class RecognizeImageManager : MainServerAPIManager {
                     }
                     continuation.resume(returning: res)
                 case .failure(let error):
+                    print(error)
                     continuation.resume(throwing: error)
                 }
             }

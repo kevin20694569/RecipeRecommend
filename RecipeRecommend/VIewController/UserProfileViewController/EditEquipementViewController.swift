@@ -291,7 +291,7 @@ extension EditEquipementViewController : UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let bounds = UIScreen.main.bounds
         let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
-        let verInset : CGFloat = 8
+        let verInset : CGFloat = bounds.height * 0.015
         return CGSize(width: bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
         
     }
@@ -301,11 +301,14 @@ extension EditEquipementViewController : UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return view.bounds.height * 0.02
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let screenBounds = UIScreen.main.bounds
         let titleFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
-        return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
+        return CGSize(width: screenBounds.width, height: titleFont.lineHeight + screenBounds.height * 0.03 )
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

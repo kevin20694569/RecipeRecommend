@@ -7,6 +7,5 @@ target 'RecipeRecommend' do
 
   # Pods for RecipeRecommend
   pod 'Alamofire'
-  pod 'AWSMobileClient'
 
 end

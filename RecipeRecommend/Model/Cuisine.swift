@@ -40,5 +40,6 @@ class Cuisine : SelectedModel, NSCopying, Codable   {
     static var examples : [Cuisine] = [Cuisine(name: "中式", isSelected: false),
                                        Cuisine(name: "日式", isSelected: false),
                                        Cuisine(name: "韓式", isSelected: false),
+                                       Cuisine(name: "美式", isSelected: false),
                                        Cuisine(name: "泰式", isSelected: false),]
 }

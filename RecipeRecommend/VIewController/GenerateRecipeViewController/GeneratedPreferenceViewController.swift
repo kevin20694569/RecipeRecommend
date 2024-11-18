@@ -2,7 +2,7 @@ import UIKit
 
 
 
-class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, IngredientCellDelegate, IngredientAddButtonHeaderViewDelegate, ButtonSideCollectionCellDelegate {
+class GeneratedPreferenceViewController : RecipeRecommendOptionViewController, IngredientCellDelegate, IngredientAddButtonHeaderViewDelegate, ButtonSideCollectionCellDelegate {
     func highlight(cell: UICollectionViewCell) {
         self.rightButtonItem.isEnabled = generatePreferenceIsReady()
     }
@@ -134,20 +134,17 @@ class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, I
                 navigationController?.popViewController(animated: true)
                 if let recipeDetailViewController = navigationController?.viewControllers.last as? RecipeDetailViewController {
                     recipeDetailViewController.history_generated_recipes.insert(recipe, at: 0)
+                    
                     recipeDetailViewController.showGeneratedRecipesViewController(history_generated_recipes: recipeDetailViewController.history_generated_recipes)
+                    recipeDetailViewController.enableShowGeneratedRecipesLabel(enable: true, animated: true)
                 }
-                
-                
-                
                 
             } catch {
                 print("getRecommendRecipesError", error)
-                
                 generatingBlurView.configure(title: "生成錯誤，請重新生成", start_generating: false)
                 generatingBlurView.errorImageView.isHidden = false  
                 try? await Task.sleep(nanoseconds: 2_000_000_000)
                 dismissLoadingView()
-                
             }
             
             
@@ -444,19 +441,7 @@ class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, I
         return UICollectionViewCell()
     }
     
-    override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let section = indexPath.section
-        let screenBounds = UIScreen.main.bounds
-        if section == equipmentSection || section == cuisineSection || section == ingredientsSection {
-            let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
-            let verInset : CGFloat = 8
-            return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
-        }
-        if section == additionalTextSection {
-            return CGSize(width: screenBounds.width, height: screenBounds.height * 0.15)
-        }
-        return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
-    }
+
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -493,7 +478,19 @@ class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, I
     }
     
 
-    
+    override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let section = indexPath.section
+        let screenBounds = UIScreen.main.bounds
+        if section == equipmentSection || section == cuisineSection || section == ingredientsSection {
+            let lineHeight = UIFont.weightSystemSizeFont(systemFontStyle: .headline, weight: .medium).lineHeight
+            let verInset : CGFloat = screenBounds.height * 0.015
+            return CGSize(width: view.bounds.width / 3 - 1, height: lineHeight + verInset * 2 )
+        }
+        if section == additionalTextSection {
+            return CGSize(width: screenBounds.width, height: screenBounds.height * 0.15)
+        }
+        return CGSize(width: screenBounds.width, height: screenBounds.height * 0.08)
+    }
     
     
     
@@ -501,7 +498,7 @@ class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, I
         let screenBounds = UIScreen.main.bounds
         let titleFont = UIFont.weightSystemSizeFont(systemFontStyle: .title2, weight: .bold)
         if section >= equipmentSection && section <= cuisineSection || section == additionalTextSection || section == ingredientsSection || section == temperatureSection {
-            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + 20 )
+            return CGSize(width: screenBounds.width, height: titleFont.lineHeight + screenBounds.height * 0.03 )
         }
         return CGSize(width: screenBounds.width, height: 0)
     }
@@ -509,7 +506,7 @@ class GeneratedPreferenceViewController : RecipeGeneratedOptionViewController, I
     
     override func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if section == equipmentSection  || section == cuisineSection || section == ingredientsSection {
-            return 12
+            return view.bounds.height * 0.02
         }
         return 0
     }
